@@ -38,14 +38,19 @@ export const BadgePhotoStep: React.FC<BadgePhotoStepProps> = ({ form }) => {
 
   useEffect(() => {
     if (canvasRef.current && !fabricCanvas) {
+      console.log('Initializing Fabric canvas');
       const canvas = new FabricCanvas(canvasRef.current, {
         width: 400,
         height: 400,
         backgroundColor: '#f8f9fa',
       });
+      
+      canvas.renderAll();
       setFabricCanvas(canvas);
+      console.log('Fabric canvas initialized');
 
       return () => {
+        console.log('Disposing canvas');
         canvas.dispose();
       };
     }
@@ -158,10 +163,16 @@ export const BadgePhotoStep: React.FC<BadgePhotoStepProps> = ({ form }) => {
   };
 
   const loadImageToCanvas = (imageElement: HTMLImageElement) => {
-    if (!fabricCanvas) return;
+    if (!fabricCanvas) {
+      console.log('Canvas not ready');
+      return;
+    }
+
+    console.log('Loading image to canvas:', imageElement.src.substring(0, 50) + '...');
 
     // Clear existing objects
     fabricCanvas.clear();
+    fabricCanvas.backgroundColor = '#f8f9fa';
     
     // Calculate dimensions to fit image in canvas while maintaining aspect ratio
     const canvasWidth = 400;
@@ -170,16 +181,20 @@ export const BadgePhotoStep: React.FC<BadgePhotoStepProps> = ({ form }) => {
     
     let width, height;
     if (imgAspect > 1) {
-      width = Math.min(canvasWidth, imageElement.naturalWidth);
+      width = Math.min(canvasWidth * 0.8, imageElement.naturalWidth);
       height = width / imgAspect;
     } else {
-      height = Math.min(canvasHeight, imageElement.naturalHeight);
+      height = Math.min(canvasHeight * 0.8, imageElement.naturalHeight);
       width = height * imgAspect;
     }
+
+    console.log('Image dimensions:', { width, height, aspect: imgAspect });
 
     FabricImage.fromURL(imageElement.src, {
       crossOrigin: 'anonymous'
     }).then((fabricImg) => {
+      console.log('Fabric image created successfully');
+      
       fabricImg.set({
         left: (canvasWidth - width) / 2,
         top: (canvasHeight - height) / 2,
@@ -195,6 +210,18 @@ export const BadgePhotoStep: React.FC<BadgePhotoStepProps> = ({ form }) => {
       fabricCanvas.renderAll();
       setIsEditing(true);
       generateBadgePreview();
+      
+      toast({
+        title: "Image Loaded!",
+        description: "Your photo is now ready for editing.",
+      });
+    }).catch((error) => {
+      console.error('Error loading image to canvas:', error);
+      toast({
+        title: "Error Loading Image",
+        description: "Failed to load your photo. Please try again.",
+        variant: "destructive",
+      });
     });
   };
 
@@ -447,9 +474,18 @@ export const BadgePhotoStep: React.FC<BadgePhotoStepProps> = ({ form }) => {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div>
                   <h4 className="font-medium mb-2">Edit Your Photo</h4>
-                  <div className="border rounded-lg p-2 bg-white">
-                    <canvas ref={canvasRef} className="max-w-full" />
+                  <div className="border rounded-lg p-2 bg-white min-h-[420px] flex items-center justify-center">
+                    <canvas 
+                      ref={canvasRef} 
+                      className="max-w-full border border-gray-200 rounded" 
+                      style={{ display: 'block' }}
+                    />
                   </div>
+                  {!isEditing && originalFile && (
+                    <p className="text-sm text-gray-500 mt-2 text-center">
+                      Loading your photo...
+                    </p>
+                  )}
                 </div>
 
                 <div className="space-y-4">
