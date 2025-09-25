@@ -39,19 +39,27 @@ export const BadgePhotoStep: React.FC<BadgePhotoStepProps> = ({ form }) => {
   useEffect(() => {
     if (canvasRef.current && !fabricCanvas) {
       console.log('Initializing Fabric canvas');
-      const canvas = new FabricCanvas(canvasRef.current, {
-        width: 400,
-        height: 400,
-        backgroundColor: '#f8f9fa',
-      });
       
-      canvas.renderAll();
-      setFabricCanvas(canvas);
-      console.log('Fabric canvas initialized');
+      // Add a small delay to ensure the canvas element is properly mounted
+      setTimeout(() => {
+        if (canvasRef.current) {
+          const canvas = new FabricCanvas(canvasRef.current, {
+            width: 400,
+            height: 400,
+            backgroundColor: '#f8f9fa',
+          });
+          
+          canvas.renderAll();
+          setFabricCanvas(canvas);
+          console.log('Fabric canvas initialized successfully');
+        }
+      }, 100);
 
       return () => {
-        console.log('Disposing canvas');
-        canvas.dispose();
+        if (fabricCanvas) {
+          console.log('Disposing canvas');
+          fabricCanvas.dispose();
+        }
       };
     }
   }, []);
@@ -164,66 +172,82 @@ export const BadgePhotoStep: React.FC<BadgePhotoStepProps> = ({ form }) => {
 
   const loadImageToCanvas = (imageElement: HTMLImageElement) => {
     if (!fabricCanvas) {
-      console.log('Canvas not ready, retrying in 100ms');
-      setTimeout(() => loadImageToCanvas(imageElement), 100);
+      console.log('Canvas not ready, retrying in 200ms');
+      setTimeout(() => loadImageToCanvas(imageElement), 200);
       return;
     }
 
     console.log('Loading image to canvas:', imageElement.src.substring(0, 50) + '...');
 
-    // Clear existing objects
-    fabricCanvas.clear();
-    fabricCanvas.backgroundColor = '#f8f9fa';
-    
-    // Calculate dimensions to fit image in canvas while maintaining aspect ratio
-    const canvasWidth = 400;
-    const canvasHeight = 400;
-    const imgAspect = imageElement.naturalWidth / imageElement.naturalHeight;
-    
-    let width, height;
-    if (imgAspect > 1) {
-      width = Math.min(canvasWidth * 0.8, imageElement.naturalWidth);
-      height = width / imgAspect;
-    } else {
-      height = Math.min(canvasHeight * 0.8, imageElement.naturalHeight);
-      width = height * imgAspect;
-    }
+    try {
+      // Clear existing objects
+      fabricCanvas.clear();
+      fabricCanvas.backgroundColor = '#f8f9fa';
+      
+      // Calculate dimensions to fit image in canvas while maintaining aspect ratio
+      const canvasWidth = 400;
+      const canvasHeight = 400;
+      const imgAspect = imageElement.naturalWidth / imageElement.naturalHeight;
+      
+      let width, height;
+      if (imgAspect > 1) {
+        width = Math.min(canvasWidth * 0.8, imageElement.naturalWidth);
+        height = width / imgAspect;
+      } else {
+        height = Math.min(canvasHeight * 0.8, imageElement.naturalHeight);
+        width = height * imgAspect;
+      }
 
-    console.log('Image dimensions:', { width, height, aspect: imgAspect });
+      console.log('Image dimensions:', { width, height, aspect: imgAspect });
 
-    FabricImage.fromURL(imageElement.src, {
-      crossOrigin: 'anonymous'
-    }).then((fabricImg) => {
-      console.log('Fabric image created successfully');
-      
-      fabricImg.set({
-        left: (canvasWidth - width) / 2,
-        top: (canvasHeight - height) / 2,
-        scaleX: width / fabricImg.width!,
-        scaleY: height / fabricImg.height!,
-        selectable: true,
-        hasControls: true,
-        hasBorders: true,
+      FabricImage.fromURL(imageElement.src, {
+        crossOrigin: 'anonymous'
+      }).then((fabricImg) => {
+        if (!fabricCanvas) {
+          console.log('Canvas disposed during image loading');
+          return;
+        }
+        
+        console.log('Fabric image created successfully');
+        
+        fabricImg.set({
+          left: (canvasWidth - width) / 2,
+          top: (canvasHeight - height) / 2,
+          scaleX: width / fabricImg.width!,
+          scaleY: height / fabricImg.height!,
+          selectable: true,
+          hasControls: true,
+          hasBorders: true,
+        });
+        
+        fabricCanvas.add(fabricImg);
+        fabricCanvas.setActiveObject(fabricImg);
+        fabricCanvas.renderAll();
+        setIsEditing(true);
+        generateBadgePreview();
+        
+        toast({
+          title: "Image Loaded!",
+          description: "Your photo is now ready for editing.",
+        });
+      }).catch((error) => {
+        console.error('Error loading image to canvas:', error);
+        toast({
+          title: "Error Loading Image",
+          description: "Failed to load your photo. Please try uploading again.",
+          variant: "destructive",
+        });
+        setIsEditing(false);
       });
-      
-      fabricCanvas.add(fabricImg);
-      fabricCanvas.setActiveObject(fabricImg);
-      fabricCanvas.renderAll();
-      setIsEditing(true);
-      generateBadgePreview();
-      
+    } catch (error) {
+      console.error('Error in loadImageToCanvas:', error);
       toast({
-        title: "Image Loaded!",
-        description: "Your photo is now ready for editing.",
-      });
-    }).catch((error) => {
-      console.error('Error loading image to canvas:', error);
-      toast({
-        title: "Error Loading Image",
-        description: "Failed to load your photo. Please try again.",
+        title: "Error",
+        description: "Failed to process your photo. Please try again.",
         variant: "destructive",
       });
-    });
+      setIsEditing(false);
+    }
   };
 
   const applyFilters = () => {
