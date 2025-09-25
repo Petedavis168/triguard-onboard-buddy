@@ -6,11 +6,42 @@ import { supabase } from '@/integrations/supabase/client';
 import { OnboardingFormData, GenderType, SizeType, ShoeSizeType } from '@/types/onboarding';
 import { toast } from '@/hooks/use-toast';
 
+// Profanity filter - list of inappropriate words/terms
+const inappropriateWords = [
+  'damn', 'hell', 'shit', 'fuck', 'bitch', 'ass', 'asshole', 'bastard', 'crap', 'piss',
+  'whore', 'slut', 'retard', 'idiot', 'stupid', 'dumb', 'moron', 'loser', 'freak',
+  'nazi', 'hitler', 'terrorist', 'kill', 'murder', 'death', 'suicide', 'bomb',
+  'drug', 'cocaine', 'heroin', 'meth', 'weed', 'marijuana', 'porn', 'sex', 'nude'
+];
+
+const isInappropriate = (text: string): boolean => {
+  const lowercaseText = text.toLowerCase().replace(/[^a-z]/g, '');
+  return inappropriateWords.some(word => lowercaseText.includes(word));
+};
+
+// Phone number formatting helper
+const formatPhoneNumber = (value: string): string => {
+  const digits = value.replace(/\D/g, '');
+  if (digits.length === 0) return '';
+  if (digits.length <= 3) return `(${digits}`;
+  if (digits.length <= 6) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+  return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6, 10)}`;
+};
+
 const onboardingSchema = z.object({
   first_name: z.string().min(1, 'First name is required'),
   last_name: z.string().min(1, 'Last name is required'),
-  nickname: z.string().optional(),
-  cell_phone: z.string().min(1, 'Cell phone number is required'),
+  nickname: z.string()
+    .max(30, "Nickname must be less than 30 characters")
+    .optional()
+    .or(z.literal(''))
+    .refine((val) => !val || !isInappropriate(val), {
+      message: "Nickname contains inappropriate content. Please choose a different nickname."
+    }),
+  cell_phone: z.string()
+    .min(1, 'Cell phone number is required')
+    .transform((val) => val.replace(/\D/g, '')) // Remove all non-digits for validation
+    .refine((val) => val.length === 10, "Please enter a valid 10-digit phone number"),
   personal_email: z.string().email('Valid personal email is required'),
   street_address: z.string().min(1, 'Street address is required'),
   city: z.string().min(1, 'City is required'),
@@ -387,5 +418,6 @@ export const useOnboardingForm = (formId?: string) => {
     isLoading,
     generatedEmail,
     savedFormId,
+    formatPhoneNumber,
   };
 };

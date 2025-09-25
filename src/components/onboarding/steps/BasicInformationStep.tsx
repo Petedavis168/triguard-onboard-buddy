@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Mail, User, Sparkles, Phone, Clock, Globe } from 'lucide-react';
+import { useOnboardingForm } from '@/hooks/useOnboardingForm';
 
 interface BasicInformationStepProps {
   form: UseFormReturn<any>;
@@ -15,6 +16,7 @@ export const BasicInformationStep: React.FC<BasicInformationStepProps> = ({
   form, 
   generatedEmail 
 }) => {
+  const { formatPhoneNumber } = useOnboardingForm();
   return (
     <div className="space-y-6">
       <Card className="border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50">
@@ -94,8 +96,13 @@ export const BasicInformationStep: React.FC<BasicInformationStepProps> = ({
                   <FormControl>
                     <Input 
                       placeholder="(555) 123-4567" 
-                      {...field} 
+                      value={field.value}
+                      onChange={(e) => {
+                        const formatted = formatPhoneNumber(e.target.value);
+                        field.onChange(formatted);
+                      }}
                       className="border-blue-200 focus:border-blue-400 focus:ring-blue-400"
+                      maxLength={14}
                     />
                   </FormControl>
                   <FormMessage />
