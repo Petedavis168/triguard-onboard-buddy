@@ -28,6 +28,8 @@ const onboardingSchema = z.object({
   manager_id: z.string().min(1, 'Please select a manager'),
   recruiter_id: z.string().min(1, 'Please select a recruiter'),
   w9_completed: z.boolean(),
+  voice_recording_url: z.string().optional(),
+  voice_recording_completed_at: z.string().optional(),
 }).refine((data) => {
   if (!data.same_as_mailing) {
     return data.shipping_street_address && data.shipping_city && data.shipping_state && data.shipping_zip_code;
@@ -317,7 +319,7 @@ export const useOnboardingForm = (formId?: string) => {
       const formData = form.getValues();
       const saveResult = await saveFormData(formData, currentStep + 1);
       if (saveResult.success) {
-        setCurrentStep(prev => Math.min(prev + 1, 7));
+        setCurrentStep(prev => Math.min(prev + 1, 9));
         toast({
           title: "Progress Saved",
           description: `Step ${currentStep} completed. Moving to step ${currentStep + 1}.`,
@@ -351,6 +353,12 @@ export const useOnboardingForm = (formId?: string) => {
         return ['team_id', 'manager_id', 'recruiter_id'];
       case 6:
         return ['w9_completed'];
+      case 7:
+        return []; // Voice recording is optional but encouraged
+      case 8:
+        return []; // Task acknowledgment is optional
+      case 9:
+        return []; // Review step
       default:
         return [];
     }

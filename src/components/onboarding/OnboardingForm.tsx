@@ -16,6 +16,8 @@ import { GearSizingStep } from './steps/GearSizingStep';
 import { BadgePhotoStep } from './steps/BadgePhotoStep';
 import { TeamAssignmentStep } from './steps/TeamAssignmentStep';
 import { W9FormStep } from './steps/W9FormStep';
+import VoicePitchStep from './steps/VoicePitchStep';
+import TaskAcknowledgmentStep from './steps/TaskAcknowledgmentStep';
 import { ReviewSubmitStep } from './steps/ReviewSubmitStep';
 
 interface OnboardingFormProps {
@@ -63,6 +65,10 @@ export const OnboardingForm: React.FC<OnboardingFormProps> = ({ formId }) => {
       case 6:
         return <W9FormStep form={form} />;
       case 7:
+        return <VoicePitchStep form={form} />;
+      case 8:
+        return <TaskAcknowledgmentStep form={form} />;
+      case 9:
         return <ReviewSubmitStep form={form} generatedEmail={generatedEmail} onSubmit={submitForm} />;
       default:
         return null;
@@ -171,7 +177,7 @@ export const OnboardingForm: React.FC<OnboardingFormProps> = ({ formId }) => {
 
         {/* Admin Access */}
         <div className="flex justify-center mt-6">
-          <Link to="/admin">
+          <Link to="/admin-login">
             <Button variant="outline" size="sm" className="gap-2">
               <Settings className="h-4 w-4" />
               Admin Dashboard

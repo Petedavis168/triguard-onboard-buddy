@@ -1,14 +1,36 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ChevronLeft, Users, Building, UserCheck, FileText, Settings } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { ChevronLeft, Users, Building, UserCheck, FileText, Settings, LogOut, ListTodo } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import { UserManagement } from '@/components/admin/UserManagement';
 import { ManagerManagement } from '@/components/admin/ManagerManagement';
 import { TeamManagement } from '@/components/admin/TeamManagement';
 import { OnboardingManagement } from '@/components/admin/OnboardingManagement';
+import TaskManagement from '@/components/admin/TaskManagement';
+import { useToast } from '@/components/ui/use-toast';
 
 export const Admin: React.FC = () => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    // Check if admin is authenticated
+    const isAuthenticated = localStorage.getItem('adminAuthenticated');
+    if (!isAuthenticated) {
+      navigate('/admin-login');
+    }
+  }, [navigate]);
+
+  const handleLogout = () => {
+    localStorage.removeItem('adminAuthenticated');
+    localStorage.removeItem('adminEmail');
+    toast({
+      title: "Logged Out",
+      description: "You have been successfully logged out",
+    });
+    navigate('/admin-login');
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 p-4">
@@ -19,18 +41,24 @@ export const Admin: React.FC = () => {
             <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
             <p className="text-gray-600 mt-1">TriGuard Roofing - Complete Management System</p>
           </div>
-          <Link to="/">
-            <Button variant="outline" className="flex items-center gap-2">
-              <ChevronLeft className="h-4 w-4" />
-              Back to Home
+          <div className="flex gap-2">
+            <Link to="/">
+              <Button variant="outline" className="flex items-center gap-2">
+                <ChevronLeft className="h-4 w-4" />
+                Back to Home
+              </Button>
+            </Link>
+            <Button variant="outline" onClick={handleLogout} className="flex items-center gap-2">
+              <LogOut className="h-4 w-4" />
+              Logout
             </Button>
-          </Link>
+          </div>
         </div>
 
         {/* Main Content */}
         <div className="bg-white shadow-xl rounded-lg">
           <Tabs defaultValue="onboarding" className="w-full">
-            <TabsList className="grid w-full grid-cols-5 rounded-none border-b">
+            <TabsList className="grid w-full grid-cols-6 rounded-none border-b">
               <TabsTrigger value="onboarding" className="flex items-center gap-2">
                 <FileText className="h-4 w-4" />
                 Onboarding
@@ -46,6 +74,10 @@ export const Admin: React.FC = () => {
               <TabsTrigger value="teams" className="flex items-center gap-2">
                 <Building className="h-4 w-4" />
                 Teams
+              </TabsTrigger>
+              <TabsTrigger value="tasks" className="flex items-center gap-2">
+                <ListTodo className="h-4 w-4" />
+                Tasks
               </TabsTrigger>
               <TabsTrigger value="overview" className="flex items-center gap-2">
                 <Users className="h-4 w-4" />
@@ -70,6 +102,10 @@ export const Admin: React.FC = () => {
                 <TeamManagement />
               </TabsContent>
               
+              <TabsContent value="tasks" className="mt-0">
+                <TaskManagement />
+              </TabsContent>
+              
               <TabsContent value="overview" className="mt-0">
                 <div className="space-y-6">
                   <div className="text-center py-12">
@@ -85,7 +121,7 @@ export const Admin: React.FC = () => {
                     <div className="text-center p-6 bg-blue-50 rounded-lg">
                       <FileText className="h-12 w-12 text-blue-600 mx-auto mb-3" />
                       <h4 className="font-semibold text-gray-900 mb-2">Onboarding System</h4>
-                      <p className="text-sm text-gray-600">Track employee progress through the 7-step onboarding process</p>
+                      <p className="text-sm text-gray-600">Track employee progress through the 9-step onboarding process</p>
                     </div>
                     
                     <div className="text-center p-6 bg-green-50 rounded-lg">

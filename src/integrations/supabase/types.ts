@@ -141,6 +141,8 @@ export type Database = {
           submitted_at: string | null
           team_id: string | null
           updated_at: string
+          voice_recording_completed_at: string | null
+          voice_recording_url: string | null
           w9_completed: boolean
           w9_submitted_at: string | null
           zip_code: string
@@ -173,6 +175,8 @@ export type Database = {
           submitted_at?: string | null
           team_id?: string | null
           updated_at?: string
+          voice_recording_completed_at?: string | null
+          voice_recording_url?: string | null
           w9_completed?: boolean
           w9_submitted_at?: string | null
           zip_code: string
@@ -205,6 +209,8 @@ export type Database = {
           submitted_at?: string | null
           team_id?: string | null
           updated_at?: string
+          voice_recording_completed_at?: string | null
+          voice_recording_url?: string | null
           w9_completed?: boolean
           w9_submitted_at?: string | null
           zip_code?: string
@@ -266,6 +272,96 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      task_assignments: {
+        Row: {
+          acknowledged_at: string | null
+          created_at: string
+          id: string
+          onboarding_form_id: string | null
+          task_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          acknowledged_at?: string | null
+          created_at?: string
+          id?: string
+          onboarding_form_id?: string | null
+          task_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          acknowledged_at?: string | null
+          created_at?: string
+          id?: string
+          onboarding_form_id?: string | null
+          task_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "task_assignments_onboarding_form_id_fkey"
+            columns: ["onboarding_form_id"]
+            isOneToOne: false
+            referencedRelation: "onboarding_forms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "task_assignments_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tasks: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          manager_id: string | null
+          team_id: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          manager_id?: string | null
+          team_id?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          manager_id?: string | null
+          team_id?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tasks_manager_id_fkey"
+            columns: ["manager_id"]
+            isOneToOne: false
+            referencedRelation: "managers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tasks_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       teams: {
         Row: {

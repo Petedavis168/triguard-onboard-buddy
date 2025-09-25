@@ -63,6 +63,10 @@ export interface OnboardingFormData {
   w9_completed: boolean;
   w9_submitted_at?: string;
   
+  // Voice Recording
+  voice_recording_url?: string;
+  voice_recording_completed_at?: string;
+  
   // Form Status
   status: FormStatusType;
   current_step: number;
@@ -75,7 +79,9 @@ export const FORM_STEPS = [
   { id: 4, title: 'Badge Photo', description: 'Upload and edit your badge photo' },
   { id: 5, title: 'Team Assignment', description: 'Select team, manager, and recruiter' },
   { id: 6, title: 'W9 Form', description: 'Complete tax documentation' },
-  { id: 7, title: 'Review & Submit', description: 'Review and submit your application' },
+  { id: 7, title: 'Voice Pitch', description: 'Record your pitch to join our team' },
+  { id: 8, title: 'Task Acknowledgment', description: 'Review and acknowledge your tasks' },
+  { id: 9, title: 'Review & Submit', description: 'Review and submit your application' },
 ];
 
 export const SIZE_OPTIONS: { value: SizeType; label: string }[] = [
