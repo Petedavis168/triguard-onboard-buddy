@@ -283,11 +283,18 @@ export const useOnboardingForm = (formId?: string) => {
           .update(updateData)
           .eq('id', savedFormId)
           .select()
-          .single();
+          .maybeSingle();
 
         if (error) {
+          console.error('Error updating form:', error);
           throw error;
         }
+        
+        if (!updatedForm) {
+          console.warn('No form found with ID:', savedFormId);
+          throw new Error('Form not found for update');
+        }
+        
         result = updatedForm;
       } else {
         // Create new form - need all required fields
