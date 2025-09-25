@@ -38,6 +38,11 @@ export const ReviewSubmitStep: React.FC<ReviewSubmitStepProps> = ({
   };
 
   if (isSubmitted) {
+    // Redirect to triguardhr.thspros.com after 3 seconds
+    setTimeout(() => {
+      window.location.href = 'https://triguardhr.thspros.com';
+    }, 3000);
+
     return (
       <div className="text-center space-y-6">
         <div className="flex justify-center">
@@ -51,6 +56,9 @@ export const ReviewSubmitStep: React.FC<ReviewSubmitStepProps> = ({
             Thank you for completing your onboarding application. 
             You and your manager will receive confirmation emails shortly.
           </p>
+          <p className="text-sm text-muted-foreground mt-2">
+            Redirecting you back to the HR portal in 3 seconds...
+          </p>
         </div>
         <Alert>
           <CheckCircle className="h-4 w-4" />
@@ -59,6 +67,14 @@ export const ReviewSubmitStep: React.FC<ReviewSubmitStepProps> = ({
             and provide your work schedule. Please check your email regularly for updates.
           </AlertDescription>
         </Alert>
+        <div className="pt-4">
+          <Button 
+            onClick={() => window.location.href = 'https://triguardhr.thspros.com'}
+            className="gap-2"
+          >
+            Return to HR Portal Now
+          </Button>
+        </div>
       </div>
     );
   }

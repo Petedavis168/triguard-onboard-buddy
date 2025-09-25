@@ -3,10 +3,11 @@ import { Form } from '@/components/ui/form';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight, Save } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Save, Settings } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { useOnboardingForm } from '@/hooks/useOnboardingForm';
 import { FORM_STEPS } from '@/types/onboarding';
+import { Link } from 'react-router-dom';
 
 // Import step components
 import { BasicInformationStep } from './steps/BasicInformationStep';
@@ -167,6 +168,16 @@ export const OnboardingForm: React.FC<OnboardingFormProps> = ({ formId }) => {
             </Form>
           </CardContent>
         </Card>
+
+        {/* Admin Access */}
+        <div className="flex justify-center mt-6">
+          <Link to="/admin">
+            <Button variant="outline" size="sm" className="gap-2">
+              <Settings className="h-4 w-4" />
+              Admin Dashboard
+            </Button>
+          </Link>
+        </div>
 
         {/* Footer */}
         <div className="text-center mt-8 text-sm text-gray-500">
