@@ -4,11 +4,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ChevronLeft, Users, Building, UserCheck, FileText, Settings, LogOut, ListTodo, UserPlus } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { UserManagement } from '@/components/admin/UserManagement';
+import { TeamManagement } from '@/components/admin/TeamManagement';
+import TaskManagement from '@/components/admin/TaskManagement';
+import OnboardingManagement from '@/components/admin/OnboardingManagement';
 import { ManagerManagement } from '@/components/admin/ManagerManagement';
 import { RecruiterManagement } from '@/components/admin/RecruiterManagement';
-import { TeamManagement } from '@/components/admin/TeamManagement';
-import OnboardingManagement from '@/components/admin/OnboardingManagement';
-import TaskManagement from '@/components/admin/TaskManagement';
+import ApiIntegration from '@/components/admin/ApiIntegration';
 import { useToast } from '@/components/ui/use-toast';
 
 export const Admin: React.FC = () => {
@@ -72,10 +73,14 @@ export const Admin: React.FC = () => {
                 <UserCheck className="h-4 w-4" />
                 Managers
               </TabsTrigger>
-              <TabsTrigger value="recruiters" className="flex items-center gap-2">
-                <UserPlus className="h-4 w-4" />
-                Recruiters
-              </TabsTrigger>
+          <TabsTrigger value="recruiters" className="flex items-center gap-2">
+            <UserPlus className="h-4 w-4" />
+            Recruiters
+          </TabsTrigger>
+          <TabsTrigger value="api" className="flex items-center gap-2">
+            <Settings className="h-4 w-4" />
+            API Integration
+          </TabsTrigger>
               <TabsTrigger value="teams" className="flex items-center gap-2">
                 <Building className="h-4 w-4" />
                 Teams
@@ -103,9 +108,13 @@ export const Admin: React.FC = () => {
                 <ManagerManagement />
               </TabsContent>
               
-              <TabsContent value="recruiters" className="mt-0">
-                <RecruiterManagement />
-              </TabsContent>
+        <TabsContent value="recruiters">
+          <RecruiterManagement />
+        </TabsContent>
+
+        <TabsContent value="api">
+          <ApiIntegration />
+        </TabsContent>
               
               <TabsContent value="teams" className="mt-0">
                 <TeamManagement />

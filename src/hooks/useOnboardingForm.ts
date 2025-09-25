@@ -344,6 +344,31 @@ export const useOnboardingForm = (formId?: string) => {
       }
 
       console.log('Form saved successfully:', result);
+
+      // Send webhook for step completion (skip for initial save)
+      if (step > 1) {
+        try {
+          await supabase.functions.invoke('webhook-integration', {
+            body: {
+              event_type: 'onboarding.step_completed',
+              webhook_url: 'https://your-app.com/webhooks/triguard', // This should be configurable
+              data: {
+                form_id: result.id,
+                step_completed: step,
+                employee_data: {
+                  name: `${data.first_name || ''} ${data.last_name || ''}`,
+                  email: emailToSave || data.personal_email,
+                  current_step: step,
+                  status: result.status
+                }
+              }
+            }
+          });
+        } catch (webhookError) {
+          console.log('Webhook notification failed (non-critical):', webhookError);
+        }
+      }
+
       return { success: true, email: emailToSave, formId: result.id };
       
     } catch (error) {
@@ -391,6 +416,48 @@ export const useOnboardingForm = (formId?: string) => {
 
       if (response.error) {
         console.error('Error sending notifications:', response.error);
+      }
+
+      // Send completion webhook
+      try {
+        await supabase.functions.invoke('webhook-integration', {
+          body: {
+            event_type: 'onboarding.completed',
+            webhook_url: 'https://your-app.com/webhooks/triguard', // This should be configurable
+            data: {
+              form_id: saveResult.formId,
+              employee_data: {
+                name: `${data.first_name} ${data.last_name}`,
+                email: saveResult.email,
+                generated_email: generatedEmail,
+                personal_email: data.personal_email,
+                address: {
+                  street: data.street_address,
+                  city: data.city,
+                  state: data.state,
+                  zip: data.zip_code
+                },
+                gear_sizes: {
+                  shirt: data.shirt_size,
+                  coat: data.coat_size,
+                  pants: data.pant_size,
+                  shoes: data.shoe_size,
+                  hat: data.hat_size
+                },
+                team_id: data.team_id,
+                manager_id: data.manager_id,
+                recruiter_id: data.recruiter_id,
+                w9_completed: data.w9_completed,
+                documents_uploaded: Boolean(data.social_security_card_url && data.drivers_license_url),
+                direct_deposit_setup: Boolean(data.direct_deposit_confirmed),
+                submitted_at: new Date().toISOString()
+              }
+            }
+          }
+        });
+        console.log('Completion webhook sent successfully');
+      } catch (webhookError) {
+        console.log('Webhook notification failed (non-critical):', webhookError);
       }
 
       toast({
