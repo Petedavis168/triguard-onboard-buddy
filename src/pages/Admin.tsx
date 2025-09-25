@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ChevronLeft, Users, Building, UserCheck, FileText, Settings, LogOut, ListTodo } from 'lucide-react';
+import { ChevronLeft, Users, Building, UserCheck, FileText, Settings, LogOut, ListTodo, UserPlus } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { UserManagement } from '@/components/admin/UserManagement';
 import { ManagerManagement } from '@/components/admin/ManagerManagement';
+import { RecruiterManagement } from '@/components/admin/RecruiterManagement';
 import { TeamManagement } from '@/components/admin/TeamManagement';
 import OnboardingManagement from '@/components/admin/OnboardingManagement';
 import TaskManagement from '@/components/admin/TaskManagement';
@@ -58,7 +59,7 @@ export const Admin: React.FC = () => {
         {/* Main Content */}
         <div className="bg-white shadow-xl rounded-lg">
           <Tabs defaultValue="onboarding" className="w-full">
-            <TabsList className="grid w-full grid-cols-6 rounded-none border-b">
+            <TabsList className="grid w-full grid-cols-7 rounded-none border-b">
               <TabsTrigger value="onboarding" className="flex items-center gap-2">
                 <FileText className="h-4 w-4" />
                 Onboarding
@@ -70,6 +71,10 @@ export const Admin: React.FC = () => {
               <TabsTrigger value="managers" className="flex items-center gap-2">
                 <UserCheck className="h-4 w-4" />
                 Managers
+              </TabsTrigger>
+              <TabsTrigger value="recruiters" className="flex items-center gap-2">
+                <UserPlus className="h-4 w-4" />
+                Recruiters
               </TabsTrigger>
               <TabsTrigger value="teams" className="flex items-center gap-2">
                 <Building className="h-4 w-4" />
@@ -96,6 +101,10 @@ export const Admin: React.FC = () => {
               
               <TabsContent value="managers" className="mt-0">
                 <ManagerManagement />
+              </TabsContent>
+              
+              <TabsContent value="recruiters" className="mt-0">
+                <RecruiterManagement />
               </TabsContent>
               
               <TabsContent value="teams" className="mt-0">
@@ -128,6 +137,12 @@ export const Admin: React.FC = () => {
                       <UserCheck className="h-12 w-12 text-green-600 mx-auto mb-3" />
                       <h4 className="font-semibold text-gray-900 mb-2">Manager Network</h4>
                       <p className="text-sm text-gray-600">Manage team leaders and their contact information</p>
+                    </div>
+                    
+                    <div className="text-center p-6 bg-orange-50 rounded-lg">
+                      <UserPlus className="h-12 w-12 text-orange-600 mx-auto mb-3" />
+                      <h4 className="font-semibold text-gray-900 mb-2">Recruiter Network</h4>
+                      <p className="text-sm text-gray-600">Manage talent acquisition team and recruitment activities</p>
                     </div>
                     
                     <div className="text-center p-6 bg-purple-50 rounded-lg">
