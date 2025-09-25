@@ -35,7 +35,13 @@ export const Home: React.FC = () => {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
-              <Link to="/admin">
+              <Link to="/manager-login">
+                <Button variant="outline" size="lg" className="px-8 py-3 text-lg border-green-200 hover:border-green-300">
+                  <Users className="mr-2 h-5 w-5" />
+                  Manager Portal
+                </Button>
+              </Link>
+              <Link to="/admin-login">
                 <Button variant="outline" size="lg" className="px-8 py-3 text-lg border-blue-200 hover:border-blue-300">
                   <Settings className="mr-2 h-5 w-5" />
                   Admin Dashboard
@@ -135,11 +141,11 @@ export const Home: React.FC = () => {
       <div className="bg-white py-16">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Simple 7-Step Process</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Simple 9-Step Process</h2>
             <p className="text-gray-600 text-lg">Complete your onboarding in just a few minutes</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-9 gap-2">
             {[
               { step: 1, title: 'Basic Info', icon: Users },
               { step: 2, title: 'Address', icon: FileText },
@@ -147,14 +153,16 @@ export const Home: React.FC = () => {
               { step: 4, title: 'Badge Photo', icon: Users },
               { step: 5, title: 'Team', icon: Users },
               { step: 6, title: 'W-9 Form', icon: FileText },
-              { step: 7, title: 'Submit', icon: CheckCircle },
+              { step: 7, title: 'Voice Pitch', icon: Mail },
+              { step: 8, title: 'Tasks', icon: CheckCircle },
+              { step: 9, title: 'Submit', icon: CheckCircle },
             ].map(({ step, title, icon: Icon }, index) => (
               <div key={step} className="text-center">
                 <div className="relative">
                   <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
                     <Icon className="h-6 w-6 text-blue-600" />
                   </div>
-                  {index < 6 && (
+                  {index < 8 && (
                     <div className="hidden md:block absolute top-6 left-12 w-full h-0.5 bg-blue-200"></div>
                   )}
                 </div>

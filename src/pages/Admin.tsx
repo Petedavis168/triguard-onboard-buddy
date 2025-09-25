@@ -6,7 +6,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { UserManagement } from '@/components/admin/UserManagement';
 import { ManagerManagement } from '@/components/admin/ManagerManagement';
 import { TeamManagement } from '@/components/admin/TeamManagement';
-import { OnboardingManagement } from '@/components/admin/OnboardingManagement';
+import OnboardingManagement from '@/components/admin/OnboardingManagement';
 import TaskManagement from '@/components/admin/TaskManagement';
 import { useToast } from '@/components/ui/use-toast';
 
