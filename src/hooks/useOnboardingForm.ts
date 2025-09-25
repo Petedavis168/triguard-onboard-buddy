@@ -124,33 +124,112 @@ export const useOnboardingForm = (formId?: string) => {
       // Generate email if moving past step 1 and no email exists
       let emailToSave = generatedEmail;
       if (step > 1 && !generatedEmail && data.first_name && data.last_name) {
-        emailToSave = await generateEmail(data.first_name, data.last_name);
-        setGeneratedEmail(emailToSave);
+        try {
+          emailToSave = await generateEmail(data.first_name, data.last_name);
+          setGeneratedEmail(emailToSave);
+        } catch (emailError) {
+          console.error('Failed to generate email:', emailError);
+          // Continue without email - it can be generated later
+        }
       }
 
-      const formData = {
-        ...data,
-        generated_email: emailToSave,
+      // Only save specific fields based on current step to avoid validation issues
+      const updateData: any = {
         current_step: step,
-        status: step === 7 ? 'submitted' : 'in_progress',
-        submitted_at: step === 7 ? new Date().toISOString() : null,
+        status: (step >= 7 ? 'submitted' : step > 1 ? 'in_progress' : 'draft') as 'draft' | 'in_progress' | 'completed' | 'submitted',
+        updated_at: new Date().toISOString(),
       };
 
+      if (emailToSave) {
+        updateData.generated_email = emailToSave;
+      }
+
+      if (step >= 7) {
+        updateData.submitted_at = new Date().toISOString();
+      }
+
+      // Add step-specific fields
+      if (step >= 1 && data.first_name && data.last_name) {
+        updateData.first_name = data.first_name;
+        updateData.last_name = data.last_name;
+      }
+
+      if (step >= 2) {
+        if (data.street_address) updateData.street_address = data.street_address;
+        if (data.city) updateData.city = data.city;
+        if (data.state) updateData.state = data.state;
+        if (data.zip_code) updateData.zip_code = data.zip_code;
+        if (data.same_as_mailing !== undefined) updateData.same_as_mailing = data.same_as_mailing;
+        if (data.shipping_street_address) updateData.shipping_street_address = data.shipping_street_address;
+        if (data.shipping_city) updateData.shipping_city = data.shipping_city;
+        if (data.shipping_state) updateData.shipping_state = data.shipping_state;
+        if (data.shipping_zip_code) updateData.shipping_zip_code = data.shipping_zip_code;
+      }
+
+      if (step >= 3) {
+        if (data.gender) updateData.gender = data.gender;
+        if (data.shirt_size) updateData.shirt_size = data.shirt_size;
+        if (data.coat_size) updateData.coat_size = data.coat_size;
+        if (data.pant_size) updateData.pant_size = data.pant_size;
+        if (data.shoe_size) updateData.shoe_size = data.shoe_size;
+        if (data.hat_size) updateData.hat_size = data.hat_size;
+      }
+
+      if (step >= 4 && data.badge_photo_url) {
+        updateData.badge_photo_url = data.badge_photo_url;
+      }
+
+      if (step >= 5) {
+        if (data.team_id) updateData.team_id = data.team_id;
+        if (data.manager_id) updateData.manager_id = data.manager_id;
+        if (data.recruiter_id) updateData.recruiter_id = data.recruiter_id;
+      }
+
+      if (step >= 6) {
+        if (data.w9_completed !== undefined) updateData.w9_completed = data.w9_completed;
+        if (data.w9_submitted_at) updateData.w9_submitted_at = data.w9_submitted_at;
+      }
+
+      let result;
       if (savedFormId) {
         // Update existing form
-        const { error } = await supabase
+        const { data: updatedForm, error } = await supabase
           .from('onboarding_forms')
-          .update(formData)
-          .eq('id', savedFormId);
+          .update(updateData)
+          .eq('id', savedFormId)
+          .select()
+          .single();
 
         if (error) {
           throw error;
         }
+        result = updatedForm;
       } else {
-        // Create new form
+        // Create new form - need all required fields
+        const insertData = {
+          first_name: data.first_name || '',
+          last_name: data.last_name || '',
+          street_address: data.street_address || '',
+          city: data.city || '',
+          state: data.state || '',
+          zip_code: data.zip_code || '',
+          same_as_mailing: data.same_as_mailing ?? true,
+          gender: data.gender || 'male',
+          shirt_size: data.shirt_size || 'm',
+          coat_size: data.coat_size || 'm',
+          pant_size: data.pant_size || 'm',
+          shoe_size: data.shoe_size || '9',
+          hat_size: data.hat_size || 'm',
+          team_id: data.team_id || null,
+          manager_id: data.manager_id || null,
+          recruiter_id: data.recruiter_id || null,
+          w9_completed: data.w9_completed || false,
+          ...updateData,
+        };
+
         const { data: newForm, error } = await supabase
           .from('onboarding_forms')
-          .insert(formData)
+          .insert(insertData)
           .select()
           .single();
 
@@ -159,14 +238,12 @@ export const useOnboardingForm = (formId?: string) => {
         }
 
         setSavedFormId(newForm.id);
+        result = newForm;
       }
 
-      toast({
-        title: "Progress Saved",
-        description: "Your form has been saved successfully.",
-      });
-
-      return { success: true, email: emailToSave };
+      console.log('Form saved successfully:', result);
+      return { success: true, email: emailToSave, formId: result.id };
+      
     } catch (error) {
       console.error('Error saving form:', error);
       toast({
@@ -232,18 +309,51 @@ export const useOnboardingForm = (formId?: string) => {
   };
 
   const nextStep = async () => {
-    const isValid = await form.trigger();
+    // Get current step fields for validation
+    const stepFields = getStepFields(currentStep);
+    const isValid = await form.trigger(stepFields);
+    
     if (isValid) {
       const formData = form.getValues();
       const saveResult = await saveFormData(formData, currentStep + 1);
       if (saveResult.success) {
         setCurrentStep(prev => Math.min(prev + 1, 7));
+        toast({
+          title: "Progress Saved",
+          description: `Step ${currentStep} completed. Moving to step ${currentStep + 1}.`,
+        });
       }
+    } else {
+      toast({
+        title: "Please Complete Required Fields",
+        description: "Fill in all required fields before continuing.",
+        variant: "destructive",
+      });
     }
   };
 
   const prevStep = () => {
     setCurrentStep(prev => Math.max(prev - 1, 1));
+  };
+
+  // Helper function to get fields for current step validation
+  const getStepFields = (step: number): (keyof z.infer<typeof onboardingSchema>)[] => {
+    switch (step) {
+      case 1:
+        return ['first_name', 'last_name'];
+      case 2:
+        return ['street_address', 'city', 'state', 'zip_code'];
+      case 3:
+        return ['gender', 'shirt_size', 'coat_size', 'pant_size', 'shoe_size', 'hat_size'];
+      case 4:
+        return []; // Badge photo is optional
+      case 5:
+        return ['team_id', 'manager_id', 'recruiter_id'];
+      case 6:
+        return ['w9_completed'];
+      default:
+        return [];
+    }
   };
 
   return {

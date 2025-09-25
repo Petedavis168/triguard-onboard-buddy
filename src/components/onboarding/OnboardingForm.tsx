@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight, Save } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
 import { useOnboardingForm } from '@/hooks/useOnboardingForm';
 import { FORM_STEPS } from '@/types/onboarding';
 
@@ -37,7 +38,13 @@ export const OnboardingForm: React.FC<OnboardingFormProps> = ({ formId }) => {
 
   const handleSave = async () => {
     const formData = form.getValues();
-    await saveFormData(formData, currentStep);
+    const result = await saveFormData(formData, currentStep);
+    if (result.success) {
+      toast({
+        title: "Progress Saved",
+        description: "Your form has been saved successfully. You can continue later from where you left off.",
+      });
+    }
   };
 
   const renderCurrentStep = () => {
