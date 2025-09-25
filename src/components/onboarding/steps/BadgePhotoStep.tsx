@@ -54,7 +54,7 @@ export const BadgePhotoStep: React.FC<BadgePhotoStepProps> = ({ form }) => {
         canvas.dispose();
       };
     }
-  }, [canvasRef.current]);
+  }, []);
 
   const analyzePhotoQuality = (imageElement: HTMLImageElement): PhotoQualityIssue[] => {
     const issues: PhotoQualityIssue[] = [];
@@ -164,7 +164,8 @@ export const BadgePhotoStep: React.FC<BadgePhotoStepProps> = ({ form }) => {
 
   const loadImageToCanvas = (imageElement: HTMLImageElement) => {
     if (!fabricCanvas) {
-      console.log('Canvas not ready');
+      console.log('Canvas not ready, retrying in 100ms');
+      setTimeout(() => loadImageToCanvas(imageElement), 100);
       return;
     }
 
