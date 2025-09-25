@@ -29,6 +29,9 @@ export interface OnboardingFormData {
   first_name: string;
   last_name: string;
   generated_email?: string;
+  nickname?: string;
+  cell_phone?: string;
+  personal_email?: string;
   
   // Address
   street_address: string;

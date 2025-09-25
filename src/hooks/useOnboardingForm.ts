@@ -9,6 +9,9 @@ import { toast } from '@/hooks/use-toast';
 const onboardingSchema = z.object({
   first_name: z.string().min(1, 'First name is required'),
   last_name: z.string().min(1, 'Last name is required'),
+  nickname: z.string().optional(),
+  cell_phone: z.string().min(1, 'Cell phone number is required'),
+  personal_email: z.string().email('Valid personal email is required'),
   street_address: z.string().min(1, 'Street address is required'),
   city: z.string().min(1, 'City is required'),
   state: z.string().min(1, 'State is required'),
@@ -51,6 +54,9 @@ export const useOnboardingForm = (formId?: string) => {
     defaultValues: {
       first_name: '',
       last_name: '',
+      nickname: '',
+      cell_phone: '',
+      personal_email: '',
       street_address: '',
       city: '',
       state: '',
@@ -154,6 +160,9 @@ export const useOnboardingForm = (formId?: string) => {
       if (step >= 1 && data.first_name && data.last_name) {
         updateData.first_name = data.first_name;
         updateData.last_name = data.last_name;
+        if (data.nickname) updateData.nickname = data.nickname;
+        if (data.cell_phone) updateData.cell_phone = data.cell_phone;
+        if (data.personal_email) updateData.personal_email = data.personal_email;
       }
 
       if (step >= 2) {
@@ -211,6 +220,9 @@ export const useOnboardingForm = (formId?: string) => {
         const insertData = {
           first_name: data.first_name || '',
           last_name: data.last_name || '',
+          nickname: data.nickname || null,
+          cell_phone: data.cell_phone || '',
+          personal_email: data.personal_email || '',
           street_address: data.street_address || '',
           city: data.city || '',
           state: data.state || '',
@@ -342,7 +354,7 @@ export const useOnboardingForm = (formId?: string) => {
   const getStepFields = (step: number): (keyof z.infer<typeof onboardingSchema>)[] => {
     switch (step) {
       case 1:
-        return ['first_name', 'last_name'];
+        return ['first_name', 'last_name', 'cell_phone', 'personal_email'];
       case 2:
         return ['street_address', 'city', 'state', 'zip_code'];
       case 3:

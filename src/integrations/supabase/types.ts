@@ -115,6 +115,7 @@ export type Database = {
       onboarding_forms: {
         Row: {
           badge_photo_url: string | null
+          cell_phone: string | null
           city: string
           coat_size: Database["public"]["Enums"]["size_type"]
           created_at: string
@@ -126,7 +127,9 @@ export type Database = {
           id: string
           last_name: string
           manager_id: string | null
+          nickname: string | null
           pant_size: Database["public"]["Enums"]["size_type"]
+          personal_email: string | null
           recruiter_id: string | null
           same_as_mailing: boolean
           shipping_city: string | null
@@ -149,6 +152,7 @@ export type Database = {
         }
         Insert: {
           badge_photo_url?: string | null
+          cell_phone?: string | null
           city: string
           coat_size: Database["public"]["Enums"]["size_type"]
           created_at?: string
@@ -160,7 +164,9 @@ export type Database = {
           id?: string
           last_name: string
           manager_id?: string | null
+          nickname?: string | null
           pant_size: Database["public"]["Enums"]["size_type"]
+          personal_email?: string | null
           recruiter_id?: string | null
           same_as_mailing?: boolean
           shipping_city?: string | null
@@ -183,6 +189,7 @@ export type Database = {
         }
         Update: {
           badge_photo_url?: string | null
+          cell_phone?: string | null
           city?: string
           coat_size?: Database["public"]["Enums"]["size_type"]
           created_at?: string
@@ -194,7 +201,9 @@ export type Database = {
           id?: string
           last_name?: string
           manager_id?: string | null
+          nickname?: string | null
           pant_size?: Database["public"]["Enums"]["size_type"]
+          personal_email?: string | null
           recruiter_id?: string | null
           same_as_mailing?: boolean
           shipping_city?: string | null
