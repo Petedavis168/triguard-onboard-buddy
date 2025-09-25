@@ -399,8 +399,8 @@ export const ManagerManagement: React.FC = () => {
                                   <SelectValue placeholder="Select a team" />
                                 </SelectTrigger>
                               </FormControl>
-                              <SelectContent>
-                                <SelectItem value="">No Team</SelectItem>
+                               <SelectContent>
+                                <SelectItem value="no-team">No Team</SelectItem>
                                 {teams.map((team) => (
                                   <SelectItem key={team.id} value={team.id}>
                                     {team.name}
