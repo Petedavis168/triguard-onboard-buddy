@@ -14,7 +14,283 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      admin_users: {
+        Row: {
+          created_at: string
+          email: string
+          first_name: string
+          id: string
+          is_active: boolean
+          last_name: string
+          password_hash: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          first_name: string
+          id?: string
+          is_active?: boolean
+          last_name: string
+          password_hash: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          first_name?: string
+          id?: string
+          is_active?: boolean
+          last_name?: string
+          password_hash?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      email_addresses: {
+        Row: {
+          created_at: string
+          email: string
+          first_name: string
+          id: string
+          is_active: boolean
+          last_name: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          first_name: string
+          id?: string
+          is_active?: boolean
+          last_name: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          first_name?: string
+          id?: string
+          is_active?: boolean
+          last_name?: string
+        }
+        Relationships: []
+      }
+      managers: {
+        Row: {
+          created_at: string
+          email: string
+          first_name: string
+          id: string
+          last_name: string
+          team_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          first_name: string
+          id?: string
+          last_name: string
+          team_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          first_name?: string
+          id?: string
+          last_name?: string
+          team_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "managers_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      onboarding_forms: {
+        Row: {
+          badge_photo_url: string | null
+          city: string
+          coat_size: Database["public"]["Enums"]["size_type"]
+          created_at: string
+          current_step: number
+          first_name: string
+          gender: Database["public"]["Enums"]["gender_type"]
+          generated_email: string | null
+          hat_size: Database["public"]["Enums"]["size_type"]
+          id: string
+          last_name: string
+          manager_id: string | null
+          pant_size: Database["public"]["Enums"]["size_type"]
+          recruiter_id: string | null
+          same_as_mailing: boolean
+          shipping_city: string | null
+          shipping_state: string | null
+          shipping_street_address: string | null
+          shipping_zip_code: string | null
+          shirt_size: Database["public"]["Enums"]["size_type"]
+          shoe_size: Database["public"]["Enums"]["shoe_size_type"]
+          state: string
+          status: Database["public"]["Enums"]["form_status_type"]
+          street_address: string
+          submitted_at: string | null
+          team_id: string | null
+          updated_at: string
+          w9_completed: boolean
+          w9_submitted_at: string | null
+          zip_code: string
+        }
+        Insert: {
+          badge_photo_url?: string | null
+          city: string
+          coat_size: Database["public"]["Enums"]["size_type"]
+          created_at?: string
+          current_step?: number
+          first_name: string
+          gender: Database["public"]["Enums"]["gender_type"]
+          generated_email?: string | null
+          hat_size: Database["public"]["Enums"]["size_type"]
+          id?: string
+          last_name: string
+          manager_id?: string | null
+          pant_size: Database["public"]["Enums"]["size_type"]
+          recruiter_id?: string | null
+          same_as_mailing?: boolean
+          shipping_city?: string | null
+          shipping_state?: string | null
+          shipping_street_address?: string | null
+          shipping_zip_code?: string | null
+          shirt_size: Database["public"]["Enums"]["size_type"]
+          shoe_size: Database["public"]["Enums"]["shoe_size_type"]
+          state: string
+          status?: Database["public"]["Enums"]["form_status_type"]
+          street_address: string
+          submitted_at?: string | null
+          team_id?: string | null
+          updated_at?: string
+          w9_completed?: boolean
+          w9_submitted_at?: string | null
+          zip_code: string
+        }
+        Update: {
+          badge_photo_url?: string | null
+          city?: string
+          coat_size?: Database["public"]["Enums"]["size_type"]
+          created_at?: string
+          current_step?: number
+          first_name?: string
+          gender?: Database["public"]["Enums"]["gender_type"]
+          generated_email?: string | null
+          hat_size?: Database["public"]["Enums"]["size_type"]
+          id?: string
+          last_name?: string
+          manager_id?: string | null
+          pant_size?: Database["public"]["Enums"]["size_type"]
+          recruiter_id?: string | null
+          same_as_mailing?: boolean
+          shipping_city?: string | null
+          shipping_state?: string | null
+          shipping_street_address?: string | null
+          shipping_zip_code?: string | null
+          shirt_size?: Database["public"]["Enums"]["size_type"]
+          shoe_size?: Database["public"]["Enums"]["shoe_size_type"]
+          state?: string
+          status?: Database["public"]["Enums"]["form_status_type"]
+          street_address?: string
+          submitted_at?: string | null
+          team_id?: string | null
+          updated_at?: string
+          w9_completed?: boolean
+          w9_submitted_at?: string | null
+          zip_code?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "onboarding_forms_generated_email_fkey"
+            columns: ["generated_email"]
+            isOneToOne: false
+            referencedRelation: "email_addresses"
+            referencedColumns: ["email"]
+          },
+          {
+            foreignKeyName: "onboarding_forms_manager_id_fkey"
+            columns: ["manager_id"]
+            isOneToOne: false
+            referencedRelation: "managers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "onboarding_forms_recruiter_id_fkey"
+            columns: ["recruiter_id"]
+            isOneToOne: false
+            referencedRelation: "recruiters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "onboarding_forms_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      recruiters: {
+        Row: {
+          created_at: string
+          email: string
+          first_name: string
+          id: string
+          last_name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          first_name: string
+          id?: string
+          last_name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          first_name?: string
+          id?: string
+          last_name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      teams: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +299,29 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      form_status_type: "draft" | "in_progress" | "completed" | "submitted"
+      gender_type: "male" | "female"
+      shoe_size_type:
+        | "6"
+        | "6.5"
+        | "7"
+        | "7.5"
+        | "8"
+        | "8.5"
+        | "9"
+        | "9.5"
+        | "10"
+        | "10.5"
+        | "11"
+        | "11.5"
+        | "12"
+        | "12.5"
+        | "13"
+        | "13.5"
+        | "14"
+        | "14.5"
+        | "15"
+      size_type: "xs" | "s" | "m" | "l" | "xl" | "xxl" | "xxxl"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +448,31 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      form_status_type: ["draft", "in_progress", "completed", "submitted"],
+      gender_type: ["male", "female"],
+      shoe_size_type: [
+        "6",
+        "6.5",
+        "7",
+        "7.5",
+        "8",
+        "8.5",
+        "9",
+        "9.5",
+        "10",
+        "10.5",
+        "11",
+        "11.5",
+        "12",
+        "12.5",
+        "13",
+        "13.5",
+        "14",
+        "14.5",
+        "15",
+      ],
+      size_type: ["xs", "s", "m", "l", "xl", "xxl", "xxxl"],
+    },
   },
 } as const
