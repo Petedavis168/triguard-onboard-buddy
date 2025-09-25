@@ -18,14 +18,14 @@ export const BasicInformationStep: React.FC<BasicInformationStepProps> = ({
 }) => {
   const { formatPhoneNumber } = useOnboardingForm();
   return (
-    <div className="space-y-6">
-      <Card className="border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50">
+    <div className="space-y-6 animate-fade-in">
+      <Card className="border-primary/20 bg-gradient-card shadow-soft hover-lift form-field-enhanced">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-blue-700">
+          <CardTitle className="flex items-center gap-2 text-primary">
             <User className="h-5 w-5" />
             Basic Information
           </CardTitle>
-          <p className="text-sm text-blue-600">
+          <p className="text-sm text-muted-foreground">
             Let's start with your basic information. We'll generate your company email automatically!
           </p>
         </CardHeader>
@@ -35,13 +35,13 @@ export const BasicInformationStep: React.FC<BasicInformationStepProps> = ({
               control={form.control}
               name="first_name"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-gray-700 font-medium">First Name *</FormLabel>
+                <FormItem className="form-field-enhanced">
+                  <FormLabel className="text-foreground font-medium">First Name *</FormLabel>
                   <FormControl>
                     <Input 
                       placeholder="Enter your first name" 
                       {...field} 
-                      className="border-blue-200 focus:border-blue-400 focus:ring-blue-400"
+                      className="border-input focus:border-primary focus:ring-primary/20 transition-all duration-200"
                     />
                   </FormControl>
                   <FormMessage />
@@ -53,13 +53,13 @@ export const BasicInformationStep: React.FC<BasicInformationStepProps> = ({
               control={form.control}
               name="last_name"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-gray-700 font-medium">Last Name *</FormLabel>
+                <FormItem className="form-field-enhanced">
+                  <FormLabel className="text-foreground font-medium">Last Name *</FormLabel>
                   <FormControl>
                     <Input 
                       placeholder="Enter your last name" 
                       {...field} 
-                      className="border-blue-200 focus:border-blue-400 focus:ring-blue-400"
+                      className="border-input focus:border-primary focus:ring-primary/20 transition-all duration-200"
                     />
                   </FormControl>
                   <FormMessage />
@@ -72,13 +72,13 @@ export const BasicInformationStep: React.FC<BasicInformationStepProps> = ({
             control={form.control}
             name="nickname"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-gray-700 font-medium">Nickname (Optional)</FormLabel>
+              <FormItem className="form-field-enhanced">
+                <FormLabel className="text-foreground font-medium">Nickname (Optional)</FormLabel>
                 <FormControl>
                   <Input 
                     placeholder="What would you prefer to be called?" 
                     {...field} 
-                    className="border-blue-200 focus:border-blue-400 focus:ring-blue-400"
+                    className="border-input focus:border-primary focus:ring-primary/20 transition-all duration-200"
                   />
                 </FormControl>
                 <FormMessage />
@@ -91,8 +91,8 @@ export const BasicInformationStep: React.FC<BasicInformationStepProps> = ({
               control={form.control}
               name="cell_phone"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-gray-700 font-medium">Cell Phone Number *</FormLabel>
+                <FormItem className="form-field-enhanced">
+                  <FormLabel className="text-foreground font-medium">Cell Phone Number *</FormLabel>
                   <FormControl>
                     <Input 
                       placeholder="(555) 123-4567" 
@@ -101,7 +101,7 @@ export const BasicInformationStep: React.FC<BasicInformationStepProps> = ({
                         const formatted = formatPhoneNumber(e.target.value);
                         field.onChange(formatted);
                       }}
-                      className="border-blue-200 focus:border-blue-400 focus:ring-blue-400"
+                      className="border-input focus:border-primary focus:ring-primary/20 transition-all duration-200"
                       maxLength={14}
                     />
                   </FormControl>
@@ -114,14 +114,14 @@ export const BasicInformationStep: React.FC<BasicInformationStepProps> = ({
               control={form.control}
               name="personal_email"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-gray-700 font-medium">Personal Email *</FormLabel>
+                <FormItem className="form-field-enhanced">
+                  <FormLabel className="text-foreground font-medium">Personal Email *</FormLabel>
                   <FormControl>
                     <Input 
                       type="email"
                       placeholder="your.personal@email.com" 
                       {...field} 
-                      className="border-blue-200 focus:border-blue-400 focus:ring-blue-400"
+                      className="border-input focus:border-primary focus:ring-primary/20 transition-all duration-200"
                     />
                   </FormControl>
                   <FormMessage />
@@ -131,38 +131,38 @@ export const BasicInformationStep: React.FC<BasicInformationStepProps> = ({
           </div>
 
           {generatedEmail && (
-            <div className="space-y-4">
-              <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg">
-                <div className="flex items-center gap-2 text-sm mb-2">
-                  <Sparkles className="h-4 w-4 text-green-600" />
-                  <span className="font-medium text-green-700">Your TriGuard Roofing Email Account:</span>
+            <div className="space-y-4 animate-slide-up">
+              <div className="p-6 bg-gradient-success rounded-xl border border-success/20 shadow-soft">
+                <div className="flex items-center gap-2 mb-4">
+                  <Sparkles className="h-5 w-5 text-success-foreground animate-pulse-glow" />
+                  <span className="font-semibold text-success-foreground">Your TriGuard Roofing Email Account:</span>
                 </div>
-                <div className="flex items-center gap-2 mb-2">
-                  <Mail className="h-5 w-5 text-green-600" />
-                  <Badge variant="secondary" className="bg-green-100 text-green-800 border-green-300">
+                <div className="flex items-center gap-3 mb-4">
+                  <Mail className="h-5 w-5 text-success-foreground" />
+                  <Badge variant="secondary" className="bg-white/90 text-success px-4 py-2 text-base font-medium">
                     {generatedEmail}
                   </Badge>
                 </div>
-                <div className="bg-white/80 p-3 rounded border border-green-200 space-y-2">
-                  <div className="flex items-center gap-2 text-sm">
-                    <span className="font-medium text-green-700">Temporary Password:</span>
-                    <code className="bg-green-100 px-2 py-1 rounded text-green-800 font-mono">Roofing2025!</code>
+                <div className="bg-white/95 p-4 rounded-lg border border-success/30 space-y-3">
+                  <div className="flex items-center gap-3">
+                    <span className="font-medium text-success">Temporary Password:</span>
+                    <code className="bg-success-light px-3 py-1.5 rounded text-success font-mono text-sm">Roofing2025!</code>
                   </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    <Globe className="h-4 w-4 text-green-600" />
-                    <span className="font-medium text-green-700">Access Link:</span>
+                  <div className="flex items-center gap-3">
+                    <Globe className="h-4 w-4 text-success" />
+                    <span className="font-medium text-success">Access Link:</span>
                     <a href="https://email.triguardroofing.com" target="_blank" rel="noopener noreferrer" 
-                       className="text-blue-600 hover:text-blue-800 underline">
+                       className="text-primary hover:text-primary-dark underline-offset-2 hover:underline transition-colors">
                       email.triguardroofing.com
                     </a>
                   </div>
                 </div>
-                <div className="mt-3 space-y-2">
-                  <div className="flex items-center gap-2 text-xs text-green-600">
-                    <Clock className="h-3 w-3" />
+                <div className="mt-4 space-y-2">
+                  <div className="flex items-center gap-2 text-sm text-success-foreground/90">
+                    <Clock className="h-4 w-4" />
                     <span>Account activation takes 24-48 hours</span>
                   </div>
-                  <p className="text-xs text-green-600">
+                  <p className="text-sm text-success-foreground/90">
                     <span className="font-medium">Watch for emails from:</span> RoofGraf, FinTurf, Lyon Financial, Acorn, and SalesDispatcher Tool
                   </p>
                 </div>
@@ -170,24 +170,24 @@ export const BasicInformationStep: React.FC<BasicInformationStepProps> = ({
             </div>
           )}
 
-          <div className="p-4 bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-200 rounded-lg">
-            <div className="flex items-start gap-3">
-              <div className="p-2 bg-indigo-100 rounded-full">
-                <User className="h-4 w-4 text-indigo-600" />
+          <div className="p-6 bg-gradient-secondary rounded-xl border border-primary/10 shadow-soft">
+            <div className="flex items-start gap-4">
+              <div className="p-3 bg-primary/10 rounded-full">
+                <User className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <p className="font-medium text-indigo-700 mb-2">What happens next:</p>
-                <ul className="space-y-1 text-sm text-indigo-600">
-                  <li className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full"></div>
+                <p className="font-semibold text-primary mb-3">What happens next:</p>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  <li className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
                     We'll generate a unique company email address for you
                   </li>
-                  <li className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full"></div>
+                  <li className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
                     Your information will be saved automatically as you progress
                   </li>
-                  <li className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full"></div>
+                  <li className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
                     You can return anytime to continue where you left off
                   </li>
                 </ul>

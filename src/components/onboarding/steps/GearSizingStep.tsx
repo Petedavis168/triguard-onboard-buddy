@@ -14,10 +14,10 @@ interface GearSizingStepProps {
 
 export const GearSizingStep: React.FC<GearSizingStepProps> = ({ form }) => {
   return (
-    <div className="space-y-6">
-      <Card>
+    <div className="space-y-6 animate-fade-in">
+      <Card className="border-primary/20 bg-gradient-card shadow-soft hover-lift form-field-enhanced">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle className="flex items-center gap-2 text-primary">
             <ShirtIcon className="h-5 w-5" />
             Personal Information & Gear Sizing
           </CardTitle>
@@ -31,23 +31,23 @@ export const GearSizingStep: React.FC<GearSizingStepProps> = ({ form }) => {
             control={form.control}
             name="gender"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>Gender *</FormLabel>
+              <FormItem className="form-field-enhanced">
+                <FormLabel className="text-foreground font-medium">Gender *</FormLabel>
                 <FormControl>
                   <RadioGroup
                     onValueChange={field.onChange}
                     defaultValue={field.value}
-                    className="flex flex-col space-y-1"
+                    className="flex flex-col space-y-3"
                   >
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="male" id="male" />
-                      <label htmlFor="male" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                    <div className="flex items-center space-x-3 p-3 rounded-lg border border-input hover:border-primary/50 transition-colors">
+                      <RadioGroupItem value="male" id="male" className="text-primary" />
+                      <label htmlFor="male" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer">
                         Male
                       </label>
                     </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="female" id="female" />
-                      <label htmlFor="female" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                    <div className="flex items-center space-x-3 p-3 rounded-lg border border-input hover:border-primary/50 transition-colors">
+                      <RadioGroupItem value="female" id="female" className="text-primary" />
+                      <label htmlFor="female" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer">
                         Female
                       </label>
                     </div>
@@ -65,14 +65,14 @@ export const GearSizingStep: React.FC<GearSizingStepProps> = ({ form }) => {
               control={form.control}
               name="shirt_size"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center gap-2">
-                    <Shirt className="h-4 w-4" />
+                <FormItem className="form-field-enhanced">
+                  <FormLabel className="flex items-center gap-2 text-foreground font-medium">
+                    <Shirt className="h-4 w-4 text-primary" />
                     Shirt Size *
                   </FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="border-input focus:border-primary focus:ring-primary/20 transition-all duration-200">
                         <SelectValue placeholder="Select shirt size" />
                       </SelectTrigger>
                     </FormControl>
@@ -94,11 +94,11 @@ export const GearSizingStep: React.FC<GearSizingStepProps> = ({ form }) => {
               control={form.control}
               name="coat_size"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Coat Size *</FormLabel>
+                <FormItem className="form-field-enhanced">
+                  <FormLabel className="text-foreground font-medium">Coat Size *</FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="border-input focus:border-primary focus:ring-primary/20 transition-all duration-200">
                         <SelectValue placeholder="Select coat size" />
                       </SelectTrigger>
                     </FormControl>
@@ -120,11 +120,11 @@ export const GearSizingStep: React.FC<GearSizingStepProps> = ({ form }) => {
               control={form.control}
               name="pant_size"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Pant Size *</FormLabel>
+                <FormItem className="form-field-enhanced">
+                  <FormLabel className="text-foreground font-medium">Pant Size *</FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="border-input focus:border-primary focus:ring-primary/20 transition-all duration-200">
                         <SelectValue placeholder="Select pant size" />
                       </SelectTrigger>
                     </FormControl>
@@ -146,14 +146,14 @@ export const GearSizingStep: React.FC<GearSizingStepProps> = ({ form }) => {
               control={form.control}
               name="hat_size"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center gap-2">
-                    <HardHat className="h-4 w-4" />
+                <FormItem className="form-field-enhanced">
+                  <FormLabel className="flex items-center gap-2 text-foreground font-medium">
+                    <HardHat className="h-4 w-4 text-primary" />
                     Hat Size *
                   </FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="border-input focus:border-primary focus:ring-primary/20 transition-all duration-200">
                         <SelectValue placeholder="Select hat size" />
                       </SelectTrigger>
                     </FormControl>
@@ -176,11 +176,11 @@ export const GearSizingStep: React.FC<GearSizingStepProps> = ({ form }) => {
             control={form.control}
             name="shoe_size"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>Shoe Size *</FormLabel>
+              <FormItem className="form-field-enhanced">
+                <FormLabel className="text-foreground font-medium">Shoe Size *</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
-                    <SelectTrigger className="max-w-xs">
+                    <SelectTrigger className="max-w-xs border-input focus:border-primary focus:ring-primary/20 transition-all duration-200">
                       <SelectValue placeholder="Select shoe size" />
                     </SelectTrigger>
                   </FormControl>
@@ -197,11 +197,11 @@ export const GearSizingStep: React.FC<GearSizingStepProps> = ({ form }) => {
             )}
           />
 
-          <div className="p-4 bg-muted/50 rounded-lg">
-            <div className="flex items-center gap-2 mb-2">
-              <Badge variant="secondary">Important</Badge>
+          <div className="p-6 bg-gradient-warning rounded-xl border border-warning/20 shadow-soft">
+            <div className="flex items-center gap-3 mb-3">
+              <Badge variant="secondary" className="bg-warning text-warning-foreground font-semibold">Important</Badge>
             </div>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-foreground">
               Please ensure all sizes are accurate. Your uniform and safety equipment will be ordered based on these measurements. 
               If you're unsure about any size, it's better to go slightly larger rather than smaller.
             </p>
