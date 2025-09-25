@@ -5,15 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-const SIZE_OPTIONS = [
-  { value: 'xs', label: 'XS' }, { value: 's', label: 'S' }, { value: 'm', label: 'M' },
-  { value: 'l', label: 'L' }, { value: 'xl', label: 'XL' }, { value: 'xxl', label: 'XXL' }, { value: 'xxxl', label: 'XXXL' }
-];
-
-const SHOE_SIZE_OPTIONS = [
-  { value: '6', label: '6' }, { value: '7', label: '7' }, { value: '8', label: '8' }, { value: '9', label: '9' },
-  { value: '10', label: '10' }, { value: '11', label: '11' }, { value: '12', label: '12' }, { value: '13', label: '13' }
-];
+import { SIZE_OPTIONS, SHOE_SIZE_OPTIONS } from '@/types/onboarding';
 import { Shirt, ShirtIcon, HardHat } from 'lucide-react';
 
 interface GearSizingStepProps {

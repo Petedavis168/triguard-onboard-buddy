@@ -5,9 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
-interface Team { id: string; name: string; description?: string; }
-interface Manager { id: string; first_name: string; last_name: string; email: string; team_id?: string; }
-interface Recruiter { id: string; first_name: string; last_name: string; email: string; }
+import { Team, Manager, Recruiter } from '@/types/onboarding';
 import { Users, UserCheck, Phone } from 'lucide-react';
 
 interface TeamAssignmentStepProps {

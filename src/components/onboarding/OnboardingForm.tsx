@@ -1,52 +1,176 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { Form } from '@/components/ui/form';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
+import { Button } from '@/components/ui/button';
+import { ChevronLeft, ChevronRight, Save } from 'lucide-react';
+import { useOnboardingForm } from '@/hooks/useOnboardingForm';
+import { FORM_STEPS } from '@/types/onboarding';
 
-export const OnboardingForm: React.FC = () => {
-  const [currentStep, setCurrentStep] = useState(1);
-  const totalSteps = 7;
-  const progress = ((currentStep - 1) / (totalSteps - 1)) * 100;
+// Import step components
+import { BasicInformationStep } from './steps/BasicInformationStep';
+import { AddressInformationStep } from './steps/AddressInformationStep';
+import { GearSizingStep } from './steps/GearSizingStep';
+import { BadgePhotoStep } from './steps/BadgePhotoStep';
+import { TeamAssignmentStep } from './steps/TeamAssignmentStep';
+import { W9FormStep } from './steps/W9FormStep';
+import { ReviewSubmitStep } from './steps/ReviewSubmitStep';
+
+interface OnboardingFormProps {
+  formId?: string;
+}
+
+export const OnboardingForm: React.FC<OnboardingFormProps> = ({ formId }) => {
+  const {
+    form,
+    currentStep,
+    nextStep,
+    prevStep,
+    saveFormData,
+    submitForm,
+    isLoading,
+    generatedEmail,
+  } = useOnboardingForm(formId);
+
+  const currentStepInfo = FORM_STEPS.find(step => step.id === currentStep);
+  const progress = ((currentStep - 1) / (FORM_STEPS.length - 1)) * 100;
+
+  const handleSave = async () => {
+    const formData = form.getValues();
+    await saveFormData(formData, currentStep);
+  };
+
+  const renderCurrentStep = () => {
+    switch (currentStep) {
+      case 1:
+        return <BasicInformationStep form={form} generatedEmail={generatedEmail} />;
+      case 2:
+        return <AddressInformationStep form={form} />;
+      case 3:
+        return <GearSizingStep form={form} />;
+      case 4:
+        return <BadgePhotoStep form={form} />;
+      case 5:
+        return <TeamAssignmentStep form={form} />;
+      case 6:
+        return <W9FormStep form={form} />;
+      case 7:
+        return <ReviewSubmitStep form={form} generatedEmail={generatedEmail} onSubmit={submitForm} />;
+      default:
+        return null;
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-background p-4">
-      <div className="max-w-2xl mx-auto">
-        <Card>
-          <CardHeader className="text-center">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            TriGuard Roofing
+          </h1>
+          <p className="text-lg text-gray-600">Employee Onboarding System</p>
+        </div>
+
+        <Card className="shadow-xl">
+          <CardHeader className="text-center bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-t-lg">
             <CardTitle className="text-2xl font-bold">
-              TriGuard Roofing - Employee Onboarding
+              Welcome to Your Onboarding Journey
             </CardTitle>
-            <p className="text-muted-foreground mt-2">
-              Step {currentStep} of {totalSteps}: Getting Started
+            <p className="text-blue-100 mt-2">
+              Step {currentStep} of {FORM_STEPS.length}: {currentStepInfo?.title}
             </p>
-            <Progress value={progress} className="mt-4" />
-          </CardHeader>
-          <CardContent className="text-center space-y-6">
-            <div className="p-8 border-2 border-dashed border-muted rounded-lg">
-              <h3 className="text-lg font-medium mb-4">Welcome to TriGuard Roofing!</h3>
-              <p className="text-muted-foreground mb-6">
-                Your onboarding system is ready. The form will collect your information, 
-                generate your company email, and notify your manager when complete.
+            <p className="text-sm text-blue-200">
+              {currentStepInfo?.description}
+            </p>
+            <div className="mt-4">
+              <Progress value={progress} className="h-3 bg-blue-500/30" />
+              <p className="text-xs text-blue-200 mt-1">
+                {Math.round(progress)}% Complete
               </p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                <div className="p-4 bg-muted rounded">
-                  <strong>✓ Email System</strong><br/>
-                  Mailgun configured for notifications
+            </div>
+          </CardHeader>
+
+          <CardContent className="p-6">
+            <Form {...form}>
+              <div className="space-y-6">
+                {renderCurrentStep()}
+
+                {/* Navigation */}
+                <div className="flex justify-between items-center pt-6 border-t border-gray-200">
+                  <div className="flex gap-2">
+                    {currentStep > 1 && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={prevStep}
+                        disabled={isLoading}
+                        className="flex items-center gap-2"
+                      >
+                        <ChevronLeft className="h-4 w-4" />
+                        Previous
+                      </Button>
+                    )}
+                  </div>
+
+                  <div className="flex gap-2">
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      onClick={handleSave}
+                      disabled={isLoading}
+                      className="flex items-center gap-2"
+                    >
+                      <Save className="h-4 w-4" />
+                      {isLoading ? 'Saving...' : 'Save Progress'}
+                    </Button>
+
+                    {currentStep < FORM_STEPS.length && (
+                      <Button
+                        type="button"
+                        onClick={nextStep}
+                        disabled={isLoading}
+                        className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+                      >
+                        Continue
+                        <ChevronRight className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
                 </div>
-                <div className="p-4 bg-muted rounded">
-                  <strong>✓ Database</strong><br/>
-                  Ready for form submissions
+
+                {/* Step Indicators */}
+                <div className="flex justify-center pt-4">
+                  <div className="flex space-x-2">
+                    {FORM_STEPS.map((step) => (
+                      <div
+                        key={step.id}
+                        className={`w-3 h-3 rounded-full ${
+                          step.id === currentStep
+                            ? 'bg-blue-600'
+                            : step.id < currentStep
+                            ? 'bg-green-500'
+                            : 'bg-gray-300'
+                        }`}
+                      />
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-            <Button 
-              onClick={() => setCurrentStep(2)}
-              disabled={currentStep >= totalSteps}
-            >
-              Start Onboarding Process
-            </Button>
+            </Form>
           </CardContent>
         </Card>
+
+        {/* Footer */}
+        <div className="text-center mt-8 text-sm text-gray-500">
+          <p>© 2024 TriGuard Roofing. All rights reserved.</p>
+          <p className="mt-1">
+            Need help? Contact our HR team at{' '}
+            <a href="mailto:onboarding@triguardroofing.com" className="text-blue-600 hover:underline">
+              onboarding@triguardroofing.com
+            </a>
+          </p>
+        </div>
       </div>
     </div>
   );
