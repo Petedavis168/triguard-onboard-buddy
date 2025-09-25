@@ -62,6 +62,13 @@ const onboardingSchema = z.object({
   manager_id: z.string().min(1, 'Please select a manager'),
   recruiter_id: z.string().min(1, 'Please select a recruiter'),
   w9_completed: z.boolean(),
+  social_security_card_url: z.string().optional(),
+  drivers_license_url: z.string().optional(),
+  bank_routing_number: z.string().optional(),
+  bank_account_number: z.string().optional(),
+  account_type: z.enum(['checking', 'savings']).optional(),
+  direct_deposit_form_url: z.string().optional(),
+  direct_deposit_confirmed: z.boolean().optional(),
   voice_recording_url: z.string().optional(),
   voice_recording_completed_at: z.string().optional(),
 }).refine((data) => {
@@ -107,6 +114,13 @@ export const useOnboardingForm = (formId?: string) => {
       manager_id: '',
       recruiter_id: '',
       w9_completed: false,
+      social_security_card_url: '',
+      drivers_license_url: '',
+      bank_routing_number: '',
+      bank_account_number: '',
+      account_type: undefined,
+      direct_deposit_form_url: '',
+      direct_deposit_confirmed: false,
     },
   });
 
@@ -131,7 +145,12 @@ export const useOnboardingForm = (formId?: string) => {
       }
 
       if (data) {
-        form.reset(data);
+        // Type-cast the data to match the form schema
+        const formData = {
+          ...data,
+          account_type: data.account_type as 'checking' | 'savings' | undefined,
+        };
+        form.reset(formData);
         setCurrentStep(data.current_step);
         setGeneratedEmail(data.generated_email || '');
       }
@@ -175,7 +194,7 @@ export const useOnboardingForm = (formId?: string) => {
       // Only save specific fields based on current step to avoid validation issues
       const updateData: any = {
         current_step: step,
-        status: (step >= 7 ? 'submitted' : step > 1 ? 'in_progress' : 'draft') as 'draft' | 'in_progress' | 'completed' | 'submitted',
+        status: (step >= 11 ? 'submitted' : step > 1 ? 'in_progress' : 'draft') as 'draft' | 'in_progress' | 'completed' | 'submitted',
         updated_at: new Date().toISOString(),
       };
 
@@ -183,7 +202,7 @@ export const useOnboardingForm = (formId?: string) => {
         updateData.generated_email = emailToSave;
       }
 
-      if (step >= 7) {
+      if (step >= 11) {
         updateData.submitted_at = new Date().toISOString();
       }
 
@@ -232,6 +251,30 @@ export const useOnboardingForm = (formId?: string) => {
         if (data.w9_submitted_at) updateData.w9_submitted_at = data.w9_submitted_at;
       }
 
+      if (step >= 7) {
+        if (data.social_security_card_url) updateData.social_security_card_url = data.social_security_card_url;
+        if (data.drivers_license_url) updateData.drivers_license_url = data.drivers_license_url;
+        if (data.social_security_card_url && data.drivers_license_url) {
+          updateData.documents_uploaded_at = new Date().toISOString();
+        }
+      }
+
+      if (step >= 8) {
+        if (data.bank_routing_number) updateData.bank_routing_number = data.bank_routing_number;
+        if (data.bank_account_number) updateData.bank_account_number = data.bank_account_number;
+        if (data.account_type) updateData.account_type = data.account_type;
+        if (data.direct_deposit_form_url) updateData.direct_deposit_form_url = data.direct_deposit_form_url;
+        if (data.direct_deposit_confirmed !== undefined) updateData.direct_deposit_confirmed = data.direct_deposit_confirmed;
+        if (data.direct_deposit_confirmed) {
+          updateData.direct_deposit_completed_at = new Date().toISOString();
+        }
+      }
+
+      if (step >= 9) {
+        if (data.voice_recording_url) updateData.voice_recording_url = data.voice_recording_url;
+        if (data.voice_recording_completed_at) updateData.voice_recording_completed_at = data.voice_recording_completed_at;
+      }
+
       let result;
       if (savedFormId) {
         // Update existing form
@@ -269,6 +312,13 @@ export const useOnboardingForm = (formId?: string) => {
           manager_id: data.manager_id || null,
           recruiter_id: data.recruiter_id || null,
           w9_completed: data.w9_completed || false,
+          social_security_card_url: data.social_security_card_url || null,
+          drivers_license_url: data.drivers_license_url || null,
+          bank_routing_number: data.bank_routing_number || null,
+          bank_account_number: data.bank_account_number || null,
+          account_type: data.account_type || null,
+          direct_deposit_form_url: data.direct_deposit_form_url || null,
+          direct_deposit_confirmed: data.direct_deposit_confirmed || false,
           ...updateData,
         };
 
@@ -305,7 +355,7 @@ export const useOnboardingForm = (formId?: string) => {
   const submitForm = async (data: any) => {
     try {
       // Save final form data
-      const saveResult = await saveFormData(data, 7);
+      const saveResult = await saveFormData(data, 11);
       if (!saveResult.success) {
         return { success: false };
       }
@@ -362,7 +412,7 @@ export const useOnboardingForm = (formId?: string) => {
       const formData = form.getValues();
       const saveResult = await saveFormData(formData, currentStep + 1);
       if (saveResult.success) {
-        setCurrentStep(prev => Math.min(prev + 1, 9));
+        setCurrentStep(prev => Math.min(prev + 1, 11));
         toast({
           title: "Progress Saved",
           description: `Step ${currentStep} completed. Moving to step ${currentStep + 1}.`,
@@ -397,10 +447,14 @@ export const useOnboardingForm = (formId?: string) => {
       case 6:
         return ['w9_completed'];
       case 7:
-        return []; // Voice recording is optional but encouraged
+        return []; // Document uploads are optional for validation purposes
       case 8:
-        return []; // Task acknowledgment is optional
+        return []; // Direct deposit fields are optional for validation purposes
       case 9:
+        return []; // Voice recording is optional but encouraged
+      case 10:
+        return []; // Task acknowledgment is optional
+      case 11:
         return []; // Review step
       default:
         return [];

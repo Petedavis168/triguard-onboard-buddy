@@ -114,12 +114,20 @@ export type Database = {
       }
       onboarding_forms: {
         Row: {
+          account_type: string | null
           badge_photo_url: string | null
+          bank_account_number: string | null
+          bank_routing_number: string | null
           cell_phone: string | null
           city: string
           coat_size: Database["public"]["Enums"]["size_type"]
           created_at: string
           current_step: number
+          direct_deposit_completed_at: string | null
+          direct_deposit_confirmed: boolean | null
+          direct_deposit_form_url: string | null
+          documents_uploaded_at: string | null
+          drivers_license_url: string | null
           first_name: string
           gender: Database["public"]["Enums"]["gender_type"]
           generated_email: string | null
@@ -138,6 +146,7 @@ export type Database = {
           shipping_zip_code: string | null
           shirt_size: Database["public"]["Enums"]["size_type"]
           shoe_size: Database["public"]["Enums"]["shoe_size_type"]
+          social_security_card_url: string | null
           state: string
           status: Database["public"]["Enums"]["form_status_type"]
           street_address: string
@@ -151,12 +160,20 @@ export type Database = {
           zip_code: string
         }
         Insert: {
+          account_type?: string | null
           badge_photo_url?: string | null
+          bank_account_number?: string | null
+          bank_routing_number?: string | null
           cell_phone?: string | null
           city: string
           coat_size: Database["public"]["Enums"]["size_type"]
           created_at?: string
           current_step?: number
+          direct_deposit_completed_at?: string | null
+          direct_deposit_confirmed?: boolean | null
+          direct_deposit_form_url?: string | null
+          documents_uploaded_at?: string | null
+          drivers_license_url?: string | null
           first_name: string
           gender: Database["public"]["Enums"]["gender_type"]
           generated_email?: string | null
@@ -175,6 +192,7 @@ export type Database = {
           shipping_zip_code?: string | null
           shirt_size: Database["public"]["Enums"]["size_type"]
           shoe_size: Database["public"]["Enums"]["shoe_size_type"]
+          social_security_card_url?: string | null
           state: string
           status?: Database["public"]["Enums"]["form_status_type"]
           street_address: string
@@ -188,12 +206,20 @@ export type Database = {
           zip_code: string
         }
         Update: {
+          account_type?: string | null
           badge_photo_url?: string | null
+          bank_account_number?: string | null
+          bank_routing_number?: string | null
           cell_phone?: string | null
           city?: string
           coat_size?: Database["public"]["Enums"]["size_type"]
           created_at?: string
           current_step?: number
+          direct_deposit_completed_at?: string | null
+          direct_deposit_confirmed?: boolean | null
+          direct_deposit_form_url?: string | null
+          documents_uploaded_at?: string | null
+          drivers_license_url?: string | null
           first_name?: string
           gender?: Database["public"]["Enums"]["gender_type"]
           generated_email?: string | null
@@ -212,6 +238,7 @@ export type Database = {
           shipping_zip_code?: string | null
           shirt_size?: Database["public"]["Enums"]["size_type"]
           shoe_size?: Database["public"]["Enums"]["shoe_size_type"]
+          social_security_card_url?: string | null
           state?: string
           status?: Database["public"]["Enums"]["form_status_type"]
           street_address?: string

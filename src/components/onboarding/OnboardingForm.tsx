@@ -16,6 +16,8 @@ import { GearSizingStep } from './steps/GearSizingStep';
 import { BadgePhotoStep } from './steps/BadgePhotoStep';
 import { TeamAssignmentStep } from './steps/TeamAssignmentStep';
 import { W9FormStep } from './steps/W9FormStep';
+import { DocumentUploadStep } from './steps/DocumentUploadStep';
+import { DirectDepositStep } from './steps/DirectDepositStep';
 import VoicePitchStep from './steps/VoicePitchStep';
 import TaskAcknowledgmentStep from './steps/TaskAcknowledgmentStep';
 import { ReviewSubmitStep } from './steps/ReviewSubmitStep';
@@ -65,10 +67,14 @@ export const OnboardingForm: React.FC<OnboardingFormProps> = ({ formId }) => {
       case 6:
         return <W9FormStep form={form} />;
       case 7:
-        return <VoicePitchStep form={form} />;
+        return <DocumentUploadStep form={form} />;
       case 8:
-        return <TaskAcknowledgmentStep form={form} />;
+        return <DirectDepositStep form={form} />;
       case 9:
+        return <VoicePitchStep form={form} />;
+      case 10:
+        return <TaskAcknowledgmentStep form={form} />;
+      case 11:
         return <ReviewSubmitStep form={form} generatedEmail={generatedEmail} onSubmit={submitForm} />;
       default:
         return null;

@@ -2,6 +2,7 @@ export type GenderType = 'male' | 'female';
 export type SizeType = 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl' | 'xxxl';
 export type ShoeSizeType = '6' | '6.5' | '7' | '7.5' | '8' | '8.5' | '9' | '9.5' | '10' | '10.5' | '11' | '11.5' | '12' | '12.5' | '13' | '13.5' | '14' | '14.5' | '15';
 export type FormStatusType = 'draft' | 'in_progress' | 'completed' | 'submitted';
+export type AccountType = 'checking' | 'savings';
 
 export interface Team {
   id: string;
@@ -70,6 +71,19 @@ export interface OnboardingFormData {
   voice_recording_url?: string;
   voice_recording_completed_at?: string;
   
+  // Document Uploads
+  social_security_card_url?: string;
+  drivers_license_url?: string;
+  documents_uploaded_at?: string;
+  
+  // Direct Deposit
+  direct_deposit_form_url?: string;
+  bank_routing_number?: string;
+  bank_account_number?: string;
+  account_type?: AccountType;
+  direct_deposit_confirmed?: boolean;
+  direct_deposit_completed_at?: string;
+  
   // Form Status
   status: FormStatusType;
   current_step: number;
@@ -82,9 +96,11 @@ export const FORM_STEPS = [
   { id: 4, title: 'Badge Photo', description: 'Upload and edit your badge photo' },
   { id: 5, title: 'Team Assignment', description: 'Select team, manager, and recruiter' },
   { id: 6, title: 'W9 Form', description: 'Complete tax documentation' },
-  { id: 7, title: 'Voice Pitch', description: 'Record your pitch to join our team' },
-  { id: 8, title: 'Task Acknowledgment', description: 'Review and acknowledge your tasks' },
-  { id: 9, title: 'Review & Submit', description: 'Review and submit your application' },
+  { id: 7, title: 'Document Upload', description: 'Upload required identification documents' },
+  { id: 8, title: 'Direct Deposit', description: 'Set up your direct deposit information' },
+  { id: 9, title: 'Voice Pitch', description: 'Record your pitch to join our team' },
+  { id: 10, title: 'Task Acknowledgment', description: 'Review and acknowledge your tasks' },
+  { id: 11, title: 'Review & Submit', description: 'Review and submit your application' },
 ];
 
 export const SIZE_OPTIONS: { value: SizeType; label: string }[] = [
