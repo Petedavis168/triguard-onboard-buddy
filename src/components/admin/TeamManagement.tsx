@@ -1,0 +1,342 @@
+import React, { useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { supabase } from '@/integrations/supabase/client';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { Plus, Search, Edit, Trash2, Building, Users } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
+
+const teamSchema = z.object({
+  name: z.string().min(2, 'Team name must be at least 2 characters'),
+  description: z.string().optional(),
+});
+
+type TeamFormData = z.infer<typeof teamSchema>;
+
+interface Team {
+  id: string;
+  name: string;
+  description: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export const TeamManagement: React.FC = () => {
+  const [teams, setTeams] = useState<Team[]>([]);
+  const [filteredTeams, setFilteredTeams] = useState<Team[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editingTeam, setEditingTeam] = useState<Team | null>(null);
+
+  const form = useForm<TeamFormData>({
+    resolver: zodResolver(teamSchema),
+    defaultValues: {
+      name: '',
+      description: '',
+    },
+  });
+
+  useEffect(() => {
+    fetchTeams();
+  }, []);
+
+  useEffect(() => {
+    filterTeams();
+  }, [teams, searchTerm]);
+
+  const fetchTeams = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('teams')
+        .select('*')
+        .order('name');
+
+      if (error) {
+        toast({
+          title: "Error",
+          description: "Failed to fetch teams",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      setTeams(data || []);
+    } catch (error) {
+      console.error('Error fetching teams:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const filterTeams = () => {
+    if (!searchTerm) {
+      setFilteredTeams(teams);
+      return;
+    }
+
+    const filtered = teams.filter(team => 
+      team.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (team.description && team.description.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
+    setFilteredTeams(filtered);
+  };
+
+  const onSubmit = async (data: TeamFormData) => {
+    try {
+      if (editingTeam) {
+        const { error } = await supabase
+          .from('teams')
+          .update({
+            name: data.name,
+            description: data.description || null,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', editingTeam.id);
+
+        if (error) throw error;
+
+        toast({
+          title: "Success",
+          description: "Team updated successfully"
+        });
+      } else {
+        const { error } = await supabase
+          .from('teams')
+          .insert([{
+            name: data.name,
+            description: data.description || null,
+          }]);
+
+        if (error) throw error;
+
+        toast({
+          title: "Success",
+          description: "Team created successfully"
+        });
+      }
+
+      setIsDialogOpen(false);
+      setEditingTeam(null);
+      form.reset();
+      fetchTeams();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to save team",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleEdit = (team: Team) => {
+    setEditingTeam(team);
+    form.reset({
+      name: team.name,
+      description: team.description || '',
+    });
+    setIsDialogOpen(true);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this team? This may affect managers assigned to this team.')) return;
+
+    try {
+      const { error } = await supabase
+        .from('teams')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Team deleted successfully"
+      });
+      
+      fetchTeams();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to delete team",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  if (isLoading) {
+    return (
+      <div className="text-center py-12">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+        <p className="mt-4 text-gray-600">Loading teams...</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <CardTitle className="text-xl text-gray-900">Teams</CardTitle>
+              <p className="text-sm text-gray-600">Manage organizational teams and departments</p>
+            </div>
+            <div className="flex gap-2 w-full sm:w-auto">
+              <div className="relative flex-1 sm:w-64">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Input
+                  placeholder="Search teams..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button onClick={() => {
+                    setEditingTeam(null);
+                    form.reset({
+                      name: '',
+                      description: '',
+                    });
+                  }}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Team
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>
+                      {editingTeam ? 'Edit Team' : 'Add Team'}
+                    </DialogTitle>
+                  </DialogHeader>
+                  <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                      <FormField
+                        control={form.control}
+                        name="name"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Team Name</FormLabel>
+                            <FormControl>
+                              <Input {...field} placeholder="e.g., Installation Team, Sales Team" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="description"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Description (Optional)</FormLabel>
+                            <FormControl>
+                              <Textarea 
+                                {...field} 
+                                placeholder="Brief description of the team's responsibilities..."
+                                rows={3}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <div className="flex justify-end gap-2 pt-4">
+                        <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
+                          Cancel
+                        </Button>
+                        <Button type="submit">
+                          {editingTeam ? 'Update' : 'Create'} Team
+                        </Button>
+                      </div>
+                    </form>
+                  </Form>
+                </DialogContent>
+              </Dialog>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {filteredTeams.length === 0 ? (
+            <div className="text-center py-12">
+              <Building className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+              <p className="text-gray-500">No teams found</p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Team Name</TableHead>
+                    <TableHead>Description</TableHead>
+                    <TableHead>Created</TableHead>
+                    <TableHead>Updated</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredTeams.map((team) => (
+                    <TableRow key={team.id}>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+                            <Building className="h-4 w-4 text-green-600" />
+                          </div>
+                          <span className="font-medium">{team.name}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="max-w-xs truncate text-sm text-gray-600">
+                          {team.description || 'No description'}
+                        </div>
+                      </TableCell>
+                      <TableCell>{formatDate(team.created_at)}</TableCell>
+                      <TableCell>{formatDate(team.updated_at)}</TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex gap-2 justify-end">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleEdit(team)}
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleDelete(team.id)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
