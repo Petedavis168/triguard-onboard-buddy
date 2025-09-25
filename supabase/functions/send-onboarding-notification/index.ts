@@ -1,7 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-
-const mailgunApiKey = Deno.env.get("RESEND_API_KEY"); // Using existing secret name with Mailgun key
-const mailgunDomain = "sandbox44b86d1bb6614502a6ba1df155cf1fa9.mailgun.org";
+import { SmtpClient } from "https://deno.land/x/smtp@v0.7.0/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -16,27 +14,27 @@ interface NotificationRequest {
   formData: any;
 }
 
-const sendMailgunEmail = async (to: string[], subject: string, html: string, from = "TriGuard Onboarding <onboarding@triguardroofing.com>") => {
-  const formData = new FormData();
-  formData.append("from", from);
-  formData.append("to", to.join(","));
-  formData.append("subject", subject);
-  formData.append("html", html);
-
-  const response = await fetch(`https://api.mailgun.net/v3/${mailgunDomain}/messages`, {
-    method: "POST",
-    headers: {
-      "Authorization": `Basic ${btoa(`api:${mailgunApiKey}`)}`,
-    },
-    body: formData,
+const sendSmtpEmail = async (to: string[], subject: string, html: string, from = "TriGuard Onboarding <noreply@sandbox44b86d1bb6614502a6ba1df155cf1fa9.mailgun.org>") => {
+  const client = new SmtpClient();
+  
+  await client.connect({
+    hostname: "smtp.mailgun.org",
+    port: 587,
+    username: Deno.env.get("MAILGUN_SMTP_USER"),
+    password: Deno.env.get("MAILGUN_SMTP_PASSWORD"),
   });
 
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Mailgun API error: ${response.status} - ${errorText}`);
+  for (const recipient of to) {
+    await client.send({
+      from,
+      to: recipient,
+      subject,
+      content: html,
+      html,
+    });
   }
 
-  return await response.json();
+  await client.close();
 };
 
 const handler = async (req: Request): Promise<Response> => {
@@ -47,10 +45,10 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const { employeeName, employeeEmail, managerEmail, formData }: NotificationRequest = await req.json();
 
-    console.log('Sending onboarding notification for:', employeeName);
+    console.log('Sending onboarding notification via SMTP for:', employeeName);
 
     // Send notification to manager
-    const managerEmailResponse = await sendMailgunEmail(
+    await sendSmtpEmail(
       [managerEmail],
       `New Employee Onboarding Completed - ${employeeName}`,
       `
@@ -86,7 +84,7 @@ const handler = async (req: Request): Promise<Response> => {
     );
 
     // Send notification to onboarding team
-    const onboardingEmailResponse = await sendMailgunEmail(
+    await sendSmtpEmail(
       ["onboarding@triguardroofing.com"],
       `Onboarding Form Submitted - ${employeeName}`,
       `
@@ -117,11 +115,11 @@ const handler = async (req: Request): Promise<Response> => {
       `
     );
 
-    console.log("Notification emails sent successfully via Mailgun");
+    console.log("Notification emails sent successfully via SMTP");
 
     return new Response(JSON.stringify({
-      managerEmailId: managerEmailResponse.id,
-      onboardingEmailId: onboardingEmailResponse.id
+      success: true,
+      message: "Emails sent via SMTP"
     }), {
       status: 200,
       headers: {
