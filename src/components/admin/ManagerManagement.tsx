@@ -61,6 +61,7 @@ export const ManagerManagement: React.FC = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingManager, setEditingManager] = useState<Manager | null>(null);
   const [visiblePasswords, setVisiblePasswords] = useState<Set<string>>(new Set());
+  const [generatedPasswords, setGeneratedPasswords] = useState<Map<string, string>>(new Map());
 
   const form = useForm<ManagerFormData>({
     resolver: zodResolver(managerSchema),
@@ -189,7 +190,7 @@ export const ManagerManagement: React.FC = () => {
 
         if (hashError) throw hashError;
 
-        const { error } = await supabase
+        const { data: newManager, error } = await supabase
           .from('managers')
           .insert([{
             first_name: data.first_name,
@@ -198,13 +199,20 @@ export const ManagerManagement: React.FC = () => {
             team_id: data.team_id || null,
             password_hash: hashedPassword,
             force_password_change: true,
-          }]);
+          }])
+          .select()
+          .single();
 
         if (error) throw error;
 
+        // Store the generated password for admin viewing
+        const newGeneratedPasswords = new Map(generatedPasswords);
+        newGeneratedPasswords.set(newManager.id, passwordData);
+        setGeneratedPasswords(newGeneratedPasswords);
+
         toast({
           title: "Success",
-          description: "Manager created successfully"
+          description: `Manager created successfully. Password: ${passwordData}`
         });
       }
 
@@ -368,9 +376,14 @@ export const ManagerManagement: React.FC = () => {
 
       if (error) throw error;
 
+      // Store the generated password for admin viewing
+      const newGeneratedPasswords = new Map(generatedPasswords);
+      newGeneratedPasswords.set(manager.id, passwordData);
+      setGeneratedPasswords(newGeneratedPasswords);
+
       toast({
         title: "Password Regenerated",
-        description: `New password generated for ${manager.first_name} ${manager.last_name}. They will be prompted to change it on next login.`
+        description: `New password: ${passwordData}. ${manager.first_name} ${manager.last_name} will be prompted to change it on next login.`
       });
       
       fetchManagers();
@@ -559,12 +572,42 @@ export const ManagerManagement: React.FC = () => {
                       </TableCell>
                        <TableCell>
                          <div className="flex items-center gap-2">
-                           <Badge variant="secondary" className="text-xs">
-                             Protected Hash
-                           </Badge>
-                           <span className="text-xs text-gray-500">
-                             {manager.force_password_change ? '(Change Required)' : '(Secure)'}
-                           </span>
+                           {generatedPasswords.has(manager.id) ? (
+                             <div className="flex items-center gap-2">
+                               <Button
+                                 variant="ghost"
+                                 size="sm"
+                                 onClick={() => togglePasswordVisibility(manager.id)}
+                                 className="flex items-center gap-1"
+                               >
+                                 {visiblePasswords.has(manager.id) ? (
+                                   <>
+                                     <EyeOff className="h-3 w-3" />
+                                     <span className="text-sm font-mono">
+                                       {generatedPasswords.get(manager.id)}
+                                     </span>
+                                   </>
+                                 ) : (
+                                   <>
+                                     <Eye className="h-3 w-3" />
+                                     <span className="text-sm">Show Password</span>
+                                   </>
+                                 )}
+                               </Button>
+                               <Badge variant="outline" className="text-xs text-green-600">
+                                 Generated
+                               </Badge>
+                             </div>
+                           ) : (
+                             <div className="flex items-center gap-2">
+                               <Badge variant="secondary" className="text-xs">
+                                 Protected Hash
+                               </Badge>
+                               <span className="text-xs text-gray-500">
+                                 {manager.force_password_change ? '(Change Required)' : '(Secure)'}
+                               </span>
+                             </div>
+                           )}
                            <AlertDialog>
                              <AlertDialogTrigger asChild>
                                <Button
