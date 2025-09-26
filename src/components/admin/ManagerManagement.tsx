@@ -560,15 +560,59 @@ export const ManagerManagement: React.FC = () => {
                               <Eye className="h-3 w-3" />
                             }
                           </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => regeneratePassword(manager)}
-                            className="h-6 w-6 p-0"
-                            title="Generate new password"
-                          >
-                            <RefreshCw className="h-3 w-3" />
-                          </Button>
+                           <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-6 w-6 p-0"
+                                title="Generate new password"
+                              >
+                                <RefreshCw className="h-3 w-3" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent className="max-w-md">
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Regenerate Password</AlertDialogTitle>
+                                <AlertDialogDescription asChild>
+                                  <div className="space-y-4">
+                                    <p>
+                                      Are you sure you want to generate a new password for{' '}
+                                      <strong>{manager.first_name} {manager.last_name}</strong>?
+                                    </p>
+                                    
+                                    <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+                                      <p className="text-amber-800 text-sm font-medium mb-2">⚠️ Important:</p>
+                                      <ul className="text-amber-700 text-sm space-y-1">
+                                        <li>• Their current password will no longer work</li>
+                                        <li>• They will be forced to change the password on next login</li>
+                                        <li>• Any active sessions will be invalidated</li>
+                                      </ul>
+                                    </div>
+
+                                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                                      <p className="text-blue-800 text-sm font-medium mb-2">🔒 Security Requirements:</p>
+                                      <ul className="text-blue-700 text-sm space-y-1">
+                                        <li>• Password will contain company-relevant words</li>
+                                        <li>• Minimum 12 characters with mixed case</li>
+                                        <li>• Includes numbers for additional security</li>
+                                        <li>• Must be changed by manager on first login</li>
+                                      </ul>
+                                    </div>
+                                  </div>
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction 
+                                  onClick={() => regeneratePassword(manager)}
+                                  className="bg-orange-600 hover:bg-orange-700"
+                                >
+                                  Generate New Password
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
                         </div>
                       </TableCell>
                       <TableCell>
