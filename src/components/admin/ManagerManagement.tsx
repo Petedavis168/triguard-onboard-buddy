@@ -14,6 +14,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Plus, Search, Edit, Trash2, Users, Mail, Phone, Building, UserPlus, Eye, EyeOff, RefreshCw, Clock, Activity } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
+import { ManagerDetailsView } from './ManagerDetailsView';
 import { toast } from '@/hooks/use-toast';
 
 const managerSchema = z.object({
@@ -64,6 +65,7 @@ export const ManagerManagement: React.FC = () => {
   const [editingManager, setEditingManager] = useState<Manager | null>(null);
   const [visiblePasswords, setVisiblePasswords] = useState<Set<string>>(new Set());
   const [generatedPasswords, setGeneratedPasswords] = useState<Map<string, string>>(new Map());
+  const [selectedManager, setSelectedManager] = useState<Manager | null>(null);
 
   const form = useForm<ManagerFormData>({
     resolver: zodResolver(managerSchema),
@@ -462,6 +464,22 @@ export const ManagerManagement: React.FC = () => {
     }
   };
 
+  // If a manager is selected, show the detailed view
+  if (selectedManager) {
+    return (
+      <ManagerDetailsView
+        manager={selectedManager}
+        teams={teams}
+        onBack={() => setSelectedManager(null)}
+        onUpdate={fetchManagers}
+        generatedPasswords={generatedPasswords}
+        visiblePasswords={visiblePasswords}
+        onTogglePasswordVisibility={togglePasswordVisibility}
+        onRegeneratePassword={regeneratePassword}
+      />
+    );
+  }
+
   if (isLoading) {
     return (
       <div className="text-center py-12">
@@ -635,25 +653,25 @@ export const ManagerManagement: React.FC = () => {
                 </TableHeader>
                 <TableBody>
                   {filteredManagers.map((manager) => (
-                    <TableRow key={manager.id}>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-                            <Users className="h-4 w-4 text-blue-600" />
-                          </div>
-                          <div>
-                            <div className="font-medium">
-                              {manager.first_name} {manager.last_name}
-                            </div>
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <Mail className="h-4 w-4 text-gray-400" />
-                          <span className="text-sm">{manager.email}</span>
-                        </div>
-                      </TableCell>
+                     <TableRow key={manager.id} className="cursor-pointer hover:bg-muted/50">
+                       <TableCell onClick={() => setSelectedManager(manager)}>
+                         <div className="flex items-center gap-2">
+                           <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                             <Users className="h-4 w-4 text-blue-600" />
+                           </div>
+                           <div>
+                             <div className="font-medium">
+                               {manager.first_name} {manager.last_name}
+                             </div>
+                           </div>
+                         </div>
+                       </TableCell>
+                       <TableCell onClick={() => setSelectedManager(manager)}>
+                         <div className="flex items-center gap-2">
+                           <Mail className="h-4 w-4 text-gray-400" />
+                           <span className="text-sm">{manager.email}</span>
+                         </div>
+                       </TableCell>
                        <TableCell>
                          <div className="flex items-center gap-2">
                            {generatedPasswords.has(manager.id) ? (
@@ -746,39 +764,39 @@ export const ManagerManagement: React.FC = () => {
                           </AlertDialog>
                         </div>
                       </TableCell>
-                      <TableCell>
-                        <div className="space-y-1">
-                          <div className="flex items-center gap-2 text-xs">
-                            <Clock className="h-3 w-3 text-green-600" />
-                            <span className="text-gray-600">Last login:</span>
-                            <span className="font-medium">{formatRelativeTime(manager.last_login_at)}</span>
-                          </div>
-                          <div className="flex items-center gap-2 text-xs">
-                            <Activity className="h-3 w-3 text-blue-600" />
-                            <span className="text-gray-600">Activity:</span>
-                            <span className="font-medium">{formatRelativeTime(manager.last_activity_at)}</span>
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex gap-1">
-                          <Badge variant="secondary" className="bg-blue-100 text-blue-800">
-                            Manager
-                          </Badge>
-                          {isAlsoRecruiter(manager.email) && (
-                            <Badge variant="secondary" className="bg-green-100 text-green-800">
-                              Recruiter
-                            </Badge>
-                          )}
-                        </div>
-                      </TableCell>
-                       <TableCell>
-                         <div className="flex items-center gap-2">
-                           <Building className="h-4 w-4 text-gray-400" />
-                           <span className="text-sm">{getTeamNames(manager)}</span>
+                       <TableCell onClick={() => setSelectedManager(manager)}>
+                         <div className="space-y-1">
+                           <div className="flex items-center gap-2 text-xs">
+                             <Clock className="h-3 w-3 text-green-600" />
+                             <span className="text-gray-600">Last login:</span>
+                             <span className="font-medium">{formatRelativeTime(manager.last_login_at)}</span>
+                           </div>
+                           <div className="flex items-center gap-2 text-xs">
+                             <Activity className="h-3 w-3 text-blue-600" />
+                             <span className="text-gray-600">Activity:</span>
+                             <span className="font-medium">{formatRelativeTime(manager.last_activity_at)}</span>
+                           </div>
                          </div>
                        </TableCell>
-                      <TableCell>{formatDate(manager.created_at)}</TableCell>
+                       <TableCell onClick={() => setSelectedManager(manager)}>
+                         <div className="flex gap-1">
+                           <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                             Manager
+                           </Badge>
+                           {isAlsoRecruiter(manager.email) && (
+                             <Badge variant="secondary" className="bg-green-100 text-green-800">
+                               Recruiter
+                             </Badge>
+                           )}
+                         </div>
+                       </TableCell>
+                        <TableCell onClick={() => setSelectedManager(manager)}>
+                          <div className="flex items-center gap-2">
+                            <Building className="h-4 w-4 text-gray-400" />
+                            <span className="text-sm">{getTeamNames(manager)}</span>
+                          </div>
+                        </TableCell>
+                       <TableCell onClick={() => setSelectedManager(manager)}>{formatDate(manager.created_at)}</TableCell>
                       <TableCell className="text-right">
                         <div className="flex gap-2 justify-end">
                           {!isAlsoRecruiter(manager.email) && (
