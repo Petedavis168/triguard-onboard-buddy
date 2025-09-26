@@ -157,14 +157,60 @@ export const BasicInformationStep: React.FC<BasicInformationStepProps> = ({
                     </a>
                   </div>
                 </div>
+                
+                <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                  <h4 className="font-semibold text-blue-900 mb-3 flex items-center gap-2">
+                    <Mail className="h-4 w-4" />
+                    Email Setup Instructions
+                  </h4>
+                  <ol className="space-y-2 text-sm text-blue-800">
+                    <li className="flex items-start gap-2">
+                      <span className="font-semibold min-w-[20px] h-5 flex items-center justify-center bg-blue-200 rounded-full text-xs">1</span>
+                      <span>You will receive login instructions at your <strong>personal email</strong> for your company email account</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="font-semibold min-w-[20px] h-5 flex items-center justify-center bg-blue-200 rounded-full text-xs">2</span>
+                      <span>Visit <strong>email.triguardroofing.com</strong> and use your provided email and temporary password</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="font-semibold min-w-[20px] h-5 flex items-center justify-center bg-blue-200 rounded-full text-xs">3</span>
+                      <span>You will receive access invitations from multiple platforms:</span>
+                    </li>
+                  </ol>
+                  
+                  <div className="mt-3 ml-7 space-y-1 text-sm text-blue-700">
+                    <div className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-blue-400 rounded-full"></div>
+                      <span><strong>Financing/Lenders:</strong> Finturf, Lyon, and Acorn</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-blue-400 rounded-full"></div>
+                      <span><strong>RoofFlow:</strong> Our CRM system</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-blue-400 rounded-full"></div>
+                      <span><strong>Sales Dispatcher:</strong> Sales management tool</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-blue-400 rounded-full"></div>
+                      <span><strong>Roofgraf:</strong> Our measurement tool</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-blue-400 rounded-full"></div>
+                      <span><strong>Opensign:</strong> Our e-signature platform</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-blue-400 rounded-full"></div>
+                      <span><strong>Projects Portal:</strong> projects.thspros.com (after your first deal)</span>
+                    </div>
+                  </div>
+                </div>
+                
                 <div className="mt-4 space-y-2">
                   <div className="flex items-center gap-2 text-sm text-success-foreground/90">
                     <Clock className="h-4 w-4" />
                     <span>Account activation takes 24-48 hours</span>
                   </div>
-                  <p className="text-sm text-success-foreground/90">
-                    <span className="font-medium">Watch for emails from:</span> RoofGraf, FinTurf, Lyon Financial, Acorn, and SalesDispatcher Tool
-                  </p>
                 </div>
               </div>
             </div>

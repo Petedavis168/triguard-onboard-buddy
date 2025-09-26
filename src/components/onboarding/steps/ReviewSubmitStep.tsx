@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
-import { CheckCircle, Send, User, MapPin, Shirt, Camera, Users, FileText } from 'lucide-react';
+import { CheckCircle, Send, User, MapPin, Shirt, Camera, Users, FileText, Mail } from 'lucide-react';
 
 interface ReviewSubmitStepProps {
   form: UseFormReturn<any>;
@@ -63,8 +63,51 @@ export const ReviewSubmitStep: React.FC<ReviewSubmitStepProps> = ({
         <Alert>
           <CheckCircle className="h-4 w-4" />
           <AlertDescription>
-            <strong>What's Next:</strong> Your manager will contact you to schedule training 
-            and provide your work schedule. Please check your email regularly for updates.
+            <div className="space-y-3">
+              <div>
+                <strong>What's Next:</strong> Your manager will contact you to schedule training 
+                and provide your work schedule. Please check your email regularly for updates.
+              </div>
+              
+              <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <h4 className="font-semibold text-blue-900 mb-3 flex items-center gap-2">
+                  <Mail className="h-4 w-4" />
+                  Expected Email Invitations
+                </h4>
+                <p className="text-sm text-blue-800 mb-3">
+                  You will receive login instructions at your <strong>personal email</strong> for your company email account. 
+                  Visit <strong>email.triguardroofing.com</strong> with your provided credentials.
+                </p>
+                
+                <p className="text-sm font-medium text-blue-900 mb-2">Platform Access Invitations:</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-blue-700">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                    <span>Finturf, Lyon, Acorn (Financing)</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                    <span>RoofFlow (CRM)</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                    <span>Sales Dispatcher</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                    <span>Roofgraf (Measurement Tool)</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                    <span>Opensign (E-signature Platform)</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                    <span>projects.thspros.com (after first deal)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </AlertDescription>
         </Alert>
         <div className="pt-4">
