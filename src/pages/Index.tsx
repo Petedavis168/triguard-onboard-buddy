@@ -51,11 +51,6 @@ const Index = () => {
         {/* Hero Section */}
         <section className="text-center mb-20 animate-fade-in">
           <div className="mb-8">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium mb-6 animate-pulse-glow">
-              <Star className="h-4 w-4" />
-              Employee Onboarding System
-            </div>
-            
             <h1 className="text-6xl md:text-7xl font-bold mb-6 leading-tight">
               Welcome to{' '}
               <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-pulse-glow">
