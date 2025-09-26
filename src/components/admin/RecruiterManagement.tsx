@@ -13,6 +13,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Plus, Search, Edit, Trash2, Users, Mail, UserPlus, Shield } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { RecruiterDetailsView } from './RecruiterDetailsView';
 
 const recruiterSchema = z.object({
   first_name: z.string().min(2, 'First name must be at least 2 characters'),
@@ -46,6 +47,7 @@ export const RecruiterManagement: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingRecruiter, setEditingRecruiter] = useState<Recruiter | null>(null);
+  const [selectedRecruiter, setSelectedRecruiter] = useState<Recruiter | null>(null);
 
   const form = useForm<RecruiterFormData>({
     resolver: zodResolver(recruiterSchema),
@@ -270,6 +272,17 @@ export const RecruiterManagement: React.FC = () => {
     });
   };
 
+  // If a recruiter is selected, show the detailed view
+  if (selectedRecruiter) {
+    return (
+      <RecruiterDetailsView
+        recruiter={selectedRecruiter}
+        onBack={() => setSelectedRecruiter(null)}
+        onUpdate={fetchRecruiters}
+      />
+    );
+  }
+
   if (isLoading) {
     return (
       <div className="text-center py-12">
@@ -396,40 +409,40 @@ export const RecruiterManagement: React.FC = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredRecruiters.map((recruiter) => (
-                    <TableRow key={recruiter.id}>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
-                            <UserPlus className="h-4 w-4 text-green-600" />
-                          </div>
-                          <div>
-                            <div className="font-medium">
-                              {recruiter.first_name} {recruiter.last_name}
-                            </div>
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <Mail className="h-4 w-4 text-gray-400" />
-                          <span className="text-sm">{recruiter.email}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex gap-1">
-                          <Badge variant="secondary" className="bg-green-100 text-green-800">
-                            Recruiter
-                          </Badge>
-                          {isAlsoManager(recruiter.email) && (
-                            <Badge variant="secondary" className="bg-blue-100 text-blue-800">
-                              Manager
-                            </Badge>
-                          )}
-                        </div>
-                      </TableCell>
-                      <TableCell>{formatDate(recruiter.created_at)}</TableCell>
-                      <TableCell>{formatDate(recruiter.updated_at)}</TableCell>
+                   {filteredRecruiters.map((recruiter) => (
+                     <TableRow key={recruiter.id} className="cursor-pointer hover:bg-muted/50">
+                       <TableCell onClick={() => setSelectedRecruiter(recruiter)}>
+                         <div className="flex items-center gap-2">
+                           <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+                             <UserPlus className="h-4 w-4 text-green-600" />
+                           </div>
+                           <div>
+                             <div className="font-medium">
+                               {recruiter.first_name} {recruiter.last_name}
+                             </div>
+                           </div>
+                         </div>
+                       </TableCell>
+                       <TableCell onClick={() => setSelectedRecruiter(recruiter)}>
+                         <div className="flex items-center gap-2">
+                           <Mail className="h-4 w-4 text-gray-400" />
+                           <span className="text-sm">{recruiter.email}</span>
+                         </div>
+                       </TableCell>
+                       <TableCell onClick={() => setSelectedRecruiter(recruiter)}>
+                         <div className="flex gap-1">
+                           <Badge variant="secondary" className="bg-green-100 text-green-800">
+                             Recruiter
+                           </Badge>
+                           {isAlsoManager(recruiter.email) && (
+                             <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                               Manager
+                             </Badge>
+                           )}
+                         </div>
+                       </TableCell>
+                       <TableCell onClick={() => setSelectedRecruiter(recruiter)}>{formatDate(recruiter.created_at)}</TableCell>
+                       <TableCell onClick={() => setSelectedRecruiter(recruiter)}>{formatDate(recruiter.updated_at)}</TableCell>
                       <TableCell className="text-right">
                         <div className="flex gap-2 justify-end">
                           {!isAlsoManager(recruiter.email) && (

@@ -27,6 +27,7 @@ interface Team {
   description: string | null;
   created_at: string;
   updated_at: string;
+  recruit_count?: number;
 }
 
 export const TeamManagement: React.FC = () => {
@@ -55,12 +56,12 @@ export const TeamManagement: React.FC = () => {
 
   const fetchTeams = async () => {
     try {
-      const { data, error } = await supabase
+      const { data: teamsData, error: teamsError } = await supabase
         .from('teams')
         .select('*')
         .order('name');
 
-      if (error) {
+      if (teamsError) {
         toast({
           title: "Error",
           description: "Failed to fetch teams",
@@ -69,7 +70,23 @@ export const TeamManagement: React.FC = () => {
         return;
       }
 
-      setTeams(data || []);
+      // Fetch recruit counts for each team
+      const { data: recruitCounts, error: countError } = await supabase
+        .from('onboarding_forms')
+        .select('team_id')
+        .not('team_id', 'is', null);
+
+      if (countError) {
+        console.error('Error fetching recruit counts:', countError);
+      }
+
+      // Add recruit counts to teams
+      const teamsWithCounts = teamsData?.map(team => ({
+        ...team,
+        recruit_count: recruitCounts?.filter(recruit => recruit.team_id === team.id).length || 0
+      })) || [];
+
+      setTeams(teamsWithCounts);
     } catch (error) {
       console.error('Error fetching teams:', error);
     } finally {
@@ -283,15 +300,16 @@ export const TeamManagement: React.FC = () => {
           ) : (
             <div className="overflow-x-auto">
               <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Team Name</TableHead>
-                    <TableHead>Description</TableHead>
-                    <TableHead>Created</TableHead>
-                    <TableHead>Updated</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
+                 <TableHeader>
+                   <TableRow>
+                     <TableHead>Team Name</TableHead>
+                     <TableHead>Description</TableHead>
+                     <TableHead>Recruits</TableHead>
+                     <TableHead>Created</TableHead>
+                     <TableHead>Updated</TableHead>
+                     <TableHead className="text-right">Actions</TableHead>
+                   </TableRow>
+                 </TableHeader>
                 <TableBody>
                   {filteredTeams.map((team) => (
                     <TableRow key={team.id}>
@@ -303,11 +321,20 @@ export const TeamManagement: React.FC = () => {
                           <span className="font-medium">{team.name}</span>
                         </div>
                       </TableCell>
-                      <TableCell>
-                        <div className="max-w-xs truncate text-sm text-gray-600">
-                          {team.description || 'No description'}
-                        </div>
-                      </TableCell>
+                       <TableCell>
+                         <div className="max-w-xs truncate text-sm text-gray-600">
+                           {team.description || 'No description'}
+                         </div>
+                       </TableCell>
+                       <TableCell>
+                         <div className="flex items-center gap-2">
+                           <Users className="h-4 w-4 text-blue-600" />
+                           <span className="font-medium text-blue-600">
+                             {team.recruit_count || 0}
+                           </span>
+                           <span className="text-sm text-gray-500">recruits</span>
+                         </div>
+                       </TableCell>
                       <TableCell>{formatDate(team.created_at)}</TableCell>
                       <TableCell>{formatDate(team.updated_at)}</TableCell>
                       <TableCell className="text-right">

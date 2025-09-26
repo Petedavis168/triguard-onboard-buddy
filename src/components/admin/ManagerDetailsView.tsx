@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { RecruitsList } from './RecruitsList';
 
 const managerEditSchema = z.object({
   first_name: z.string().min(2, 'First name must be at least 2 characters'),
@@ -187,13 +188,6 @@ export const ManagerDetailsView: React.FC<ManagerDetailsViewProps> = ({
     if (diffInDays < 7) return `${diffInDays}d ago`;
     
     return formatDate(dateString);
-  };
-
-  const getAssignedTeamNames = () => {
-    if (assignedTeams.length === 0) return 'No teams assigned';
-    return assignedTeams
-      .map(teamId => teams.find(t => t.id === teamId)?.name || 'Unknown Team')
-      .join(', ');
   };
 
   return (
@@ -482,10 +476,23 @@ export const ManagerDetailsView: React.FC<ManagerDetailsViewProps> = ({
                   )}
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  {getAssignedTeamNames()}
+                  Total teams assigned: {assignedTeams.length}
                 </p>
               </div>
             )}
+          </CardContent>
+        </Card>
+
+        {/* Recruits Section */}
+        <Card className="lg:col-span-3">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Users className="h-5 w-5" />
+              Managed Recruits
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <RecruitsList managerId={manager.id} />
           </CardContent>
         </Card>
       </div>
