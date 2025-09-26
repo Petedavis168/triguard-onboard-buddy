@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Users, Eye, Mail, Calendar, Mic } from 'lucide-react';
 import SubmissionDetailsDialog from '@/components/admin/SubmissionDetailsDialog';
+import { useManagerActivity } from '@/hooks/useManagerActivity';
 
 interface TeamMemberListProps {
   teamMembers: any[];
@@ -14,8 +15,10 @@ interface TeamMemberListProps {
 const TeamMemberList: React.FC<TeamMemberListProps> = ({ teamMembers, onRefresh }) => {
   const [selectedMember, setSelectedMember] = useState<any>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { updateActivity } = useManagerActivity();
 
   const handleViewDetails = (member: any) => {
+    updateActivity(); // Track activity when viewing member details
     setSelectedMember(member);
     setIsDialogOpen(true);
   };

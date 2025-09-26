@@ -9,10 +9,12 @@ import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import ManagerTaskCreation from '@/components/manager/ManagerTaskCreation';
 import TeamMemberList from '@/components/manager/TeamMemberList';
+import { useManagerActivity } from '@/hooks/useManagerActivity';
 
 const ManagerDashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { updateActivity } = useManagerActivity();
   const [manager, setManager] = useState<any>(null);
   const [teamMembers, setTeamMembers] = useState<any[]>([]);
   const [tasks, setTasks] = useState<any[]>([]);
@@ -29,7 +31,15 @@ const ManagerDashboard = () => {
     }
 
     fetchManagerData(managerId);
-  }, [navigate]);
+    
+    // Update activity on page load
+    updateActivity();
+    
+    // Set up interval to update activity every 5 minutes while active
+    const interval = setInterval(updateActivity, 5 * 60 * 1000);
+    
+    return () => clearInterval(interval);
+  }, [navigate, updateActivity]);
 
   const fetchManagerData = async (managerId: string) => {
     try {
@@ -125,6 +135,7 @@ const ManagerDashboard = () => {
   };
 
   const refreshData = () => {
+    updateActivity(); // Track activity when refreshing data
     const managerId = localStorage.getItem('managerId');
     if (managerId) {
       fetchManagerData(managerId);
@@ -222,7 +233,7 @@ const ManagerDashboard = () => {
 
         {/* Main Content */}
         <div className="bg-white shadow-xl rounded-lg">
-          <Tabs defaultValue="team" className="w-full">
+          <Tabs defaultValue="team" className="w-full" onValueChange={() => updateActivity()}>
             <TabsList className="grid w-full grid-cols-3 rounded-none border-b">
               <TabsTrigger value="team" className="flex items-center gap-2">
                 <Users className="h-4 w-4" />

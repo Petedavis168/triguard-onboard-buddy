@@ -12,7 +12,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Plus, Search, Edit, Trash2, Users, Mail, Phone, Building, UserPlus, Eye, EyeOff, RefreshCw } from 'lucide-react';
+import { Plus, Search, Edit, Trash2, Users, Mail, Phone, Building, UserPlus, Eye, EyeOff, RefreshCw, Clock, Activity } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
 const managerSchema = z.object({
@@ -31,6 +31,8 @@ interface Manager {
   email: string;
   team_id: string | null;
   password: string;
+  last_login_at: string | null;
+  last_activity_at: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -294,7 +296,8 @@ export const ManagerManagement: React.FC = () => {
     return recruiters.some(r => r.email === email);
   };
 
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString: string | null) => {
+    if (!dateString) return 'Never';
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
@@ -302,6 +305,24 @@ export const ManagerManagement: React.FC = () => {
       hour: '2-digit',
       minute: '2-digit'
     });
+  };
+
+  const formatRelativeTime = (dateString: string | null) => {
+    if (!dateString) return 'Never';
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
+    
+    if (diffInMinutes < 1) return 'Just now';
+    if (diffInMinutes < 60) return `${diffInMinutes} min ago`;
+    
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    if (diffInHours < 24) return `${diffInHours}h ago`;
+    
+    const diffInDays = Math.floor(diffInHours / 24);
+    if (diffInDays < 7) return `${diffInDays}d ago`;
+    
+    return formatDate(dateString);
   };
 
   const togglePasswordVisibility = (managerId: string) => {
@@ -490,10 +511,10 @@ export const ManagerManagement: React.FC = () => {
                     <TableHead>Manager</TableHead>
                     <TableHead>Contact</TableHead>
                     <TableHead>Password</TableHead>
+                    <TableHead>Activity</TableHead>
                     <TableHead>Roles</TableHead>
                     <TableHead>Team</TableHead>
                     <TableHead>Created</TableHead>
-                    <TableHead>Updated</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -546,6 +567,20 @@ export const ManagerManagement: React.FC = () => {
                         </div>
                       </TableCell>
                       <TableCell>
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2 text-xs">
+                            <Clock className="h-3 w-3 text-green-600" />
+                            <span className="text-gray-600">Last login:</span>
+                            <span className="font-medium">{formatRelativeTime(manager.last_login_at)}</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-xs">
+                            <Activity className="h-3 w-3 text-blue-600" />
+                            <span className="text-gray-600">Activity:</span>
+                            <span className="font-medium">{formatRelativeTime(manager.last_activity_at)}</span>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
                         <div className="flex gap-1">
                           <Badge variant="secondary" className="bg-blue-100 text-blue-800">
                             Manager
@@ -564,7 +599,6 @@ export const ManagerManagement: React.FC = () => {
                         </div>
                       </TableCell>
                       <TableCell>{formatDate(manager.created_at)}</TableCell>
-                      <TableCell>{formatDate(manager.updated_at)}</TableCell>
                       <TableCell className="text-right">
                         <div className="flex gap-2 justify-end">
                           {!isAlsoRecruiter(manager.email) && (

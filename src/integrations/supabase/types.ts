@@ -80,6 +80,8 @@ export type Database = {
           email: string
           first_name: string
           id: string
+          last_activity_at: string | null
+          last_login_at: string | null
           last_name: string
           password: string
           team_id: string | null
@@ -90,6 +92,8 @@ export type Database = {
           email: string
           first_name: string
           id?: string
+          last_activity_at?: string | null
+          last_login_at?: string | null
           last_name: string
           password: string
           team_id?: string | null
@@ -100,6 +104,8 @@ export type Database = {
           email?: string
           first_name?: string
           id?: string
+          last_activity_at?: string | null
+          last_login_at?: string | null
           last_name?: string
           password?: string
           team_id?: string | null

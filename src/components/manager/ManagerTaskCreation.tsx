@@ -8,6 +8,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Plus, Users } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
+import { useManagerActivity } from '@/hooks/useManagerActivity';
 
 interface ManagerTaskCreationProps {
   managerId: string;
@@ -28,6 +29,7 @@ const ManagerTaskCreation: React.FC<ManagerTaskCreationProps> = ({
   });
   const [selectedMembers, setSelectedMembers] = useState<Set<string>>(new Set());
   const { toast } = useToast();
+  const { updateActivity } = useManagerActivity();
 
   useEffect(() => {
     fetchTeamMembers();
@@ -54,6 +56,7 @@ const ManagerTaskCreation: React.FC<ManagerTaskCreationProps> = ({
   };
 
   const handleMemberToggle = (memberId: string, checked: boolean) => {
+    updateActivity(); // Track activity when selecting members
     const newSelected = new Set(selectedMembers);
     if (checked) {
       newSelected.add(memberId);
@@ -120,6 +123,9 @@ const ManagerTaskCreation: React.FC<ManagerTaskCreationProps> = ({
         .insert(assignments);
 
       if (assignmentError) throw assignmentError;
+
+      // Update activity after task creation
+      updateActivity();
 
       toast({
         title: "Success",

@@ -41,6 +41,19 @@ const ManagerLogin = () => {
         return;
       }
 
+      // Update last login time
+      const { error: updateError } = await supabase
+        .from('managers')
+        .update({ 
+          last_login_at: new Date().toISOString(),
+          last_activity_at: new Date().toISOString()
+        })
+        .eq('id', manager.id);
+
+      if (updateError) {
+        console.error('Failed to update login time:', updateError);
+      }
+
       // Store manager session in localStorage
       localStorage.setItem('managerAuthenticated', 'true');
       localStorage.setItem('managerId', manager.id);
