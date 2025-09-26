@@ -31,6 +31,7 @@ interface Manager {
   email: string;
   team_id: string | null;
   password: string;
+  force_password_change: boolean;
   last_login_at: string | null;
   last_activity_at: string | null;
   created_at: string;
@@ -345,14 +346,18 @@ export const ManagerManagement: React.FC = () => {
 
       const { error } = await supabase
         .from('managers')
-        .update({ password: passwordData, updated_at: new Date().toISOString() })
+        .update({ 
+          password: passwordData, 
+          force_password_change: true,
+          updated_at: new Date().toISOString() 
+        })
         .eq('id', manager.id);
 
       if (error) throw error;
 
       toast({
         title: "Password Regenerated",
-        description: `New password generated for ${manager.first_name} ${manager.last_name}`
+        description: `New password generated for ${manager.first_name} ${manager.last_name}. They will be prompted to change it on next login.`
       });
       
       fetchManagers();

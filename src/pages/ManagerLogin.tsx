@@ -41,6 +41,23 @@ const ManagerLogin = () => {
         return;
       }
 
+      // Check if password change is required
+      if (manager.force_password_change) {
+        // Store temporary session for password change
+        localStorage.setItem('tempManagerAuth', 'true');
+        localStorage.setItem('managerId', manager.id);
+        localStorage.setItem('managerName', `${manager.first_name} ${manager.last_name}`);
+        localStorage.setItem('managerEmail', manager.email);
+        
+        toast({
+          title: "Password Change Required",
+          description: "You must change your password before continuing",
+        });
+        
+        navigate('/manager-password-change');
+        return;
+      }
+
       // Update last login time
       const { error: updateError } = await supabase
         .from('managers')

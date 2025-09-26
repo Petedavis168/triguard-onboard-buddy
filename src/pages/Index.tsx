@@ -52,6 +52,23 @@ const Index = () => {
             </Link>
           </Card>
 
+          {/* Employee Login */}
+          <Card className="shadow-2xl border-0 bg-gradient-card hover-lift animate-scale-in group cursor-pointer">
+            <Link to="/user-login">
+              <CardHeader className="text-center">
+                <div className="w-12 h-12 bg-cyan-500 rounded-lg flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                  <UserCheck className="h-6 w-6 text-white" />
+                </div>
+                <CardTitle className="text-xl">Employee Login</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground text-center">
+                  Access your employee profile, view tasks, and track your progress
+                </p>
+              </CardContent>
+            </Link>
+          </Card>
+
           {/* Recruiting Dashboard */}
           <Card className="shadow-2xl border-0 bg-gradient-card hover-lift animate-scale-in group cursor-pointer">
             <Link to="/recruiting">
@@ -74,7 +91,7 @@ const Index = () => {
             <Link to="/manager-login">
               <CardHeader className="text-center">
                 <div className="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                  <UserCheck className="h-6 w-6 text-white" />
+                  <Users className="h-6 w-6 text-white" />
                 </div>
                 <CardTitle className="text-xl">Manager Dashboard</CardTitle>
               </CardHeader>

@@ -35,6 +35,12 @@ export const Home: React.FC = () => {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
+              <Link to="/user-login">
+                <Button variant="outline" size="lg" className="px-8 py-3 text-lg border-cyan-200 hover:border-cyan-300">
+                  <Users className="mr-2 h-5 w-5" />
+                  Employee Login
+                </Button>
+              </Link>
               <Link to="/manager-login">
                 <Button variant="outline" size="lg" className="px-8 py-3 text-lg border-green-200 hover:border-green-300">
                   <Users className="mr-2 h-5 w-5" />

@@ -79,6 +79,7 @@ export type Database = {
           created_at: string
           email: string
           first_name: string
+          force_password_change: boolean
           id: string
           last_activity_at: string | null
           last_login_at: string | null
@@ -91,6 +92,7 @@ export type Database = {
           created_at?: string
           email: string
           first_name: string
+          force_password_change?: boolean
           id?: string
           last_activity_at?: string | null
           last_login_at?: string | null
@@ -103,6 +105,7 @@ export type Database = {
           created_at?: string
           email?: string
           first_name?: string
+          force_password_change?: boolean
           id?: string
           last_activity_at?: string | null
           last_login_at?: string | null
@@ -162,6 +165,8 @@ export type Database = {
           submitted_at: string | null
           team_id: string | null
           updated_at: string
+          user_password: string | null
+          username: string | null
           voice_recording_completed_at: string | null
           voice_recording_url: string | null
           w9_completed: boolean
@@ -208,6 +213,8 @@ export type Database = {
           submitted_at?: string | null
           team_id?: string | null
           updated_at?: string
+          user_password?: string | null
+          username?: string | null
           voice_recording_completed_at?: string | null
           voice_recording_url?: string | null
           w9_completed?: boolean
@@ -254,6 +261,8 @@ export type Database = {
           submitted_at?: string | null
           team_id?: string | null
           updated_at?: string
+          user_password?: string | null
+          username?: string | null
           voice_recording_completed_at?: string | null
           voice_recording_url?: string | null
           w9_completed?: boolean

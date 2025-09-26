@@ -326,6 +326,9 @@ export const useOnboardingForm = (formId?: string) => {
           account_type: data.account_type || null,
           direct_deposit_form_url: data.direct_deposit_form_url || null,
           direct_deposit_confirmed: data.direct_deposit_confirmed || false,
+          // Generate username and password for login
+          username: `${(data.first_name || '').toLowerCase()}${(data.last_name || '').toLowerCase()}`,
+          user_password: data.cell_phone || '0000000000',
           ...updateData,
         };
 

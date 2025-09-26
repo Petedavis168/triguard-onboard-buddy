@@ -8,7 +8,10 @@ import { OnboardingForm } from "./components/onboarding/OnboardingForm";
 import Admin from "./pages/Admin";
 import AdminLogin from "./pages/AdminLogin";
 import ManagerLogin from "./pages/ManagerLogin";
+import ManagerPasswordChange from "./pages/ManagerPasswordChange";
 import ManagerDashboard from "./pages/ManagerDashboard";
+import UserLogin from "./pages/UserLogin";
+import UserDashboard from "./pages/UserDashboard";
 import RecruitingDashboard from "./pages/RecruitingDashboard";
 import NotFound from "./pages/NotFound";
 
@@ -26,7 +29,10 @@ const App = () => (
           <Route path="/admin-login" element={<AdminLogin />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/manager-login" element={<ManagerLogin />} />
+          <Route path="/manager-password-change" element={<ManagerPasswordChange />} />
           <Route path="/manager-dashboard" element={<ManagerDashboard />} />
+          <Route path="/user-login" element={<UserLogin />} />
+          <Route path="/user-dashboard" element={<UserDashboard />} />
           <Route path="/recruiting" element={<RecruitingDashboard />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
