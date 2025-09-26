@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { ArrowLeft } from 'lucide-react';
 
 const ManagerLogin = () => {
   const [email, setEmail] = useState('');
@@ -16,6 +17,17 @@ const ManagerLogin = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  const handleBackToHome = () => {
+    console.log('Back to Home button clicked from Manager Login');
+    try {
+      navigate('/');
+    } catch (error) {
+      console.error('Navigation error:', error);
+      // Fallback to window.location
+      window.location.href = '/';
+    }
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -93,13 +105,27 @@ const ManagerLogin = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-blue-50 p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold">Manager Portal</CardTitle>
-          <CardDescription>
-            Access your team management dashboard
-          </CardDescription>
-        </CardHeader>
+      <div className="w-full max-w-md">
+        {/* Back Button */}
+        <div className="mb-8">
+          <Button 
+            variant="outline" 
+            className="flex items-center gap-2 hover:shadow-md transition-all duration-200"
+            onClick={handleBackToHome}
+            type="button"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to Home
+          </Button>
+        </div>
+
+        <Card>
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl font-bold">Manager Portal</CardTitle>
+            <CardDescription>
+              Access your team management dashboard
+            </CardDescription>
+          </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">
             {error && (
@@ -146,6 +172,7 @@ const ManagerLogin = () => {
           </form>
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 };
