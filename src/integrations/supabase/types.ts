@@ -81,6 +81,7 @@ export type Database = {
           first_name: string
           id: string
           last_name: string
+          password: string
           team_id: string | null
           updated_at: string
         }
@@ -90,6 +91,7 @@ export type Database = {
           first_name: string
           id?: string
           last_name: string
+          password: string
           team_id?: string | null
           updated_at?: string
         }
@@ -99,6 +101,7 @@ export type Database = {
           first_name?: string
           id?: string
           last_name?: string
+          password?: string
           team_id?: string | null
           updated_at?: string
         }
@@ -428,6 +431,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      generate_secure_password: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
       is_admin_user: {
         Args: Record<PropertyKey, never>
         Returns: boolean
