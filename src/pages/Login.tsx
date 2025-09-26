@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { 
@@ -12,23 +12,31 @@ import {
 } from 'lucide-react';
 
 export const Login: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleBackToHome = () => {
+    navigate('/');
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-secondary/10 to-accent/5 flex items-center justify-center p-4">
       <div className="w-full max-w-4xl">
         {/* Back Button */}
-        <div className="mb-8 animate-fade-in">
-          <Link to="/">
-            <Button variant="outline" className="flex items-center gap-2 hover-lift">
-              <ArrowLeft className="h-4 w-4" />
-              Back to Home
-            </Button>
-          </Link>
+        <div className="mb-8">
+          <Button 
+            variant="outline" 
+            className="flex items-center gap-2 hover:shadow-md transition-all duration-200"
+            onClick={handleBackToHome}
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to Home
+          </Button>
         </div>
 
         {/* Header */}
-        <div className="text-center mb-12 animate-slide-up">
+        <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-3 mb-6">
-            <div className="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center shadow-glow">
+            <div className="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center shadow-lg">
               <span className="text-xl font-bold text-primary-foreground">TR</span>
             </div>
             <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
@@ -41,13 +49,13 @@ export const Login: React.FC = () => {
         </div>
 
         {/* Login Options */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-scale-in">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Manager Portal */}
-          <Card className="shadow-2xl border-0 bg-gradient-card hover-lift group cursor-pointer overflow-hidden">
-            <Link to="/manager-login">
+          <Card className="shadow-xl border-0 bg-gradient-card hover:shadow-2xl transition-all duration-300 group cursor-pointer overflow-hidden">
+            <Link to="/manager-login" className="block">
               <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-transparent to-purple-600/10"></div>
               <CardHeader className="text-center relative z-10 pb-4">
-                <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-xl shadow-purple-500/25">
+                <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-105 transition-transform duration-200 shadow-xl shadow-purple-500/25">
                   <UserCog className="h-10 w-10 text-white" />
                 </div>
                 <CardTitle className="text-3xl mb-4 text-foreground">Manager Portal</CardTitle>
@@ -71,22 +79,22 @@ export const Login: React.FC = () => {
                 </div>
                 
                 <Button 
-                  className="w-full bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white shadow-lg group-hover:shadow-xl transition-all"
+                  className="w-full bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white shadow-lg transition-all"
                   size="lg"
                 >
                   Access Manager Portal
-                  <ChevronRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                  <ChevronRight className="h-4 w-4 ml-2" />
                 </Button>
               </CardContent>
             </Link>
           </Card>
 
           {/* Admin Portal */}
-          <Card className="shadow-2xl border-0 bg-gradient-card hover-lift group cursor-pointer overflow-hidden">
-            <Link to="/admin-login">
+          <Card className="shadow-xl border-0 bg-gradient-card hover:shadow-2xl transition-all duration-300 group cursor-pointer overflow-hidden">
+            <Link to="/admin-login" className="block">
               <div className="absolute inset-0 bg-gradient-to-br from-red-500/10 via-transparent to-red-600/10"></div>
               <CardHeader className="text-center relative z-10 pb-4">
-                <div className="w-20 h-20 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-xl shadow-red-500/25">
+                <div className="w-20 h-20 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-105 transition-transform duration-200 shadow-xl shadow-red-500/25">
                   <Shield className="h-10 w-10 text-white" />
                 </div>
                 <CardTitle className="text-3xl mb-4 text-foreground">Admin Dashboard</CardTitle>
@@ -110,11 +118,11 @@ export const Login: React.FC = () => {
                 </div>
                 
                 <Button 
-                  className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg group-hover:shadow-xl transition-all"
+                  className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg transition-all"
                   size="lg"
                 >
                   Access Admin Dashboard
-                  <ChevronRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                  <ChevronRight className="h-4 w-4 ml-2" />
                 </Button>
               </CardContent>
             </Link>
@@ -122,7 +130,7 @@ export const Login: React.FC = () => {
         </div>
 
         {/* Security Notice */}
-        <div className="mt-12 text-center animate-fade-in">
+        <div className="mt-12 text-center">
           <div className="p-6 bg-muted/30 rounded-xl border border-border/50 backdrop-blur-sm">
             <div className="flex items-center justify-center gap-2 mb-2">
               <Shield className="h-5 w-5 text-primary" />
