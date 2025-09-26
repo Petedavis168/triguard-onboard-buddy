@@ -36,16 +36,10 @@ export const Home: React.FC = () => {
                   Employee Login
                 </Button>
               </Link>
-              <Link to="/manager-login">
-                <Button variant="outline" size="lg" className="px-8 py-3 text-lg border-green-200 hover:border-green-300">
-                  <Users className="mr-2 h-5 w-5" />
-                  Manager Portal
-                </Button>
-              </Link>
-              <Link to="/admin-login">
-                <Button variant="outline" size="lg" className="px-8 py-3 text-lg border-blue-200 hover:border-blue-300">
+              <Link to="/login">
+                <Button variant="outline" size="lg" className="px-8 py-3 text-lg border-gray-200 hover:border-gray-300">
                   <Settings className="mr-2 h-5 w-5" />
-                  Admin Dashboard
+                  Login
                 </Button>
               </Link>
             </div>
