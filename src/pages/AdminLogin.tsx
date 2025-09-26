@@ -18,13 +18,7 @@ const AdminLogin = () => {
 
   const handleBackToHome = () => {
     console.log('Back to Home button clicked from Admin Login');
-    try {
-      navigate('/');
-    } catch (error) {
-      console.error('Navigation error:', error);
-      // Fallback to window.location
-      window.location.href = '/';
-    }
+    navigate('/');
   };
 
   const handleLogin = async (e: React.FormEvent) => {
