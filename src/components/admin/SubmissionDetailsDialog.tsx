@@ -9,7 +9,7 @@ import { Separator } from '@/components/ui/separator';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Save, Play, Pause, User, Mail, MapPin, Shirt, FileText, Mic, CheckCircle, Edit } from 'lucide-react';
+import { Save, Play, Pause, User, Mail, MapPin, Shirt, FileText, Mic, CheckCircle, Edit, CreditCard, Download, ExternalLink } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 
@@ -174,10 +174,12 @@ const SubmissionDetailsDialog: React.FC<SubmissionDetailsDialogProps> = ({
         </DialogHeader>
 
         <Tabs defaultValue="personal" className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-7">
             <TabsTrigger value="personal">Personal</TabsTrigger>
             <TabsTrigger value="address">Address</TabsTrigger>
             <TabsTrigger value="sizing">Sizing</TabsTrigger>
+            <TabsTrigger value="documents">Documents</TabsTrigger>
+            <TabsTrigger value="banking">Banking</TabsTrigger>
             <TabsTrigger value="voice">Voice Pitch</TabsTrigger>
             <TabsTrigger value="tasks">Tasks</TabsTrigger>
           </TabsList>
@@ -429,6 +431,269 @@ const SubmissionDetailsDialog: React.FC<SubmissionDetailsDialogProps> = ({
                     <p className="text-gray-500">No voice recording submitted</p>
                   </div>
                 )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="documents" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="h-5 w-5" />
+                  Uploaded Documents
+                </CardTitle>
+                <CardDescription>
+                  Review all documents submitted during onboarding
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* W9 Form Status */}
+                <div className="space-y-3">
+                  <h4 className="font-medium">W-9 Tax Form</h4>
+                  <div className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <FileText className="h-5 w-5 text-blue-600" />
+                      <div>
+                        <p className="font-medium">W-9 Form</p>
+                        <p className="text-sm text-muted-foreground">
+                          {submission.w9_completed ? 'Completed' : 'Not completed'}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {submission.w9_completed ? (
+                        <Badge className="bg-green-600">✓ Completed</Badge>
+                      ) : (
+                        <Badge variant="outline">Pending</Badge>
+                      )}
+                      {submission.w9_submitted_at && (
+                        <span className="text-sm text-muted-foreground">
+                          {new Date(submission.w9_submitted_at).toLocaleDateString()}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Driver's License */}
+                <div className="space-y-3">
+                  <h4 className="font-medium">Driver's License</h4>
+                  <div className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <FileText className="h-5 w-5 text-purple-600" />
+                      <div>
+                        <p className="font-medium">Driver's License Copy</p>
+                        <p className="text-sm text-muted-foreground">
+                          {submission.drivers_license_url ? 'Uploaded' : 'Not uploaded'}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {submission.drivers_license_url ? (
+                        <>
+                          <Badge className="bg-green-600">✓ Uploaded</Badge>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => window.open(submission.drivers_license_url, '_blank')}
+                          >
+                            <ExternalLink className="h-4 w-4" />
+                          </Button>
+                        </>
+                      ) : (
+                        <Badge variant="outline">Pending</Badge>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Social Security Card */}
+                <div className="space-y-3">
+                  <h4 className="font-medium">Social Security Card</h4>
+                  <div className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <FileText className="h-5 w-5 text-orange-600" />
+                      <div>
+                        <p className="font-medium">Social Security Card Copy</p>
+                        <p className="text-sm text-muted-foreground">
+                          {submission.social_security_card_url ? 'Uploaded' : 'Not uploaded'}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {submission.social_security_card_url ? (
+                        <>
+                          <Badge className="bg-green-600">✓ Uploaded</Badge>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => window.open(submission.social_security_card_url, '_blank')}
+                          >
+                            <ExternalLink className="h-4 w-4" />
+                          </Button>
+                        </>
+                      ) : (
+                        <Badge variant="outline">Pending</Badge>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Badge Photo */}
+                <div className="space-y-3">
+                  <h4 className="font-medium">Badge Photo</h4>
+                  <div className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <User className="h-5 w-5 text-indigo-600" />
+                      <div>
+                        <p className="font-medium">Employee Badge Photo</p>
+                        <p className="text-sm text-muted-foreground">
+                          {submission.badge_photo_url ? 'Uploaded' : 'Not uploaded'}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {submission.badge_photo_url ? (
+                        <>
+                          <Badge className="bg-green-600">✓ Uploaded</Badge>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => window.open(submission.badge_photo_url, '_blank')}
+                          >
+                            <ExternalLink className="h-4 w-4" />
+                          </Button>
+                        </>
+                      ) : (
+                        <Badge variant="outline">Pending</Badge>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Documents Upload Status */}
+                {submission.documents_uploaded_at && (
+                  <div className="mt-6 p-3 bg-blue-50 rounded-lg">
+                    <p className="text-sm text-blue-800">
+                      <strong>Documents uploaded:</strong> {new Date(submission.documents_uploaded_at).toLocaleString()}
+                    </p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="banking" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <CreditCard className="h-5 w-5" />
+                  Direct Deposit Information
+                </CardTitle>
+                <CardDescription>
+                  Banking details for payroll direct deposit
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Direct Deposit Status */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-medium">Direct Deposit Status</h4>
+                    {submission.direct_deposit_confirmed ? (
+                      <Badge className="bg-green-600">✓ Confirmed</Badge>
+                    ) : (
+                      <Badge variant="outline">Pending Confirmation</Badge>
+                    )}
+                  </div>
+                  {submission.direct_deposit_completed_at && (
+                    <p className="text-sm text-muted-foreground">
+                      Completed: {new Date(submission.direct_deposit_completed_at).toLocaleString()}
+                    </p>
+                  )}
+                </div>
+
+                <Separator />
+
+                {/* Banking Details */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label>Account Type</Label>
+                    <div className="p-3 bg-gray-50 rounded-lg">
+                      {submission.account_type ? (
+                        <span className="capitalize font-medium">{submission.account_type}</span>
+                      ) : (
+                        <span className="text-muted-foreground">Not specified</span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Bank Routing Number</Label>
+                    <div className="p-3 bg-gray-50 rounded-lg">
+                      {submission.bank_routing_number ? (
+                        <span className="font-mono">{submission.bank_routing_number}</span>
+                      ) : (
+                        <span className="text-muted-foreground">Not provided</span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="space-y-2 col-span-full">
+                    <Label>Bank Account Number</Label>
+                    <div className="p-3 bg-gray-50 rounded-lg">
+                      {submission.bank_account_number ? (
+                        <span className="font-mono">
+                          ****{submission.bank_account_number.slice(-4)}
+                        </span>
+                      ) : (
+                        <span className="text-muted-foreground">Not provided</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Direct Deposit Form */}
+                {submission.direct_deposit_form_url && (
+                  <div className="space-y-3">
+                    <h4 className="font-medium">Direct Deposit Form</h4>
+                    <div className="flex items-center justify-between p-4 border rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <FileText className="h-5 w-5 text-green-600" />
+                        <div>
+                          <p className="font-medium">Signed Direct Deposit Form</p>
+                          <p className="text-sm text-muted-foreground">Uploaded document</p>
+                        </div>
+                      </div>
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => window.open(submission.direct_deposit_form_url, '_blank')}
+                      >
+                        <Download className="h-4 w-4 mr-2" />
+                        View Form
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Contact Information */}
+                <div className="space-y-3">
+                  <h4 className="font-medium">Contact Information</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Cell Phone</Label>
+                      <div className="p-3 bg-gray-50 rounded-lg">
+                        {submission.cell_phone || 'Not provided'}
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Personal Email</Label>
+                      <div className="p-3 bg-gray-50 rounded-lg">
+                        {submission.personal_email || 'Not provided'}
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
