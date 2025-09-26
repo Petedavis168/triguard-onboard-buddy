@@ -15,7 +15,14 @@ export const Login: React.FC = () => {
   const navigate = useNavigate();
 
   const handleBackToHome = () => {
-    navigate('/');
+    console.log('Back to Home button clicked');
+    try {
+      navigate('/');
+    } catch (error) {
+      console.error('Navigation error:', error);
+      // Fallback to window.location
+      window.location.href = '/';
+    }
   };
 
   return (
@@ -27,6 +34,7 @@ export const Login: React.FC = () => {
             variant="outline" 
             className="flex items-center gap-2 hover:shadow-md transition-all duration-200"
             onClick={handleBackToHome}
+            type="button"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to Home
