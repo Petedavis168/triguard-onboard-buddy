@@ -74,6 +74,45 @@ export type Database = {
         }
         Relationships: []
       }
+      manager_teams: {
+        Row: {
+          assigned_at: string
+          created_at: string
+          id: string
+          manager_id: string
+          team_id: string
+        }
+        Insert: {
+          assigned_at?: string
+          created_at?: string
+          id?: string
+          manager_id: string
+          team_id: string
+        }
+        Update: {
+          assigned_at?: string
+          created_at?: string
+          id?: string
+          manager_id?: string
+          team_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "manager_teams_manager_id_fkey"
+            columns: ["manager_id"]
+            isOneToOne: false
+            referencedRelation: "managers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "manager_teams_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       managers: {
         Row: {
           created_at: string

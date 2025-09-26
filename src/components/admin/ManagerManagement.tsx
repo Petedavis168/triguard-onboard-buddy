@@ -13,13 +13,14 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Plus, Search, Edit, Trash2, Users, Mail, Phone, Building, UserPlus, Eye, EyeOff, RefreshCw, Clock, Activity } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from '@/hooks/use-toast';
 
 const managerSchema = z.object({
   first_name: z.string().min(2, 'First name must be at least 2 characters'),
   last_name: z.string().min(2, 'Last name must be at least 2 characters'),
   email: z.string().email('Invalid email address'),
-  team_id: z.string().optional(),
+  team_ids: z.array(z.string()).optional(),
 });
 
 type ManagerFormData = z.infer<typeof managerSchema>;
@@ -36,6 +37,7 @@ interface Manager {
   last_activity_at: string | null;
   created_at: string;
   updated_at: string;
+  assigned_teams?: Team[];
 }
 
 interface Team {
@@ -69,7 +71,7 @@ export const ManagerManagement: React.FC = () => {
       first_name: '',
       last_name: '',
       email: '',
-      team_id: '',
+      team_ids: [],
     },
   });
 
@@ -85,12 +87,12 @@ export const ManagerManagement: React.FC = () => {
 
   const fetchManagers = async () => {
     try {
-      const { data, error } = await supabase
+      const { data: managersData, error: managersError } = await supabase
         .from('managers')
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (error) {
+      if (managersError) {
         toast({
           title: "Error",
           description: "Failed to fetch managers",
@@ -99,7 +101,31 @@ export const ManagerManagement: React.FC = () => {
         return;
       }
 
-      setManagers(data || []);
+      // Fetch team assignments for each manager
+      const { data: teamAssignments, error: teamError } = await supabase
+        .from('manager_teams')
+        .select(`
+          manager_id,
+          team_id,
+          teams:team_id (
+            id,
+            name,
+            description
+          )
+        `);
+
+      if (teamError) {
+        console.error('Error fetching team assignments:', teamError);
+      }
+
+      // Combine managers with their assigned teams
+      const managersWithTeams = managersData?.map(manager => ({
+        ...manager,
+        assigned_teams: teamAssignments?.filter(ta => ta.manager_id === manager.id)
+          .map(ta => ta.teams).filter(Boolean) || []
+      })) || [];
+
+      setManagers(managersWithTeams);
     } catch (error) {
       console.error('Error fetching managers:', error);
     } finally {
@@ -160,18 +186,37 @@ export const ManagerManagement: React.FC = () => {
   const onSubmit = async (data: ManagerFormData) => {
     try {
       if (editingManager) {
-        const { error } = await supabase
+        // Update manager basic info
+        const { error: managerError } = await supabase
           .from('managers')
           .update({
             first_name: data.first_name,
             last_name: data.last_name,
             email: data.email,
-            team_id: data.team_id || null,
             updated_at: new Date().toISOString(),
           })
           .eq('id', editingManager.id);
 
-        if (error) throw error;
+        if (managerError) throw managerError;
+
+        // Update team assignments
+        // First, remove existing assignments
+        await supabase
+          .from('manager_teams')
+          .delete()
+          .eq('manager_id', editingManager.id);
+
+        // Then add new assignments
+        if (data.team_ids && data.team_ids.length > 0) {
+          const teamAssignments = data.team_ids.map(teamId => ({
+            manager_id: editingManager.id,
+            team_id: teamId
+          }));
+
+          await supabase
+            .from('manager_teams')
+            .insert(teamAssignments);
+        }
 
         toast({
           title: "Success",
@@ -196,7 +241,6 @@ export const ManagerManagement: React.FC = () => {
             first_name: data.first_name,
             last_name: data.last_name,
             email: data.email,
-            team_id: data.team_id || null,
             password_hash: hashedPassword,
             force_password_change: true,
           }])
@@ -204,6 +248,18 @@ export const ManagerManagement: React.FC = () => {
           .single();
 
         if (error) throw error;
+
+        // Add team assignments for new manager
+        if (data.team_ids && data.team_ids.length > 0) {
+          const teamAssignments = data.team_ids.map(teamId => ({
+            manager_id: newManager.id,
+            team_id: teamId
+          }));
+
+          await supabase
+            .from('manager_teams')
+            .insert(teamAssignments);
+        }
 
         // Store the generated password for admin viewing
         const newGeneratedPasswords = new Map(generatedPasswords);
@@ -229,13 +285,22 @@ export const ManagerManagement: React.FC = () => {
     }
   };
 
-  const handleEdit = (manager: Manager) => {
+  const handleEdit = async (manager: Manager) => {
     setEditingManager(manager);
+    
+    // Get current team assignments for this manager
+    const { data: teamAssignments } = await supabase
+      .from('manager_teams')
+      .select('team_id')
+      .eq('manager_id', manager.id);
+    
+    const assignedTeamIds = teamAssignments?.map(ta => ta.team_id) || [];
+    
     form.reset({
       first_name: manager.first_name,
       last_name: manager.last_name,
       email: manager.email,
-      team_id: manager.team_id || '',
+      team_ids: assignedTeamIds,
     });
     setIsDialogOpen(true);
   };
@@ -264,10 +329,11 @@ export const ManagerManagement: React.FC = () => {
     }
   };
 
-  const getTeamName = (teamId: string | null) => {
-    if (!teamId) return 'Unassigned';
-    const team = teams.find(t => t.id === teamId);
-    return team ? team.name : 'Unknown Team';
+  const getTeamNames = (manager: Manager) => {
+    if (!manager.assigned_teams || manager.assigned_teams.length === 0) {
+      return 'Unassigned';
+    }
+    return manager.assigned_teams.map(team => team.name).join(', ');
   };
 
   const promoteToRecruiter = async (manager: Manager) => {
@@ -432,7 +498,7 @@ export const ManagerManagement: React.FC = () => {
                       first_name: '',
                       last_name: '',
                       email: '',
-                      team_id: '',
+                      team_ids: [],
                     });
                   }}>
                     <Plus className="h-4 w-4 mr-2" />
@@ -490,25 +556,43 @@ export const ManagerManagement: React.FC = () => {
                       />
                       <FormField
                         control={form.control}
-                        name="team_id"
+                        name="team_ids"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Team Assignment</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select a team" />
-                                </SelectTrigger>
-                              </FormControl>
-                               <SelectContent>
-                                <SelectItem value="no-team">No Team</SelectItem>
-                                {teams.map((team) => (
-                                  <SelectItem key={team.id} value={team.id}>
-                                    {team.name}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
+                            <FormLabel>Team Assignments</FormLabel>
+                            <FormControl>
+                              <div className="space-y-2 max-h-32 overflow-y-auto border rounded-md p-2">
+                                {teams.length === 0 ? (
+                                  <p className="text-sm text-gray-500">No teams available</p>
+                                ) : (
+                                  teams.map((team) => (
+                                    <div key={team.id} className="flex items-center space-x-2">
+                                      <Checkbox
+                                        id={`team-${team.id}`}
+                                        checked={field.value?.includes(team.id) || false}
+                                        onCheckedChange={(checked) => {
+                                          const currentValues = field.value || [];
+                                          if (checked) {
+                                            field.onChange([...currentValues, team.id]);
+                                          } else {
+                                            field.onChange(currentValues.filter(id => id !== team.id));
+                                          }
+                                        }}
+                                      />
+                                      <label 
+                                        htmlFor={`team-${team.id}`}
+                                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                                      >
+                                        {team.name}
+                                      </label>
+                                    </div>
+                                  ))
+                                )}
+                                <div className="text-xs text-gray-500 pt-2 border-t">
+                                  Selected: {field.value?.length || 0} team(s)
+                                </div>
+                              </div>
+                            </FormControl>
                             <FormMessage />
                           </FormItem>
                         )}
@@ -688,12 +772,12 @@ export const ManagerManagement: React.FC = () => {
                           )}
                         </div>
                       </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <Building className="h-4 w-4 text-gray-400" />
-                          <span className="text-sm">{getTeamName(manager.team_id)}</span>
-                        </div>
-                      </TableCell>
+                       <TableCell>
+                         <div className="flex items-center gap-2">
+                           <Building className="h-4 w-4 text-gray-400" />
+                           <span className="text-sm">{getTeamNames(manager)}</span>
+                         </div>
+                       </TableCell>
                       <TableCell>{formatDate(manager.created_at)}</TableCell>
                       <TableCell className="text-right">
                         <div className="flex gap-2 justify-end">
