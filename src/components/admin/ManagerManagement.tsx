@@ -12,7 +12,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Plus, Search, Edit, Trash2, Users, Mail, Phone, Building, UserPlus } from 'lucide-react';
+import { Plus, Search, Edit, Trash2, Users, Mail, Phone, Building, UserPlus, Eye, EyeOff, RefreshCw } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
 const managerSchema = z.object({
@@ -30,6 +30,7 @@ interface Manager {
   last_name: string;
   email: string;
   team_id: string | null;
+  password: string;
   created_at: string;
   updated_at: string;
 }
@@ -56,6 +57,7 @@ export const ManagerManagement: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingManager, setEditingManager] = useState<Manager | null>(null);
+  const [visiblePasswords, setVisiblePasswords] = useState<Set<string>>(new Set());
 
   const form = useForm<ManagerFormData>({
     resolver: zodResolver(managerSchema),
@@ -172,6 +174,12 @@ export const ManagerManagement: React.FC = () => {
           description: "Manager updated successfully"
         });
       } else {
+        // Generate password for new manager
+        const { data: passwordData, error: passwordError } = await supabase
+          .rpc('generate_secure_password');
+
+        if (passwordError) throw passwordError;
+
         const { error } = await supabase
           .from('managers')
           .insert([{
@@ -179,6 +187,7 @@ export const ManagerManagement: React.FC = () => {
             last_name: data.last_name,
             email: data.email,
             team_id: data.team_id || null,
+            password: passwordData,
           }]);
 
         if (error) throw error;
@@ -293,6 +302,46 @@ export const ManagerManagement: React.FC = () => {
       hour: '2-digit',
       minute: '2-digit'
     });
+  };
+
+  const togglePasswordVisibility = (managerId: string) => {
+    const newVisible = new Set(visiblePasswords);
+    if (newVisible.has(managerId)) {
+      newVisible.delete(managerId);
+    } else {
+      newVisible.add(managerId);
+    }
+    setVisiblePasswords(newVisible);
+  };
+
+  const regeneratePassword = async (manager: Manager) => {
+    try {
+      // Generate new password
+      const { data: passwordData, error: passwordError } = await supabase
+        .rpc('generate_secure_password');
+
+      if (passwordError) throw passwordError;
+
+      const { error } = await supabase
+        .from('managers')
+        .update({ password: passwordData, updated_at: new Date().toISOString() })
+        .eq('id', manager.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Password Regenerated",
+        description: `New password generated for ${manager.first_name} ${manager.last_name}`
+      });
+      
+      fetchManagers();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to regenerate password",
+        variant: "destructive"
+      });
+    }
   };
 
   if (isLoading) {
@@ -440,6 +489,7 @@ export const ManagerManagement: React.FC = () => {
                   <TableRow>
                     <TableHead>Manager</TableHead>
                     <TableHead>Contact</TableHead>
+                    <TableHead>Password</TableHead>
                     <TableHead>Roles</TableHead>
                     <TableHead>Team</TableHead>
                     <TableHead>Created</TableHead>
@@ -466,6 +516,33 @@ export const ManagerManagement: React.FC = () => {
                         <div className="flex items-center gap-2">
                           <Mail className="h-4 w-4 text-gray-400" />
                           <span className="text-sm">{manager.email}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <code className="text-sm bg-gray-100 px-2 py-1 rounded font-mono">
+                            {visiblePasswords.has(manager.id) ? manager.password : '••••••••••••'}
+                          </code>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => togglePasswordVisibility(manager.id)}
+                            className="h-6 w-6 p-0"
+                          >
+                            {visiblePasswords.has(manager.id) ? 
+                              <EyeOff className="h-3 w-3" /> : 
+                              <Eye className="h-3 w-3" />
+                            }
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => regeneratePassword(manager)}
+                            className="h-6 w-6 p-0"
+                            title="Generate new password"
+                          >
+                            <RefreshCw className="h-3 w-3" />
+                          </Button>
                         </div>
                       </TableCell>
                       <TableCell>

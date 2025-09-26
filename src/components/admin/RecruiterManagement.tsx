@@ -217,12 +217,19 @@ export const RecruiterManagement: React.FC = () => {
         return;
       }
 
+      // Generate password for new manager
+      const { data: passwordData, error: passwordError } = await supabase
+        .rpc('generate_secure_password');
+
+      if (passwordError) throw passwordError;
+
       const { error } = await supabase
         .from('managers')
         .insert([{
           first_name: recruiter.first_name,
           last_name: recruiter.last_name,
           email: recruiter.email,
+          password: passwordData,
         }]);
 
       if (error) throw error;
