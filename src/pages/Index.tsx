@@ -2,12 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { 
   Users, 
   Settings, 
@@ -16,7 +10,6 @@ import {
   FileText,
   BarChart3,
   LogIn,
-  ChevronDown,
   Shield,
   UserCog,
   ArrowRight,
@@ -43,40 +36,13 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Login Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="flex items-center gap-2 hover-lift">
-                  <LogIn className="h-4 w-4" />
-                  Login
-                  <ChevronDown className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 bg-background/95 backdrop-blur-sm border shadow-xl">
-                <DropdownMenuItem asChild>
-                  <Link to="/manager-login" className="flex items-center gap-3 p-3 hover:bg-primary/10 cursor-pointer">
-                    <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center">
-                      <UserCog className="h-4 w-4 text-white" />
-                    </div>
-                    <div>
-                      <p className="font-medium">Manager Portal</p>
-                      <p className="text-xs text-muted-foreground">Team management & tasks</p>
-                    </div>
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/admin-login" className="flex items-center gap-3 p-3 hover:bg-destructive/10 cursor-pointer">
-                    <div className="w-8 h-8 bg-gradient-to-br from-red-500 to-red-600 rounded-lg flex items-center justify-center">
-                      <Shield className="h-4 w-4 text-white" />
-                    </div>
-                    <div>
-                      <p className="font-medium">Admin Portal</p>
-                      <p className="text-xs text-muted-foreground">Full system access</p>
-                    </div>
-                  </Link>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            {/* Login Button */}
+            <Link to="/login">
+              <Button variant="outline" className="flex items-center gap-2 hover-lift">
+                <LogIn className="h-4 w-4" />
+                Login
+              </Button>
+            </Link>
           </div>
         </div>
       </header>
