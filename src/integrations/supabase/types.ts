@@ -129,6 +129,7 @@ export type Database = {
           first_name: string
           force_password_change: boolean
           id: string
+          is_admin: boolean
           last_activity_at: string | null
           last_login_at: string | null
           last_name: string
@@ -142,6 +143,7 @@ export type Database = {
           first_name: string
           force_password_change?: boolean
           id?: string
+          is_admin?: boolean
           last_activity_at?: string | null
           last_login_at?: string | null
           last_name: string
@@ -155,6 +157,7 @@ export type Database = {
           first_name?: string
           force_password_change?: boolean
           id?: string
+          is_admin?: boolean
           last_activity_at?: string | null
           last_login_at?: string | null
           last_name?: string
@@ -504,6 +507,7 @@ export type Database = {
           last_activity_at: string
           last_login_at: string
           last_name: string
+          user_type: string
         }[]
       }
       authenticate_manager: {

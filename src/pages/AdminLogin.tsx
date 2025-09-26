@@ -41,9 +41,10 @@ const AdminLogin = () => {
 
       const adminData = data[0];
 
-      // Store admin data
+      // Store admin data with user type
       localStorage.setItem('adminData', JSON.stringify(adminData));
       localStorage.setItem('adminEmail', adminData.email);
+      localStorage.setItem('adminUserType', adminData.user_type);
 
       if (adminData.force_password_change) {
         // Store temporary auth for password change
@@ -54,14 +55,24 @@ const AdminLogin = () => {
         });
         navigate('/admin-password-change');
       } else {
-        // Update last activity
-        await supabase
-          .from('admin_users')
-          .update({
-            last_login_at: new Date().toISOString(),
-            last_activity_at: new Date().toISOString()
-          })
-          .eq('id', adminData.id);
+        // Update last activity based on user type
+        if (adminData.user_type === 'admin') {
+          await supabase
+            .from('admin_users')
+            .update({
+              last_login_at: new Date().toISOString(),
+              last_activity_at: new Date().toISOString()
+            })
+            .eq('id', adminData.id);
+        } else if (adminData.user_type === 'manager_admin') {
+          await supabase
+            .from('managers')
+            .update({
+              last_login_at: new Date().toISOString(),
+              last_activity_at: new Date().toISOString()
+            })
+            .eq('id', adminData.id);
+        }
 
         localStorage.setItem('adminAuthenticated', 'true');
         toast({

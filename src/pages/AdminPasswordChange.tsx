@@ -37,6 +37,7 @@ const AdminPasswordChange: React.FC = () => {
 
     try {
       const adminData = JSON.parse(localStorage.getItem('adminData') || '{}');
+      const userType = localStorage.getItem('adminUserType') || 'admin';
       
       if (!adminData.id) {
         setError('Admin session not found. Please log in again.');
@@ -44,30 +45,61 @@ const AdminPasswordChange: React.FC = () => {
         return;
       }
 
-      const { data, error: rpcError } = await supabase
-        .rpc('update_admin_password', {
-          admin_id: adminData.id,
-          current_password: currentPassword,
-          new_password: newPassword
-        });
+      // Use appropriate password update function based on user type
+      let updateResult;
+      if (userType === 'admin') {
+        const { data, error: rpcError } = await supabase
+          .rpc('update_admin_password', {
+            admin_id: adminData.id,
+            current_password: currentPassword,
+            new_password: newPassword
+          });
+        updateResult = { data, error: rpcError };
+      } else if (userType === 'manager_admin') {
+        const { data, error: rpcError } = await supabase
+          .rpc('update_manager_password', {
+            manager_id: adminData.id,
+            current_password: currentPassword,
+            new_password: newPassword
+          });
+        updateResult = { data, error: rpcError };
+      } else {
+        setError('Invalid user type');
+        setIsLoading(false);
+        return;
+      }
 
-      if (rpcError || !data) {
+      if (updateResult.error || !updateResult.data) {
         setError('Current password is incorrect');
         setIsLoading(false);
         return;
       }
 
-      // Update admin data to reflect password change
-      const { error: updateError } = await supabase
-        .from('admin_users')
-        .update({
-          last_login_at: new Date().toISOString(),
-          last_activity_at: new Date().toISOString()
-        })
-        .eq('id', adminData.id);
+      // Update activity based on user type
+      if (userType === 'admin') {
+        const { error: updateError } = await supabase
+          .from('admin_users')
+          .update({
+            last_login_at: new Date().toISOString(),
+            last_activity_at: new Date().toISOString()
+          })
+          .eq('id', adminData.id);
 
-      if (updateError) {
-        console.error('Error updating admin activity:', updateError);
+        if (updateError) {
+          console.error('Error updating admin activity:', updateError);
+        }
+      } else if (userType === 'manager_admin') {
+        const { error: updateError } = await supabase
+          .from('managers')
+          .update({
+            last_login_at: new Date().toISOString(),
+            last_activity_at: new Date().toISOString()
+          })
+          .eq('id', adminData.id);
+
+        if (updateError) {
+          console.error('Error updating manager activity:', updateError);
+        }
       }
 
       // Clear temporary auth and set full authentication

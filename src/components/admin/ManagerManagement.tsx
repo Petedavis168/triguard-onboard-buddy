@@ -8,6 +8,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
+import { Switch } from '@/components/ui/switch';
 import { supabase } from '@/integrations/supabase/client';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -22,6 +23,7 @@ const managerSchema = z.object({
   last_name: z.string().min(2, 'Last name must be at least 2 characters'),
   email: z.string().email('Invalid email address'),
   team_ids: z.array(z.string()).optional(),
+  is_admin: z.boolean().optional(),
 });
 
 type ManagerFormData = z.infer<typeof managerSchema>;
@@ -34,6 +36,7 @@ interface Manager {
   team_id: string | null;
   password_hash: string;
   force_password_change: boolean;
+  is_admin: boolean;
   last_login_at: string | null;
   last_activity_at: string | null;
   created_at: string;
@@ -74,6 +77,7 @@ export const ManagerManagement: React.FC = () => {
       last_name: '',
       email: '',
       team_ids: [],
+      is_admin: false,
     },
   });
 
@@ -195,6 +199,7 @@ export const ManagerManagement: React.FC = () => {
             first_name: data.first_name,
             last_name: data.last_name,
             email: data.email,
+            is_admin: data.is_admin || false,
             updated_at: new Date().toISOString(),
           })
           .eq('id', editingManager.id);
@@ -245,6 +250,7 @@ export const ManagerManagement: React.FC = () => {
             email: data.email,
             password_hash: hashedPassword,
             force_password_change: true,
+            is_admin: data.is_admin || false,
           }])
           .select()
           .single();
@@ -303,6 +309,7 @@ export const ManagerManagement: React.FC = () => {
       last_name: manager.last_name,
       email: manager.email,
       team_ids: assignedTeamIds,
+      is_admin: manager.is_admin,
     });
     setIsDialogOpen(true);
   };
@@ -517,6 +524,7 @@ export const ManagerManagement: React.FC = () => {
                       last_name: '',
                       email: '',
                       team_ids: [],
+                      is_admin: false,
                     });
                   }}>
                     <Plus className="h-4 w-4 mr-2" />
@@ -614,8 +622,28 @@ export const ManagerManagement: React.FC = () => {
                             <FormMessage />
                           </FormItem>
                         )}
-                      />
-                      <div className="flex justify-end gap-2 pt-4">
+                         />
+                         <FormField
+                           control={form.control}
+                           name="is_admin"
+                           render={({ field }) => (
+                             <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                               <div className="space-y-0.5">
+                                 <FormLabel className="text-base">Admin Privileges</FormLabel>
+                                 <p className="text-sm text-muted-foreground">
+                                   Grant this manager access to admin functions
+                                 </p>
+                               </div>
+                               <FormControl>
+                                 <Switch
+                                   checked={field.value || false}
+                                   onCheckedChange={field.onChange}
+                                 />
+                               </FormControl>
+                             </FormItem>
+                           )}
+                         />
+                       <div className="flex justify-end gap-2 pt-4">
                         <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
                           Cancel
                         </Button>
@@ -778,18 +806,23 @@ export const ManagerManagement: React.FC = () => {
                            </div>
                          </div>
                        </TableCell>
-                       <TableCell onClick={() => setSelectedManager(manager)}>
-                         <div className="flex gap-1">
-                           <Badge variant="secondary" className="bg-blue-100 text-blue-800">
-                             Manager
-                           </Badge>
-                           {isAlsoRecruiter(manager.email) && (
-                             <Badge variant="secondary" className="bg-green-100 text-green-800">
-                               Recruiter
-                             </Badge>
-                           )}
-                         </div>
-                       </TableCell>
+                        <TableCell onClick={() => setSelectedManager(manager)}>
+                          <div className="flex gap-1">
+                            <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                              Manager
+                            </Badge>
+                            {manager.is_admin && (
+                              <Badge variant="secondary" className="bg-purple-100 text-purple-800">
+                                Admin
+                              </Badge>
+                            )}
+                            {isAlsoRecruiter(manager.email) && (
+                              <Badge variant="secondary" className="bg-green-100 text-green-800">
+                                Recruiter
+                              </Badge>
+                            )}
+                          </div>
+                        </TableCell>
                         <TableCell onClick={() => setSelectedManager(manager)}>
                           <div className="flex items-center gap-2">
                             <Building className="h-4 w-4 text-gray-400" />

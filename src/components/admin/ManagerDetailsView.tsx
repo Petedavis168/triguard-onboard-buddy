@@ -6,6 +6,7 @@ import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Switch } from '@/components/ui/switch';
 import { supabase } from '@/integrations/supabase/client';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -32,6 +33,7 @@ const managerEditSchema = z.object({
   last_name: z.string().min(2, 'Last name must be at least 2 characters'),
   email: z.string().email('Invalid email address'),
   team_ids: z.array(z.string()).optional(),
+  is_admin: z.boolean().optional(),
 });
 
 type ManagerEditFormData = z.infer<typeof managerEditSchema>;
@@ -44,6 +46,7 @@ interface Manager {
   team_id: string | null;
   password_hash: string;
   force_password_change: boolean;
+  is_admin: boolean;
   last_login_at: string | null;
   last_activity_at: string | null;
   created_at: string;
@@ -88,6 +91,7 @@ export const ManagerDetailsView: React.FC<ManagerDetailsViewProps> = ({
       last_name: manager.last_name,
       email: manager.email,
       team_ids: [],
+      is_admin: manager.is_admin,
     },
   });
 
@@ -119,6 +123,7 @@ export const ManagerDetailsView: React.FC<ManagerDetailsViewProps> = ({
           first_name: data.first_name,
           last_name: data.last_name,
           email: data.email,
+          is_admin: data.is_admin || false,
           updated_at: new Date().toISOString(),
         })
         .eq('id', manager.id);
@@ -216,6 +221,7 @@ export const ManagerDetailsView: React.FC<ManagerDetailsViewProps> = ({
                   last_name: manager.last_name,
                   email: manager.email,
                   team_ids: assignedTeams,
+                  is_admin: manager.is_admin,
                 });
               }}>
                 Cancel
@@ -284,6 +290,20 @@ export const ManagerDetailsView: React.FC<ManagerDetailsViewProps> = ({
                     </p>
                   )}
                 </div>
+                
+                {/* Admin Privileges */}
+                <div className="flex items-center justify-between rounded-lg border p-4">
+                  <div className="space-y-0.5">
+                    <Label className="text-base">Admin Privileges</Label>
+                    <p className="text-sm text-muted-foreground">
+                      Grant this manager access to admin functions
+                    </p>
+                  </div>
+                  <Switch
+                    checked={form.watch('is_admin') || false}
+                    onCheckedChange={(checked) => form.setValue('is_admin', checked)}
+                  />
+                </div>
               </form>
             ) : (
               <div className="space-y-3">
@@ -301,6 +321,13 @@ export const ManagerDetailsView: React.FC<ManagerDetailsViewProps> = ({
                   <Clock className="h-4 w-4 text-gray-400" />
                   <span className="font-medium">Created:</span>
                   <span>{formatDate(manager.created_at)}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Shield className="h-4 w-4 text-gray-400" />
+                  <span className="font-medium">Admin:</span>
+                  <Badge variant={manager.is_admin ? "default" : "secondary"}>
+                    {manager.is_admin ? 'Admin' : 'Manager Only'}
+                  </Badge>
                 </div>
               </div>
             )}
