@@ -11,36 +11,12 @@ import {
   ChevronRight
 } from 'lucide-react';
 
-export const Login: React.FC = () => {
+const Login: React.FC = () => {
   const navigate = useNavigate();
 
   const handleBackToHome = () => {
-    console.log('=== BACK TO HOME DEBUG ===');
-    console.log('Current route:', window.location.pathname);
-    console.log('Current href:', window.location.href);
-    console.log('Attempting to navigate to /');
-    
-    // Try multiple navigation methods
-    let navigationAttempted = false;
-    
-    // Method 1: React Router with replace
-    try {
-      navigate('/', { replace: true });
-      console.log('✓ React Router navigate() called');
-      navigationAttempted = true;
-    } catch (error) {
-      console.error('✗ React Router failed:', error);
-    }
-    
-    // Method 2: Direct window navigation after short delay
-    setTimeout(() => {
-      if (window.location.pathname === '/login') {
-        console.log('Still on /login, using window.location');
-        window.location.href = window.location.origin + '/';
-      } else {
-        console.log('Navigation successful, now on:', window.location.pathname);
-      }
-    }, 100);
+    console.log('Back to Home button clicked from Login Portal');
+    navigate('/');
   };
 
   return (
