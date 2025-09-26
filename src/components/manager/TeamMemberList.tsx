@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Users, Eye, Mail, Calendar, Mic } from 'lucide-react';
+import SubmissionDetailsDialog from '@/components/admin/SubmissionDetailsDialog';
 
 interface TeamMemberListProps {
   teamMembers: any[];
@@ -11,6 +12,18 @@ interface TeamMemberListProps {
 }
 
 const TeamMemberList: React.FC<TeamMemberListProps> = ({ teamMembers, onRefresh }) => {
+  const [selectedMember, setSelectedMember] = useState<any>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const handleViewDetails = (member: any) => {
+    setSelectedMember(member);
+    setIsDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
+    setSelectedMember(null);
+  };
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'completed':
@@ -81,6 +94,7 @@ const TeamMemberList: React.FC<TeamMemberListProps> = ({ teamMembers, onRefresh 
                     <TableHead>Voice Pitch</TableHead>
                     <TableHead>Started</TableHead>
                     <TableHead>Completed</TableHead>
+                    <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -140,6 +154,17 @@ const TeamMemberList: React.FC<TeamMemberListProps> = ({ teamMembers, onRefresh 
                           <span className="text-sm">{formatDate(member.submitted_at)}</span>
                         </div>
                       </TableCell>
+                      <TableCell>
+                        <Button
+                          onClick={() => handleViewDetails(member)}
+                          size="sm"
+                          variant="outline"
+                          className="flex items-center gap-2"
+                        >
+                          <Eye className="h-4 w-4" />
+                          View Details
+                        </Button>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -148,6 +173,14 @@ const TeamMemberList: React.FC<TeamMemberListProps> = ({ teamMembers, onRefresh 
           </CardContent>
         </Card>
       )}
+
+      {/* Submission Details Dialog */}
+      <SubmissionDetailsDialog
+        submission={selectedMember}
+        isOpen={isDialogOpen}
+        onClose={handleCloseDialog}
+        onUpdate={onRefresh}
+      />
     </div>
   );
 };
