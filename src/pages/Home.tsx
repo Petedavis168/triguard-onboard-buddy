@@ -13,11 +13,6 @@ export const Home: React.FC = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-indigo-600/10"></div>
         <div className="relative max-w-7xl mx-auto px-4 py-16">
           <div className="text-center">
-            <div className="mb-8">
-              <Badge className="bg-blue-100 text-blue-700 border-blue-300 px-4 py-1.5 text-sm font-medium">
-                Employee Onboarding System
-              </Badge>
-            </div>
             <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
               Welcome to{' '}
               <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
