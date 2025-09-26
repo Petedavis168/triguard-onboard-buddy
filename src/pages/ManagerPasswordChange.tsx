@@ -45,32 +45,29 @@ const ManagerPasswordChange = () => {
         return;
       }
 
-      // Verify current password
-      const { data: manager, error: verifyError } = await supabase
-        .from('managers')
-        .select('*')
-        .eq('id', managerId)
-        .eq('password', currentPassword)
-        .single();
+      // Use secure password update function
+      const { data: success, error } = await supabase
+        .rpc('update_manager_password', {
+          manager_id: managerId,
+          current_password: currentPassword,
+          new_password: newPassword
+        });
 
-      if (verifyError || !manager) {
-        setError('Current password is incorrect');
+      if (error || !success) {
+        setError('Current password is incorrect or update failed');
         return;
       }
 
-      // Update password and clear force_password_change flag
+      // Update login timestamp
       const { error: updateError } = await supabase
         .from('managers')
         .update({ 
-          password: newPassword,
-          force_password_change: false,
           last_login_at: new Date().toISOString(),
-          last_activity_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          last_activity_at: new Date().toISOString()
         })
         .eq('id', managerId);
 
-      if (updateError) throw updateError;
+      if (updateError) console.error('Failed to update login time:', updateError);
 
       // Clear temp auth and set full authentication
       localStorage.removeItem('tempManagerAuth');

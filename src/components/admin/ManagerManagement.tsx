@@ -30,7 +30,7 @@ interface Manager {
   last_name: string;
   email: string;
   team_id: string | null;
-  password: string;
+  password_hash: string;
   force_password_change: boolean;
   last_login_at: string | null;
   last_activity_at: string | null;
@@ -183,6 +183,12 @@ export const ManagerManagement: React.FC = () => {
 
         if (passwordError) throw passwordError;
 
+        // Hash the password before storing
+        const { data: hashedPassword, error: hashError } = await supabase
+          .rpc('hash_password', { password: passwordData });
+
+        if (hashError) throw hashError;
+
         const { error } = await supabase
           .from('managers')
           .insert([{
@@ -190,7 +196,8 @@ export const ManagerManagement: React.FC = () => {
             last_name: data.last_name,
             email: data.email,
             team_id: data.team_id || null,
-            password: passwordData,
+            password_hash: hashedPassword,
+            force_password_change: true,
           }]);
 
         if (error) throw error;
@@ -344,10 +351,16 @@ export const ManagerManagement: React.FC = () => {
 
       if (passwordError) throw passwordError;
 
+      // Hash the new password
+      const { data: hashedPassword, error: hashError } = await supabase
+        .rpc('hash_password', { password: passwordData });
+
+      if (hashError) throw hashError;
+
       const { error } = await supabase
         .from('managers')
         .update({ 
-          password: passwordData, 
+          password_hash: hashedPassword, 
           force_password_change: true,
           updated_at: new Date().toISOString() 
         })
@@ -544,34 +557,25 @@ export const ManagerManagement: React.FC = () => {
                           <span className="text-sm">{manager.email}</span>
                         </div>
                       </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <code className="text-sm bg-gray-100 px-2 py-1 rounded font-mono">
-                            {visiblePasswords.has(manager.id) ? manager.password : '••••••••••••'}
-                          </code>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => togglePasswordVisibility(manager.id)}
-                            className="h-6 w-6 p-0"
-                          >
-                            {visiblePasswords.has(manager.id) ? 
-                              <EyeOff className="h-3 w-3" /> : 
-                              <Eye className="h-3 w-3" />
-                            }
-                          </Button>
+                       <TableCell>
+                         <div className="flex items-center gap-2">
+                           <Badge variant="secondary" className="text-xs">
+                             Protected Hash
+                           </Badge>
+                           <span className="text-xs text-gray-500">
+                             {manager.force_password_change ? '(Change Required)' : '(Secure)'}
+                           </span>
                            <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-6 w-6 p-0"
-                                title="Generate new password"
-                              >
-                                <RefreshCw className="h-3 w-3" />
-                              </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent className="max-w-md">
+                             <AlertDialogTrigger asChild>
+                               <Button
+                                 variant="ghost"
+                                 size="sm"
+                                 className="h-6 w-6 p-0 ml-2"
+                               >
+                                 <RefreshCw className="h-3 w-3" />
+                               </Button>
+                              </AlertDialogTrigger>
+                             <AlertDialogContent className="max-w-md">
                               <AlertDialogHeader>
                                 <AlertDialogTitle>Regenerate Password</AlertDialogTitle>
                                 <AlertDialogDescription asChild>

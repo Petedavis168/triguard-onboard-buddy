@@ -84,7 +84,7 @@ export type Database = {
           last_activity_at: string | null
           last_login_at: string | null
           last_name: string
-          password: string
+          password_hash: string
           team_id: string | null
           updated_at: string
         }
@@ -97,7 +97,7 @@ export type Database = {
           last_activity_at?: string | null
           last_login_at?: string | null
           last_name: string
-          password: string
+          password_hash: string
           team_id?: string | null
           updated_at?: string
         }
@@ -110,7 +110,7 @@ export type Database = {
           last_activity_at?: string | null
           last_login_at?: string | null
           last_name?: string
-          password?: string
+          password_hash?: string
           team_id?: string | null
           updated_at?: string
         }
@@ -446,12 +446,41 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      authenticate_manager: {
+        Args: { manager_email: string; manager_password: string }
+        Returns: {
+          email: string
+          first_name: string
+          force_password_change: boolean
+          id: string
+          last_activity_at: string
+          last_login_at: string
+          last_name: string
+          team_id: string
+        }[]
+      }
       generate_secure_password: {
         Args: Record<PropertyKey, never>
         Returns: string
       }
+      hash_password: {
+        Args: { password: string }
+        Returns: string
+      }
       is_admin_user: {
         Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      update_manager_password: {
+        Args: {
+          current_password: string
+          manager_id: string
+          new_password: string
+        }
+        Returns: boolean
+      }
+      verify_password: {
+        Args: { password: string; password_hash: string }
         Returns: boolean
       }
     }

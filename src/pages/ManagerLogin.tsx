@@ -28,18 +28,19 @@ const ManagerLogin = () => {
     setError('');
 
     try {
-      // Find manager with matching email and password
-      const { data: manager, error } = await supabase
-        .from('managers')
-        .select('*')
-        .eq('email', email)
-        .eq('password', password)
-        .single();
+      // Use secure authentication function
+      const { data: managers, error } = await supabase
+        .rpc('authenticate_manager', {
+          manager_email: email,
+          manager_password: password
+        });
 
-      if (error || !manager) {
+      if (error || !managers || managers.length === 0) {
         setError('Invalid email or password');
         return;
       }
+
+      const manager = managers[0];
 
       // Check if password change is required
       if (manager.force_password_change) {

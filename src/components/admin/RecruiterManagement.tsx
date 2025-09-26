@@ -223,13 +223,20 @@ export const RecruiterManagement: React.FC = () => {
 
       if (passwordError) throw passwordError;
 
+      // Hash the password before storing
+      const { data: hashedPassword, error: hashError } = await supabase
+        .rpc('hash_password', { password: passwordData });
+
+      if (hashError) throw hashError;
+
       const { error } = await supabase
         .from('managers')
         .insert([{
           first_name: recruiter.first_name,
           last_name: recruiter.last_name,
           email: recruiter.email,
-          password: passwordData,
+          password_hash: hashedPassword,
+          force_password_change: true,
         }]);
 
       if (error) throw error;
