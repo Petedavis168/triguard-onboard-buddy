@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { 
@@ -12,12 +12,6 @@ import {
 } from 'lucide-react';
 
 const Login: React.FC = () => {
-  const navigate = useNavigate();
-
-  const handleBackToHome = () => {
-    console.log('Back to Home button clicked from Login Portal');
-    navigate('/');
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-secondary/10 to-accent/5 flex items-center justify-center p-4">
