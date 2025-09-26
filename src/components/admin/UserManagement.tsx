@@ -11,14 +11,13 @@ import { supabase } from '@/integrations/supabase/client';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Plus, Search, Edit, Trash2, Users } from 'lucide-react';
+import { Plus, Search, Edit, Trash2, Users, Eye, EyeOff, RotateCcw } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
 const userSchema = z.object({
   first_name: z.string().min(2, 'First name must be at least 2 characters'),
   last_name: z.string().min(2, 'Last name must be at least 2 characters'),
   email: z.string().email('Invalid email address'),
-  password_hash: z.string().min(6, 'Password must be at least 6 characters'),
   is_active: z.boolean(),
 });
 
@@ -30,6 +29,9 @@ interface AdminUser {
   last_name: string;
   email: string;
   is_active: boolean;
+  force_password_change: boolean;
+  last_login_at: string | null;
+  last_activity_at: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -41,6 +43,8 @@ export const UserManagement: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<AdminUser | null>(null);
+  const [generatedPasswords, setGeneratedPasswords] = useState<Record<string, string>>({});
+  const [visiblePasswords, setVisiblePasswords] = useState<Record<string, boolean>>({});
 
   const form = useForm<UserFormData>({
     resolver: zodResolver(userSchema),
@@ -48,7 +52,6 @@ export const UserManagement: React.FC = () => {
       first_name: '',
       last_name: '',
       email: '',
-      password_hash: '',
       is_active: true,
     },
   });
@@ -120,21 +123,44 @@ export const UserManagement: React.FC = () => {
           description: "Admin user updated successfully"
         });
       } else {
-        const { error } = await supabase
+        // Generate password for new admin
+        const { data: passwordData, error: passwordError } = await supabase
+          .rpc('generate_secure_password');
+
+        if (passwordError) throw passwordError;
+
+        const generatedPassword = passwordData;
+
+        // Hash the password
+        const { data: hashedPassword, error: hashError } = await supabase
+          .rpc('hash_password', { password: generatedPassword });
+
+        if (hashError) throw hashError;
+
+        const { data: insertData, error } = await supabase
           .from('admin_users')
           .insert([{
             first_name: data.first_name,
             last_name: data.last_name,
             email: data.email,
-            password_hash: data.password_hash, // In production, this should be hashed
+            password_hash: hashedPassword,
             is_active: data.is_active,
-          }]);
+            force_password_change: true,
+          }])
+          .select('id')
+          .single();
 
         if (error) throw error;
 
+        // Store the generated password for display
+        setGeneratedPasswords(prev => ({
+          ...prev,
+          [insertData.id]: generatedPassword
+        }));
+
         toast({
           title: "Success",
-          description: "Admin user created successfully"
+          description: "Admin user created successfully with generated password"
         });
       }
 
@@ -157,7 +183,6 @@ export const UserManagement: React.FC = () => {
       first_name: user.first_name,
       last_name: user.last_name,
       email: user.email,
-      password_hash: '', // Don't populate password
       is_active: user.is_active,
     });
     setIsDialogOpen(true);
@@ -199,6 +224,64 @@ export const UserManagement: React.FC = () => {
     });
   };
 
+  const togglePasswordVisibility = (userId: string) => {
+    setVisiblePasswords(prev => ({
+      ...prev,
+      [userId]: !prev[userId]
+    }));
+  };
+
+  const regeneratePassword = async (userId: string) => {
+    if (!confirm('Are you sure you want to regenerate the password for this admin?')) return;
+
+    try {
+      // Generate new password
+      const { data: passwordData, error: passwordError } = await supabase
+        .rpc('generate_secure_password');
+
+      if (passwordError) throw passwordError;
+
+      const newPassword = passwordData;
+
+      // Hash the password
+      const { data: hashedPassword, error: hashError } = await supabase
+        .rpc('hash_password', { password: newPassword });
+
+      if (hashError) throw hashError;
+
+      // Update admin with new password
+      const { error } = await supabase
+        .from('admin_users')
+        .update({
+          password_hash: hashedPassword,
+          force_password_change: true,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', userId);
+
+      if (error) throw error;
+
+      // Store the new password for display
+      setGeneratedPasswords(prev => ({
+        ...prev,
+        [userId]: newPassword
+      }));
+
+      toast({
+        title: "Success",
+        description: "Password regenerated successfully"
+      });
+
+      fetchUsers();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to regenerate password",
+        variant: "destructive"
+      });
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="text-center py-12">
@@ -235,7 +318,6 @@ export const UserManagement: React.FC = () => {
                       first_name: '',
                       last_name: '',
                       email: '',
-                      password_hash: '',
                       is_active: true,
                     });
                   }}>
@@ -292,21 +374,12 @@ export const UserManagement: React.FC = () => {
                           </FormItem>
                         )}
                       />
-                      {!editingUser && (
-                        <FormField
-                          control={form.control}
-                          name="password_hash"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Password</FormLabel>
-                              <FormControl>
-                                <Input {...field} type="password" />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      )}
+                        <div className="rounded-lg border p-4 bg-muted/50">
+                          <p className="text-sm text-muted-foreground">
+                            A secure password will be automatically generated for this admin user.
+                            They will be required to change it on first login.
+                          </p>
+                        </div>
                       <FormField
                         control={form.control}
                         name="is_active"
@@ -355,9 +428,10 @@ export const UserManagement: React.FC = () => {
                   <TableRow>
                     <TableHead>Name</TableHead>
                     <TableHead>Email</TableHead>
+                    <TableHead>Password Status</TableHead>
+                    <TableHead>Activity</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Created</TableHead>
-                    <TableHead>Updated</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -369,14 +443,66 @@ export const UserManagement: React.FC = () => {
                       </TableCell>
                       <TableCell>{user.email}</TableCell>
                       <TableCell>
+                        <div className="flex items-center gap-2">
+                          {generatedPasswords[user.id] && (
+                            <div className="flex items-center gap-1 text-xs">
+                              <Input
+                                type={visiblePasswords[user.id] ? "text" : "password"}
+                                value={generatedPasswords[user.id]}
+                                readOnly
+                                className="h-7 w-24 text-xs"
+                              />
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => togglePasswordVisibility(user.id)}
+                                className="h-7 w-7 p-0"
+                              >
+                                {visiblePasswords[user.id] ? (
+                                  <EyeOff className="h-3 w-3" />
+                                ) : (
+                                  <Eye className="h-3 w-3" />
+                                )}
+                              </Button>
+                            </div>
+                          )}
+                          <Badge variant={user.force_password_change ? "destructive" : "default"}>
+                            {user.force_password_change ? 'Must Change' : 'Set'}
+                          </Badge>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="text-sm">
+                          {user.last_login_at ? (
+                            <div>
+                              <div>Last: {formatDate(user.last_login_at)}</div>
+                              {user.last_activity_at && (
+                                <div className="text-xs text-muted-foreground">
+                                  Active: {formatDate(user.last_activity_at)}
+                                </div>
+                              )}
+                            </div>
+                          ) : (
+                            <span className="text-muted-foreground">Never</span>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell>
                         <Badge variant={user.is_active ? "default" : "secondary"}>
                           {user.is_active ? 'Active' : 'Inactive'}
                         </Badge>
                       </TableCell>
                       <TableCell>{formatDate(user.created_at)}</TableCell>
-                      <TableCell>{formatDate(user.updated_at)}</TableCell>
                       <TableCell className="text-right">
-                        <div className="flex gap-2 justify-end">
+                        <div className="flex gap-1 justify-end">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => regeneratePassword(user.id)}
+                            title="Regenerate Password"
+                          >
+                            <RotateCcw className="h-4 w-4" />
+                          </Button>
                           <Button
                             variant="outline"
                             size="sm"

@@ -19,8 +19,11 @@ export type Database = {
           created_at: string
           email: string
           first_name: string
+          force_password_change: boolean
           id: string
           is_active: boolean
+          last_activity_at: string | null
+          last_login_at: string | null
           last_name: string
           password_hash: string
           updated_at: string
@@ -29,8 +32,11 @@ export type Database = {
           created_at?: string
           email: string
           first_name: string
+          force_password_change?: boolean
           id?: string
           is_active?: boolean
+          last_activity_at?: string | null
+          last_login_at?: string | null
           last_name: string
           password_hash: string
           updated_at?: string
@@ -39,8 +45,11 @@ export type Database = {
           created_at?: string
           email?: string
           first_name?: string
+          force_password_change?: boolean
           id?: string
           is_active?: boolean
+          last_activity_at?: string | null
+          last_login_at?: string | null
           last_name?: string
           password_hash?: string
           updated_at?: string
@@ -485,6 +494,18 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      authenticate_admin: {
+        Args: { admin_email: string; admin_password: string }
+        Returns: {
+          email: string
+          first_name: string
+          force_password_change: boolean
+          id: string
+          last_activity_at: string
+          last_login_at: string
+          last_name: string
+        }[]
+      }
       authenticate_manager: {
         Args: { manager_email: string; manager_password: string }
         Returns: {
@@ -508,6 +529,14 @@ export type Database = {
       }
       is_admin_user: {
         Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      update_admin_password: {
+        Args: {
+          admin_id: string
+          current_password: string
+          new_password: string
+        }
         Returns: boolean
       }
       update_manager_password: {

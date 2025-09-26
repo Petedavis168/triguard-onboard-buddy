@@ -10,6 +10,7 @@ import Admin from "./pages/Admin";
 import AdminLogin from "./pages/AdminLogin";
 import ManagerLogin from "./pages/ManagerLogin";
 import ManagerPasswordChange from "./pages/ManagerPasswordChange";
+import AdminPasswordChange from "./pages/AdminPasswordChange";
 import ManagerDashboard from "./pages/ManagerDashboard";
 import UserLogin from "./pages/UserLogin";
 import UserDashboard from "./pages/UserDashboard";
@@ -29,6 +30,7 @@ const App = () => (
           <Route path="/login" element={<Login />} />
           <Route path="/onboarding" element={<OnboardingForm />} />
           <Route path="/admin-login" element={<AdminLogin />} />
+          <Route path="/admin-password-change" element={<AdminPasswordChange />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/manager-login" element={<ManagerLogin />} />
           <Route path="/manager-password-change" element={<ManagerPasswordChange />} />

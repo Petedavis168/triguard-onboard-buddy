@@ -5,8 +5,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useNavigate } from 'react-router-dom';
-import { useToast } from '@/components/ui/use-toast';
+import { toast } from '@/hooks/use-toast';
 import { ArrowLeft } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('');
@@ -14,7 +15,6 @@ const AdminLogin = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   const handleBackToHome = () => {
     console.log('Back to Home button clicked from Admin Login');
@@ -26,23 +26,53 @@ const AdminLogin = () => {
     setIsLoading(true);
     setError('');
 
-    // Fixed admin credentials
-    const ADMIN_EMAIL = 'admin@triguardroofing.com';
-    const ADMIN_PASSWORD = 'Jaxaroo2018!';
+    try {
+      const { data, error: rpcError } = await supabase
+        .rpc('authenticate_admin', {
+          admin_email: email,
+          admin_password: password
+        });
 
-    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-      // Store admin session in localStorage
-      localStorage.setItem('adminAuthenticated', 'true');
-      localStorage.setItem('adminEmail', email);
-      
-      toast({
-        title: "Login Successful",
-        description: "Welcome to the admin dashboard",
-      });
-      
-      navigate('/admin');
-    } else {
-      setError('Invalid email or password');
+      if (rpcError || !data || data.length === 0) {
+        setError('Invalid email or password');
+        setIsLoading(false);
+        return;
+      }
+
+      const adminData = data[0];
+
+      // Store admin data
+      localStorage.setItem('adminData', JSON.stringify(adminData));
+      localStorage.setItem('adminEmail', adminData.email);
+
+      if (adminData.force_password_change) {
+        // Store temporary auth for password change
+        localStorage.setItem('adminTempAuth', 'true');
+        toast({
+          title: "Password Change Required",
+          description: "You must change your password before accessing the dashboard",
+        });
+        navigate('/admin-password-change');
+      } else {
+        // Update last activity
+        await supabase
+          .from('admin_users')
+          .update({
+            last_login_at: new Date().toISOString(),
+            last_activity_at: new Date().toISOString()
+          })
+          .eq('id', adminData.id);
+
+        localStorage.setItem('adminAuthenticated', 'true');
+        toast({
+          title: "Login Successful",
+          description: "Welcome to the admin dashboard",
+        });
+        navigate('/admin');
+      }
+    } catch (error: any) {
+      console.error('Login error:', error);
+      setError('Login failed. Please try again.');
     }
 
     setIsLoading(false);
