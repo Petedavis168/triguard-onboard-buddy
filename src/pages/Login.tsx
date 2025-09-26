@@ -24,15 +24,16 @@ const Login: React.FC = () => {
       <div className="w-full max-w-4xl">
         {/* Back Button */}
         <div className="mb-8">
-          <Button 
-            variant="outline" 
-            className="flex items-center gap-2 hover:shadow-md transition-all duration-200"
-            onClick={handleBackToHome}
-            type="button"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back to Home
-          </Button>
+          <Link to="/">
+            <Button 
+              variant="outline" 
+              className="flex items-center gap-2 hover:shadow-md transition-all duration-200"
+              type="button"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to Home
+            </Button>
+          </Link>
         </div>
 
         {/* Header */}
