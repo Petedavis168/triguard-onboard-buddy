@@ -13,7 +13,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Plus, Search, Edit, Trash2, Users, Mail, Phone, Building, UserPlus, Eye, EyeOff, RefreshCw, Clock, Activity } from 'lucide-react';
+import { Plus, Search, Edit, Trash2, Users, Mail, Phone, Building, UserPlus, Eye, EyeOff, RefreshCw, Clock, Activity, Copy } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ManagerDetailsView } from './ManagerDetailsView';
 import { toast } from '@/hooks/use-toast';
@@ -426,6 +426,17 @@ export const ManagerManagement: React.FC = () => {
     setVisiblePasswords(newVisible);
   };
 
+  const copyPassword = (managerId: string) => {
+    const password = generatedPasswords.get(managerId);
+    if (password) {
+      navigator.clipboard.writeText(password);
+      toast({
+        title: "Copied",
+        description: "Password copied to clipboard"
+      });
+    }
+  };
+
   const regeneratePassword = async (manager: Manager) => {
     try {
       // Generate new password
@@ -703,31 +714,40 @@ export const ManagerManagement: React.FC = () => {
                        <TableCell>
                          <div className="flex items-center gap-2">
                            {generatedPasswords.has(manager.id) ? (
-                             <div className="flex items-center gap-2">
-                               <Button
-                                 variant="ghost"
-                                 size="sm"
-                                 onClick={() => togglePasswordVisibility(manager.id)}
-                                 className="flex items-center gap-1"
-                               >
-                                 {visiblePasswords.has(manager.id) ? (
-                                   <>
-                                     <EyeOff className="h-3 w-3" />
-                                     <span className="text-sm font-mono">
-                                       {generatedPasswords.get(manager.id)}
-                                     </span>
-                                   </>
-                                 ) : (
-                                   <>
-                                     <Eye className="h-3 w-3" />
-                                     <span className="text-sm">Show Password</span>
-                                   </>
-                                 )}
-                               </Button>
-                               <Badge variant="outline" className="text-xs text-green-600">
-                                 Generated
-                               </Badge>
-                             </div>
+                              <div className="flex items-center gap-2">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => togglePasswordVisibility(manager.id)}
+                                  className="flex items-center gap-1"
+                                >
+                                  {visiblePasswords.has(manager.id) ? (
+                                    <>
+                                      <EyeOff className="h-3 w-3" />
+                                      <span className="text-sm font-mono">
+                                        {generatedPasswords.get(manager.id)}
+                                      </span>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <Eye className="h-3 w-3" />
+                                      <span className="text-sm">Show Password</span>
+                                    </>
+                                  )}
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => copyPassword(manager.id)}
+                                  className="h-6 w-6 p-0"
+                                  title="Copy password"
+                                >
+                                  <Copy className="h-3 w-3" />
+                                </Button>
+                                <Badge variant="outline" className="text-xs text-green-600">
+                                  Generated
+                                </Badge>
+                              </div>
                            ) : (
                              <div className="flex items-center gap-2">
                                <Badge variant="secondary" className="text-xs">

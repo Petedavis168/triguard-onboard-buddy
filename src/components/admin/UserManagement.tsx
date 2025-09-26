@@ -11,7 +11,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Plus, Search, Edit, Trash2, Users, Eye, EyeOff, RotateCcw } from 'lucide-react';
+import { Plus, Search, Edit, Trash2, Users, Eye, EyeOff, RotateCcw, Copy } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
 const userSchema = z.object({
@@ -229,6 +229,17 @@ export const UserManagement: React.FC = () => {
       ...prev,
       [userId]: !prev[userId]
     }));
+  };
+
+  const copyPassword = (userId: string) => {
+    const password = generatedPasswords[userId];
+    if (password) {
+      navigator.clipboard.writeText(password);
+      toast({
+        title: "Copied",
+        description: "Password copied to clipboard"
+      });
+    }
   };
 
   const regeneratePassword = async (userId: string) => {
@@ -463,6 +474,15 @@ export const UserManagement: React.FC = () => {
                                 ) : (
                                   <Eye className="h-3 w-3" />
                                 )}
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => copyPassword(user.id)}
+                                className="h-7 w-7 p-0"
+                                title="Copy password"
+                              >
+                                <Copy className="h-3 w-3" />
                               </Button>
                             </div>
                           )}

@@ -22,7 +22,8 @@ import {
   Shield,
   RefreshCw,
   Eye,
-  EyeOff
+  EyeOff,
+  Copy
 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
@@ -83,6 +84,17 @@ export const ManagerDetailsView: React.FC<ManagerDetailsViewProps> = ({
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [assignedTeams, setAssignedTeams] = useState<string[]>([]);
+
+  const copyPassword = (managerId: string) => {
+    const password = generatedPasswords.get(managerId);
+    if (password) {
+      navigator.clipboard.writeText(password);
+      toast({
+        title: "Copied",
+        description: "Password copied to clipboard"
+      });
+    }
+  };
 
   const form = useForm<ManagerEditFormData>({
     resolver: zodResolver(managerEditSchema),
@@ -386,6 +398,15 @@ export const ManagerDetailsView: React.FC<ManagerDetailsViewProps> = ({
                           <span className="text-sm">Show Password</span>
                         </>
                       )}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => copyPassword(manager.id)}
+                      className="h-6 w-6 p-0"
+                      title="Copy password"
+                    >
+                      <Copy className="h-3 w-3" />
                     </Button>
                     <Badge variant="outline" className="text-xs text-green-600">
                       Generated
