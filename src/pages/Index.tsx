@@ -25,7 +25,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-secondary/10 to-accent/5">
-      {/* Header with Login Dropdown */}
+      {/* Header with Navigation */}
       <header className="sticky top-0 z-50 backdrop-blur-sm bg-background/80 border-b border-border/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center justify-between">
@@ -40,13 +40,36 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Login Button */}
-            <Link to="/login">
-              <Button variant="outline" className="flex items-center gap-2 text-sm sm:text-base px-3 sm:px-4 py-2">
-                <LogIn className="h-3 w-3 sm:h-4 sm:w-4" />
-                <span className="hidden sm:inline">Login</span>
+            {/* Navigation Menu */}
+            <div className="flex items-center gap-2 sm:gap-4">
+              <Button 
+                variant="default" 
+                className="flex items-center gap-2 text-sm px-3 py-2"
+                onClick={() => window.location.href = '/onboarding'}
+              >
+                <FileText className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">Start Onboarding</span>
+                <span className="sm:hidden">Onboard</span>
               </Button>
-            </Link>
+              
+              <Button 
+                variant="outline" 
+                className="flex items-center gap-2 text-sm px-3 py-2"
+                onClick={() => window.location.href = '/user-login'}
+              >
+                <UserCheck className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">Employee Login</span>
+                <span className="sm:hidden">Login</span>
+              </Button>
+
+              <Link to="/login">
+                <Button variant="outline" className="flex items-center gap-2 text-sm sm:text-base px-3 sm:px-4 py-2">
+                  <LogIn className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="hidden sm:inline">Admin Login</span>
+                  <span className="sm:hidden">Admin</span>
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </header>
@@ -62,33 +85,10 @@ const Index = () => {
               </span>
             </h1>
             
-            <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto mb-6 sm:mb-8 leading-relaxed px-4">
+            <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed px-4">
               Start your journey with us! Our streamlined onboarding process will get you ready for 
               success. Complete your profile, upload your badge photo, and join the team.
             </p>
-
-            {/* Primary CTA */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 mb-12 px-4">
-              <Button 
-                size="lg"
-                className="w-full sm:w-auto flex items-center justify-center gap-3 text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1 min-h-[3rem] sm:min-h-[3.5rem] cursor-pointer"
-                onClick={() => window.location.href = '/onboarding'}
-              >
-                <FileText className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
-                <span className="whitespace-nowrap">Start Onboarding</span>
-                <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
-              </Button>
-              
-              <Button 
-                variant="outline"
-                size="lg"
-                className="w-full sm:w-auto flex items-center justify-center gap-3 text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1 min-h-[3rem] sm:min-h-[3.5rem] cursor-pointer"
-                onClick={() => window.location.href = '/user-login'}
-              >
-                <UserCheck className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
-                <span className="whitespace-nowrap">Employee Login</span>
-              </Button>
-            </div>
 
             {/* Trust Indicators */}
             <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8 text-sm text-muted-foreground px-4">
