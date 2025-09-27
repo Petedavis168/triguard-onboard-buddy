@@ -114,7 +114,7 @@ const LMSManagement = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-primary p-6 space-y-6">
+    <div className="space-y-6">
       {/* Modern Header */}
       <div className="bg-gradient-card rounded-2xl shadow-glow p-6 border border-border/20 backdrop-blur-sm">
         <div className="flex items-center gap-4 mb-6">
