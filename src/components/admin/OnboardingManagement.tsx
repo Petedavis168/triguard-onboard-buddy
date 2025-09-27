@@ -179,129 +179,119 @@ const OnboardingManagement = () => {
   }
 
   return (
-    <div className="space-y-4 sm:space-y-6">
-      {/* Compact Stats Cards - 2x2 grid on mobile */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
-        <Card className="shadow-sm hover:shadow-md transition-shadow border border-border/50">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 px-3 pt-3 sm:px-6 sm:pt-6 sm:pb-2">
-            <CardTitle className="text-xs font-medium text-muted-foreground">Total</CardTitle>
-            <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-blue-100 flex items-center justify-center">
-              <FileText className="h-3 w-3 sm:h-4 sm:w-4 text-blue-600" />
+    <div className="h-screen flex flex-col overflow-hidden">
+      {/* Ultra-Compact Stats Grid - Single Row */}
+      <div className="grid grid-cols-4 gap-2 mb-3">
+        <div className="bg-white rounded-lg p-2 shadow-sm border border-border/30 hover:shadow-md transition-shadow">
+          <div className="flex items-center justify-between">
+            <div className="w-6 h-6 rounded bg-blue-100 flex items-center justify-center">
+              <FileText className="h-3 w-3 text-blue-600" />
             </div>
-          </CardHeader>
-          <CardContent className="px-3 pb-3 sm:px-6 sm:pb-6">
-            <div className="text-xl sm:text-3xl font-bold text-foreground">{stats.total}</div>
-            <p className="text-xs text-muted-foreground">Applications</p>
-          </CardContent>
-        </Card>
-
-        <Card className="shadow-sm hover:shadow-md transition-shadow border border-border/50">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 px-3 pt-3 sm:px-6 sm:pt-6 sm:pb-2">
-            <CardTitle className="text-xs font-medium text-muted-foreground">Done</CardTitle>
-            <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-green-100 flex items-center justify-center">
-              <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 text-green-600" />
-            </div>
-          </CardHeader>
-          <CardContent className="px-3 pb-3 sm:px-6 sm:pb-6">
-            <div className="text-xl sm:text-3xl font-bold text-green-600">{stats.completed}</div>
-            <p className="text-xs text-muted-foreground">Finished</p>
-          </CardContent>
-        </Card>
-
-        <Card className="shadow-sm hover:shadow-md transition-shadow border border-border/50">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 px-3 pt-3 sm:px-6 sm:pt-6 sm:pb-2">
-            <CardTitle className="text-xs font-medium text-muted-foreground">Active</CardTitle>
-            <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-blue-100 flex items-center justify-center">
-              <Clock className="h-3 w-3 sm:h-4 sm:w-4 text-blue-600" />
-            </div>
-          </CardHeader>
-          <CardContent className="px-3 pb-3 sm:px-6 sm:pb-6">
-            <div className="text-xl sm:text-3xl font-bold text-blue-600">{stats.inProgress}</div>
-            <p className="text-xs text-muted-foreground">In Progress</p>
-          </CardContent>
-        </Card>
-
-        <Card className="shadow-sm hover:shadow-md transition-shadow border border-border/50">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 px-3 pt-3 sm:px-6 sm:pt-6 sm:pb-2">
-            <CardTitle className="text-xs font-medium text-muted-foreground">Draft</CardTitle>
-            <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-gray-100 flex items-center justify-center">
-              <AlertCircle className="h-3 w-3 sm:h-4 sm:w-4 text-gray-600" />
-            </div>
-          </CardHeader>
-          <CardContent className="px-3 pb-3 sm:px-6 sm:pb-6">
-            <div className="text-xl sm:text-3xl font-bold text-gray-600">{stats.draft}</div>
-            <p className="text-xs text-muted-foreground">Not Started</p>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Mobile-optimized Main Content */}
-      <Card className="shadow-xl">
-        <CardHeader className="pb-4">
-          <div className="flex flex-col gap-4">
-            <div>
-              <CardTitle className="text-lg sm:text-xl">Onboarding Submissions</CardTitle>
-              <CardDescription className="text-sm">
-                Review and manage employee applications
-              </CardDescription>
-            </div>
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-              <Input
-                placeholder="Search by name, email, manager..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 min-h-[44px]"
-              />
+            <div className="text-right">
+              <div className="text-lg font-bold text-foreground">{stats.total}</div>
+              <div className="text-xs text-muted-foreground">Total</div>
             </div>
           </div>
+        </div>
+
+        <div className="bg-white rounded-lg p-2 shadow-sm border border-border/30 hover:shadow-md transition-shadow">
+          <div className="flex items-center justify-between">
+            <div className="w-6 h-6 rounded bg-green-100 flex items-center justify-center">
+              <CheckCircle className="h-3 w-3 text-green-600" />
+            </div>
+            <div className="text-right">
+              <div className="text-lg font-bold text-green-600">{stats.completed}</div>
+              <div className="text-xs text-muted-foreground">Done</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg p-2 shadow-sm border border-border/30 hover:shadow-md transition-shadow">
+          <div className="flex items-center justify-between">
+            <div className="w-6 h-6 rounded bg-blue-100 flex items-center justify-center">
+              <Clock className="h-3 w-3 text-blue-600" />
+            </div>
+            <div className="text-right">
+              <div className="text-lg font-bold text-blue-600">{stats.inProgress}</div>
+              <div className="text-xs text-muted-foreground">Active</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg p-2 shadow-sm border border-border/30 hover:shadow-md transition-shadow">
+          <div className="flex items-center justify-between">
+            <div className="w-6 h-6 rounded bg-gray-100 flex items-center justify-center">
+              <AlertCircle className="h-3 w-3 text-gray-600" />
+            </div>
+            <div className="text-right">
+              <div className="text-lg font-bold text-gray-600">{stats.draft}</div>
+              <div className="text-xs text-muted-foreground">Draft</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Compact Main Content */}
+      <Card className="flex-1 shadow-md flex flex-col overflow-hidden">
+        <CardHeader className="pb-2 px-4 pt-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="text-base font-semibold">Onboarding Submissions</CardTitle>
+              <CardDescription className="text-xs text-muted-foreground">
+                Review and manage applications
+              </CardDescription>
+            </div>
+          </div>
+          <div className="relative mt-2">
+            <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3 w-3 text-gray-400" />
+            <Input
+              placeholder="Search applications..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-7 h-8 text-sm"
+            />
+          </div>
         </CardHeader>
-        <CardContent className="p-0">
-          <Tabs defaultValue="all" className="w-full">
-            {/* Mobile-optimized tabs */}
-            <div className="px-4 sm:px-6">
-              <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 rounded-lg mb-4">
-                <TabsTrigger value="all" className="text-xs sm:text-sm">
-                  All <span className="hidden xs:inline">({stats.total})</span>
-                </TabsTrigger>
-                <TabsTrigger value="completed" className="text-xs sm:text-sm">
-                  Done <span className="hidden xs:inline">({stats.completed})</span>
-                </TabsTrigger>
-                <TabsTrigger value="in_progress" className="text-xs sm:text-sm">
-                  Active <span className="hidden xs:inline">({stats.inProgress})</span>
-                </TabsTrigger>
-                <TabsTrigger value="draft" className="text-xs sm:text-sm">
-                  Draft <span className="hidden xs:inline">({stats.draft})</span>
-                </TabsTrigger>
+        
+        <div className="flex-1 overflow-hidden">
+          <Tabs defaultValue="all" className="h-full flex flex-col">
+            <div className="px-4">
+              <TabsList className="grid w-full grid-cols-4 h-8 rounded-md mb-2">
+                <TabsTrigger value="all" className="text-xs py-1">All ({stats.total})</TabsTrigger>
+                <TabsTrigger value="completed" className="text-xs py-1">Done ({stats.completed})</TabsTrigger>
+                <TabsTrigger value="in_progress" className="text-xs py-1">Active ({stats.inProgress})</TabsTrigger>
+                <TabsTrigger value="draft" className="text-xs py-1">Draft ({stats.draft})</TabsTrigger>
               </TabsList>
             </div>
             
-            <TabsContent value="all" className="mt-0">
-              <ApplicationList forms={filteredForms} onViewDetails={viewDetails} />
-            </TabsContent>
-            
-            <TabsContent value="completed" className="mt-0">
-              <ApplicationList 
-                forms={filteredForms.filter(f => f.status === 'completed' || f.status === 'submitted')} 
-                onViewDetails={viewDetails}
-              />
-            </TabsContent>
-            
-            <TabsContent value="in_progress" className="mt-0">
-              <ApplicationList 
-                forms={filteredForms.filter(f => f.status === 'in_progress')} 
-                onViewDetails={viewDetails}
-              />
-            </TabsContent>
-            
-            <TabsContent value="draft" className="mt-0">
-              <ApplicationList 
-                forms={filteredForms.filter(f => f.status === 'draft')} 
-                onViewDetails={viewDetails}
-              />
-            </TabsContent>
+            <div className="flex-1 overflow-hidden">
+              <TabsContent value="all" className="h-full mt-0">
+                <ApplicationList forms={filteredForms} onViewDetails={viewDetails} />
+              </TabsContent>
+              
+              <TabsContent value="completed" className="h-full mt-0">
+                <ApplicationList 
+                  forms={filteredForms.filter(f => f.status === 'completed' || f.status === 'submitted')} 
+                  onViewDetails={viewDetails}
+                />
+              </TabsContent>
+              
+              <TabsContent value="in_progress" className="h-full mt-0">
+                <ApplicationList 
+                  forms={filteredForms.filter(f => f.status === 'in_progress')} 
+                  onViewDetails={viewDetails}
+                />
+              </TabsContent>
+              
+              <TabsContent value="draft" className="h-full mt-0">
+                <ApplicationList 
+                  forms={filteredForms.filter(f => f.status === 'draft')} 
+                  onViewDetails={viewDetails}
+                />
+              </TabsContent>
+            </div>
           </Tabs>
-        </CardContent>
+        </div>
       </Card>
 
       <SubmissionDetailsDialog
@@ -353,151 +343,70 @@ const ApplicationList: React.FC<ApplicationListProps> = ({ forms, onViewDetails 
   }
 
   return (
-    <div className="space-y-0">
-      {/* Desktop Table View */}
-      <div className="hidden lg:block">
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Manager</TableHead>
-                <TableHead>Team</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Started</TableHead>
-                <TableHead>Completed</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {forms.map((form) => (
-                <TableRow key={form.id} className="hover:bg-gray-50">
-                  <TableCell className="font-medium">
-                    {form.first_name} {form.last_name}
-                  </TableCell>
-                  <TableCell>
-                    <div className="text-sm">
-                      {form.generated_email || 'Not generated'}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="text-sm">
-                      {form.managers ? 
-                        `${form.managers.first_name} ${form.managers.last_name}` : 
-                        'Not assigned'
-                      }
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="text-sm">
-                      {form.teams?.name || 'Not assigned'}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    {getStatusBadge(form.status, form.current_step)}
-                  </TableCell>
-                  <TableCell>{formatDate(form.created_at)}</TableCell>
-                  <TableCell>{formatDate(form.submitted_at)}</TableCell>
-                  <TableCell className="text-right">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => onViewDetails(form)}
-                      className="flex items-center gap-1"
-                    >
-                      <Eye className="h-4 w-4" />
-                      View Details
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      </div>
-
-      {/* Mobile Card View */}
-      <div className="lg:hidden">
-        <div className="space-y-3 px-4 pb-4">
+    <div className="h-full overflow-hidden">
+      {/* Compact Card View - Removes desktop table to keep everything unified */}
+      <div className="h-full overflow-y-auto">
+        <div className="space-y-1 px-4 pb-4">
           {forms.map((form) => (
-            <Card key={form.id} className="mobile-card shadow-sm border border-border/50 hover:shadow-md transition-shadow">
-              <CardContent className="p-4">
-                {/* Header with Name, Email and Status */}
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center gap-3 flex-1 min-w-0">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center flex-shrink-0">
-                      <User className="h-5 w-5 text-blue-600" />
+            <div key={form.id} className="bg-white rounded-md border border-border/30 hover:shadow-sm transition-shadow">
+              <div className="p-3">
+                {/* Compact Header */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 flex-1 min-w-0">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center flex-shrink-0">
+                      <User className="h-4 w-4 text-blue-600" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <div className="font-semibold text-base text-foreground">
+                      <div className="font-medium text-sm text-foreground truncate">
                         {form.first_name} {form.last_name}
                       </div>
                       {form.generated_email && (
-                        <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
-                          <Mail className="h-3 w-3" />
-                          <span className="truncate">{form.generated_email}</span>
+                        <div className="text-xs text-muted-foreground truncate">
+                          {form.generated_email}
                         </div>
                       )}
                     </div>
                   </div>
-                  <div className="ml-2">
+                  <div className="flex items-center gap-2 ml-2">
                     {getStatusBadge(form.status, form.current_step)}
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => onViewDetails(form)}
+                      className="h-7 w-7 p-0 hover:bg-blue-50"
+                    >
+                      <Eye className="h-3 w-3" />
+                    </Button>
                   </div>
                 </div>
 
-                {/* Assignment Info Grid */}
+                {/* Compact Assignment Info */}
                 {(form.managers || form.teams) && (
-                  <div className="bg-muted/30 rounded-lg p-3 mb-4">
-                    <div className="grid grid-cols-1 gap-2">
-                      {form.managers && (
-                        <div className="flex items-center gap-2 text-sm">
-                          <Users className="h-4 w-4 text-blue-600" />
-                          <span className="text-muted-foreground">Manager:</span>
-                          <span className="font-medium text-foreground">
-                            {form.managers.first_name} {form.managers.last_name}
-                          </span>
-                        </div>
-                      )}
-                      {form.teams && (
-                        <div className="flex items-center gap-2 text-sm">
-                          <MapPin className="h-4 w-4 text-green-600" />
-                          <span className="text-muted-foreground">Team:</span>
-                          <span className="font-medium text-foreground">{form.teams.name}</span>
-                        </div>
-                      )}
-                    </div>
+                  <div className="mt-2 flex items-center gap-4 text-xs text-muted-foreground">
+                    {form.managers && (
+                      <div className="flex items-center gap-1">
+                        <Users className="h-3 w-3" />
+                        <span>{form.managers.first_name} {form.managers.last_name}</span>
+                      </div>
+                    )}
+                    {form.teams && (
+                      <div className="flex items-center gap-1">
+                        <MapPin className="h-3 w-3" />
+                        <span>{form.teams.name}</span>
+                      </div>
+                    )}
                   </div>
                 )}
 
-                {/* Dates Section */}
-                <div className="border-t border-border/50 pt-3 mb-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="text-center">
-                      <div className="text-xs text-muted-foreground mb-1">Started</div>
-                      <div className="text-sm font-medium text-foreground">{formatDate(form.created_at)}</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-xs text-muted-foreground mb-1">Completed</div>
-                      <div className="text-sm font-medium text-foreground">
-                        {form.submitted_at ? formatDate(form.submitted_at) : '-'}
-                      </div>
-                    </div>
-                  </div>
+                {/* Compact Date Info */}
+                <div className="mt-2 flex items-center gap-4 text-xs text-muted-foreground">
+                  <span>Started: {formatDate(form.created_at)}</span>
+                  {form.submitted_at && (
+                    <span>Completed: {formatDate(form.submitted_at)}</span>
+                  )}
                 </div>
-
-                {/* Action Button */}
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => onViewDetails(form)}
-                  className="w-full mobile-button h-10 border-2 hover:bg-primary hover:text-primary-foreground transition-colors"
-                >
-                  <Eye className="h-4 w-4 mr-2" />
-                  View Details
-                </Button>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           ))}
         </div>
       </div>
