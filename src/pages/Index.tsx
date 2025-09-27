@@ -69,33 +69,27 @@ const Index = () => {
 
             {/* Primary CTA */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 mb-12 px-4">
-              <Button 
-                size="lg"
-                className="w-full sm:w-auto flex items-center justify-center gap-3 text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1 min-h-[3rem] sm:min-h-[3.5rem]"
-                onClick={() => {
-                  console.log('Navigating to onboarding');
-                  navigate('/onboarding');
-                }}
-                type="button"
-              >
-                <FileText className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
-                <span className="whitespace-nowrap">Start Onboarding</span>
-                <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
-              </Button>
+              <Link to="/onboarding" className="w-full sm:w-auto">
+                <Button 
+                  size="lg"
+                  className="w-full flex items-center justify-center gap-3 text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1 min-h-[3rem] sm:min-h-[3.5rem]"
+                >
+                  <FileText className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
+                  <span className="whitespace-nowrap">Start Onboarding</span>
+                  <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
+                </Button>
+              </Link>
               
-              <Button 
-                variant="outline"
-                size="lg"
-                className="w-full sm:w-auto flex items-center justify-center gap-3 text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1 min-h-[3rem] sm:min-h-[3.5rem]"
-                onClick={() => {
-                  console.log('Navigating to user login');
-                  navigate('/user-login');
-                }}
-                type="button"
-              >
-                <UserCheck className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
-                <span className="whitespace-nowrap">Employee Login</span>
-              </Button>
+              <Link to="/user-login" className="w-full sm:w-auto">
+                <Button 
+                  variant="outline"
+                  size="lg"
+                  className="w-full flex items-center justify-center gap-3 text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1 min-h-[3rem] sm:min-h-[3.5rem]"
+                >
+                  <UserCheck className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
+                  <span className="whitespace-nowrap">Employee Login</span>
+                </Button>
+              </Link>
             </div>
 
             {/* Trust Indicators */}
