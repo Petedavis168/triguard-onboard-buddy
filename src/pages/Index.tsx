@@ -68,29 +68,35 @@ const Index = () => {
             </p>
 
             {/* Primary CTA */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
-              <button 
-                className="inline-flex items-center justify-center gap-2 h-12 rounded-lg px-8 text-base bg-gradient-primary text-primary-foreground hover:opacity-90 shadow-glow font-semibold transition-all duration-200"
-                onClick={(e) => {
-                  console.log('Start Onboarding button clicked');
-                  navigate('/onboarding');
-                }}
-              >
-                <FileText className="h-5 w-5" />
-                Start Onboarding
-                <ArrowRight className="h-5 w-5" />
-              </button>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-12">
+              <div>
+                <button 
+                  type="button"
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1 flex items-center gap-3 text-lg"
+                  onClick={() => {
+                    console.log('Onboarding button clicked!');
+                    window.location.href = '/onboarding';
+                  }}
+                >
+                  <FileText className="h-5 w-5" />
+                  Start Onboarding
+                  <ArrowRight className="h-5 w-5" />
+                </button>
+              </div>
               
-              <button 
-                className="inline-flex items-center justify-center gap-2 h-12 rounded-lg px-8 text-base border border-primary/20 bg-background hover:border-primary/40 hover:bg-primary/5 transition-all duration-200"
-                onClick={(e) => {
-                  console.log('Employee Login button clicked');
-                  navigate('/user-login');
-                }}
-              >
-                <UserCheck className="h-5 w-5" />
-                Employee Login
-              </button>
+              <div>
+                <button 
+                  type="button"
+                  className="bg-white hover:bg-gray-50 text-gray-800 font-semibold py-4 px-8 rounded-lg border-2 border-gray-300 hover:border-blue-500 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1 flex items-center gap-3 text-lg"
+                  onClick={() => {
+                    console.log('Employee Login button clicked!');
+                    window.location.href = '/user-login';
+                  }}
+                >
+                  <UserCheck className="h-5 w-5" />
+                  Employee Login
+                </button>
+              </div>
             </div>
 
             {/* Trust Indicators */}
