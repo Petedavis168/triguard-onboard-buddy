@@ -21,6 +21,7 @@ import { DocumentUploadStep } from './steps/DocumentUploadStep';
 import { DirectDepositStep } from './steps/DirectDepositStep';
 import VoicePitchStep from './steps/VoicePitchStep';
 import TaskAcknowledgmentStep from './steps/TaskAcknowledgmentStep';
+import { RoleSelectionStep } from './steps/RoleSelectionStep';
 import { ReviewSubmitStep } from './steps/ReviewSubmitStep';
 
 interface OnboardingFormProps {
@@ -58,26 +59,28 @@ export const OnboardingForm: React.FC<OnboardingFormProps> = ({ formId }) => {
       case 1:
         return <BasicInformationStep form={form} generatedEmail={generatedEmail} />;
       case 2:
-        return <EmailPreviewStep form={form} generatedEmail={generatedEmail} />;
+        return <RoleSelectionStep form={form} />;
       case 3:
-        return <AddressInformationStep form={form} />;
+        return <EmailPreviewStep form={form} generatedEmail={generatedEmail} />;
       case 4:
-        return <GearSizingStep form={form} />;
+        return <AddressInformationStep form={form} />;
       case 5:
-        return <BadgePhotoStep form={form} />;
+        return <GearSizingStep form={form} />;
       case 6:
-        return <TeamAssignmentStep form={form} />;
+        return <BadgePhotoStep form={form} />;
       case 7:
-        return <W9FormStep form={form} />;
+        return <TeamAssignmentStep form={form} />;
       case 8:
-        return <DocumentUploadStep form={form} />;
-      case 9:
-        return <DirectDepositStep form={form} />;
-      case 10:
-        return <VoicePitchStep form={form} />;
-      case 11:
         return <TaskAcknowledgmentStep form={form} />;
+      case 9:
+        return <W9FormStep form={form} />;
+      case 10:
+        return <DocumentUploadStep form={form} />;
+      case 11:
+        return <DirectDepositStep form={form} />;
       case 12:
+        return <VoicePitchStep form={form} />;
+      case 13:
         return <ReviewSubmitStep form={form} generatedEmail={generatedEmail} onSubmit={submitForm} />;
       default:
         return null;
