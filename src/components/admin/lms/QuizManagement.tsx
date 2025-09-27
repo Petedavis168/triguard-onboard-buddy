@@ -82,7 +82,7 @@ const QuizManagement: React.FC<QuizManagementProps> = ({ onStatsUpdate }) => {
       title: "",
       description: "",
       instructions: "",
-      course_id: "",
+      course_id: "none",
       time_limit_minutes: 30,
       passing_score: 70,
       max_attempts: 3,
@@ -145,7 +145,7 @@ const QuizManagement: React.FC<QuizManagementProps> = ({ onStatsUpdate }) => {
       
       const submitData = {
         ...values,
-        course_id: values.course_id || null,
+        course_id: values.course_id === "none" ? null : values.course_id || null,
         created_by: null, // Will be set by RLS policies
         is_active: true,
       };
@@ -181,7 +181,7 @@ const QuizManagement: React.FC<QuizManagementProps> = ({ onStatsUpdate }) => {
         title: "",
         description: "",
         instructions: "",
-        course_id: "",
+        course_id: "none",
         time_limit_minutes: 30,
         passing_score: 70,
         max_attempts: 3,
@@ -208,7 +208,7 @@ const QuizManagement: React.FC<QuizManagementProps> = ({ onStatsUpdate }) => {
       title: quiz.title,
       description: quiz.description || "",
       instructions: quiz.instructions || "",
-      course_id: quiz.course_id || "",
+      course_id: quiz.course_id || "none",
       time_limit_minutes: quiz.time_limit_minutes,
       passing_score: quiz.passing_score,
       max_attempts: quiz.max_attempts,
@@ -254,7 +254,7 @@ const QuizManagement: React.FC<QuizManagementProps> = ({ onStatsUpdate }) => {
       title: "",
       description: "",
       instructions: "",
-      course_id: "",
+      course_id: "none",
       time_limit_minutes: 30,
       passing_score: 70,
       max_attempts: 3,
@@ -343,14 +343,14 @@ const QuizManagement: React.FC<QuizManagementProps> = ({ onStatsUpdate }) => {
                                   <SelectValue placeholder="Select course (optional)" />
                                 </SelectTrigger>
                               </FormControl>
-                              <SelectContent>
-                                <SelectItem value="">No Course (Standalone Quiz)</SelectItem>
-                                {courses.map((course) => (
-                                  <SelectItem key={course.id} value={course.id}>
-                                    {course.title}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
+                               <SelectContent>
+                                 <SelectItem value="none">No Course (Standalone Quiz)</SelectItem>
+                                 {courses.map((course) => (
+                                   <SelectItem key={course.id} value={course.id}>
+                                     {course.title}
+                                   </SelectItem>
+                                 ))}
+                               </SelectContent>
                             </Select>
                             <FormMessage />
                           </FormItem>
