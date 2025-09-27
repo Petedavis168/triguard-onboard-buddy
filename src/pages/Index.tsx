@@ -21,6 +21,8 @@ import {
 const Index = () => {
   const navigate = useNavigate();
 
+  console.log('Index component rendered, navigate function:', navigate);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-secondary/10 to-accent/5">
       {/* Header with Login Dropdown */}
@@ -70,7 +72,12 @@ const Index = () => {
               <Button 
                 size="lg" 
                 className="bg-gradient-primary hover:opacity-90 text-primary-foreground shadow-glow px-8 py-6 text-lg font-semibold"
-                onClick={() => navigate('/onboarding')}
+                onClick={(e) => {
+                  console.log('Start Onboarding button clicked');
+                  e.preventDefault();
+                  e.stopPropagation();
+                  navigate('/onboarding');
+                }}
               >
                 <FileText className="h-5 w-5 mr-2" />
                 Start Onboarding
@@ -81,7 +88,12 @@ const Index = () => {
                 variant="outline" 
                 size="lg" 
                 className="border-primary/20 hover:border-primary/40 hover:bg-primary/5 px-8 py-6 text-lg"
-                onClick={() => navigate('/user-login')}
+                onClick={(e) => {
+                  console.log('Employee Login button clicked');
+                  e.preventDefault();
+                  e.stopPropagation();
+                  navigate('/user-login');
+                }}
               >
                 <UserCheck className="h-5 w-5 mr-2" />
                 Employee Login
