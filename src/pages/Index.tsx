@@ -120,10 +120,49 @@ const Index = () => {
             
             {/* DEBUG: Test direct link */}
             <div className="mt-8 text-center">
-              <p className="text-sm text-muted-foreground mb-2">Debug: Direct link test</p>
-              <a href="/onboarding" className="text-primary underline hover:text-primary-dark">
-                Direct link to onboarding (click to test)
-              </a>
+              <p className="text-sm text-muted-foreground mb-2">Debug: Multiple test methods</p>
+              <div className="space-y-4">
+                <div>
+                  <a 
+                    href="/onboarding" 
+                    className="text-primary underline hover:text-primary-dark block"
+                    onClick={() => console.log('Direct link clicked!')}
+                  >
+                    Direct link to onboarding (click to test)
+                  </a>
+                </div>
+                <div>
+                  <form action="/onboarding" method="get">
+                    <button 
+                      type="submit" 
+                      className="bg-red-500 text-white px-4 py-2 rounded"
+                      onClick={() => console.log('Form button clicked!')}
+                    >
+                      Form Submit Test
+                    </button>
+                  </form>
+                </div>
+                <div>
+                  <button 
+                    className="bg-green-500 text-white px-4 py-2 rounded"
+                    onClick={() => {
+                      console.log('Simple test button clicked!');
+                      alert('Button works!');
+                    }}
+                  >
+                    Simple Click Test
+                  </button>
+                </div>
+                <div>
+                  <a 
+                    href="/test" 
+                    className="bg-purple-500 text-white px-4 py-2 rounded inline-block"
+                    onClick={() => console.log('Test page link clicked!')}
+                  >
+                    Go to Test Page
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         </section>
