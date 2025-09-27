@@ -69,35 +69,28 @@ const Index = () => {
 
             {/* Primary CTA */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
-              <Button 
-                size="lg" 
-                className="bg-gradient-primary hover:opacity-90 text-primary-foreground shadow-glow px-8 py-6 text-lg font-semibold"
+              <button 
+                className="inline-flex items-center justify-center gap-2 h-12 rounded-lg px-8 text-base bg-gradient-primary text-primary-foreground hover:opacity-90 shadow-glow font-semibold transition-all duration-200"
                 onClick={(e) => {
                   console.log('Start Onboarding button clicked');
-                  e.preventDefault();
-                  e.stopPropagation();
                   navigate('/onboarding');
                 }}
               >
-                <FileText className="h-5 w-5 mr-2" />
+                <FileText className="h-5 w-5" />
                 Start Onboarding
-                <ArrowRight className="h-5 w-5 ml-2" />
-              </Button>
+                <ArrowRight className="h-5 w-5" />
+              </button>
               
-              <Button 
-                variant="outline" 
-                size="lg" 
-                className="border-primary/20 hover:border-primary/40 hover:bg-primary/5 px-8 py-6 text-lg"
+              <button 
+                className="inline-flex items-center justify-center gap-2 h-12 rounded-lg px-8 text-base border border-primary/20 bg-background hover:border-primary/40 hover:bg-primary/5 transition-all duration-200"
                 onClick={(e) => {
                   console.log('Employee Login button clicked');
-                  e.preventDefault();
-                  e.stopPropagation();
                   navigate('/user-login');
                 }}
               >
-                <UserCheck className="h-5 w-5 mr-2" />
+                <UserCheck className="h-5 w-5" />
                 Employee Login
-              </Button>
+              </button>
             </div>
 
             {/* Trust Indicators */}
