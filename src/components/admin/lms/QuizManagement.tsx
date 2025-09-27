@@ -14,6 +14,7 @@ import { Plus, Edit, Trash2, Award, Clock, HelpCircle, CheckCircle, Video, Mic, 
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { useForm } from 'react-hook-form';
+import { FileUpload } from '@/components/ui/file-upload';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 
@@ -402,14 +403,13 @@ const QuizManagement: React.FC<QuizManagementProps> = ({ onStatsUpdate }) => {
                         name="intro_video_url"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="flex items-center gap-2">
-                              <Video className="h-4 w-4" />
-                              Introduction Video URL
-                            </FormLabel>
                             <FormControl>
-                              <Input
-                                placeholder="https://example.com/intro-video.mp4 or YouTube/Vimeo URL"
-                                {...field}
+                              <FileUpload
+                                label="Introduction Video URL"
+                                value={field.value || ""}
+                                onChange={field.onChange}
+                                bucketName="video-files"
+                                placeholder="Drop intro video here or paste URL"
                               />
                             </FormControl>
                             <FormMessage />
@@ -422,14 +422,13 @@ const QuizManagement: React.FC<QuizManagementProps> = ({ onStatsUpdate }) => {
                         name="video_url"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="flex items-center gap-2">
-                              <Video className="h-4 w-4" />
-                              Main Content Video URL
-                            </FormLabel>
                             <FormControl>
-                              <Input
-                                placeholder="https://example.com/quiz-content.mp4 or YouTube/Vimeo URL"
-                                {...field}
+                              <FileUpload
+                                label="Main Content Video URL"
+                                value={field.value || ""}
+                                onChange={field.onChange}
+                                bucketName="video-files"
+                                placeholder="Drop main video here or paste URL"
                               />
                             </FormControl>
                             <FormMessage />
