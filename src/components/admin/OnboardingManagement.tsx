@@ -344,71 +344,113 @@ const ApplicationList: React.FC<ApplicationListProps> = ({ forms, onViewDetails 
 
   return (
     <div className="h-full overflow-hidden">
-      {/* Compact Card View - Removes desktop table to keep everything unified */}
+      {/* Easy-to-read Tile Grid */}
       <div className="h-full overflow-y-auto">
-        <div className="space-y-1 px-4 pb-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-4">
           {forms.map((form) => (
-            <div key={form.id} className="bg-white rounded-md border border-border/30 hover:shadow-sm transition-shadow">
-              <div className="p-3">
-                {/* Compact Header */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 flex-1 min-w-0">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center flex-shrink-0">
-                      <User className="h-4 w-4 text-blue-600" />
+            <div key={form.id} className="bg-white rounded-xl border border-border/40 hover:shadow-lg transition-all duration-200 hover:border-blue-200">
+              <div className="p-5">
+                {/* Header Tile Section */}
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-sm">
+                      <User className="h-6 w-6 text-white" />
                     </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="font-medium text-sm text-foreground truncate">
+                    <div>
+                      <h3 className="font-semibold text-base text-gray-900 leading-tight">
                         {form.first_name} {form.last_name}
-                      </div>
-                      {form.generated_email && (
-                        <div className="text-xs text-muted-foreground truncate">
-                          {form.generated_email}
-                        </div>
-                      )}
+                      </h3>
+                      <p className="text-sm text-gray-500 mt-0.5">
+                        ID: {form.id.slice(0, 8)}...
+                      </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 ml-2">
+                  <div className="flex-shrink-0">
                     {getStatusBadge(form.status, form.current_step)}
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => onViewDetails(form)}
-                      className="h-7 w-7 p-0 hover:bg-blue-50"
-                    >
-                      <Eye className="h-3 w-3" />
-                    </Button>
                   </div>
                 </div>
 
-                {/* Compact Assignment Info */}
-                {(form.managers || form.teams) && (
-                  <div className="mt-2 flex items-center gap-4 text-xs text-muted-foreground">
-                    {form.managers && (
-                      <div className="flex items-center gap-1">
-                        <Users className="h-3 w-3" />
-                        <span>{form.managers.first_name} {form.managers.last_name}</span>
-                      </div>
-                    )}
-                    {form.teams && (
-                      <div className="flex items-center gap-1">
-                        <MapPin className="h-3 w-3" />
-                        <span>{form.teams.name}</span>
-                      </div>
-                    )}
+                {/* Email Tile */}
+                {form.generated_email && (
+                  <div className="bg-blue-50 rounded-lg p-3 mb-4">
+                    <div className="flex items-center gap-2">
+                      <Mail className="h-4 w-4 text-blue-600" />
+                      <span className="text-sm font-medium text-blue-900">Email Generated</span>
+                    </div>
+                    <p className="text-sm text-blue-700 mt-1 font-mono">
+                      {form.generated_email}
+                    </p>
                   </div>
                 )}
 
-                {/* Compact Date Info */}
-                <div className="mt-2 flex items-center gap-4 text-xs text-muted-foreground">
-                  <span>Started: {formatDate(form.created_at)}</span>
-                  {form.submitted_at && (
-                    <span>Completed: {formatDate(form.submitted_at)}</span>
+                {/* Assignment Tiles */}
+                <div className="space-y-2 mb-4">
+                  {form.managers && (
+                    <div className="bg-green-50 rounded-lg p-3">
+                      <div className="flex items-center gap-2">
+                        <Users className="h-4 w-4 text-green-600" />
+                        <span className="text-sm font-medium text-green-900">Manager</span>
+                      </div>
+                      <p className="text-sm text-green-700 mt-1">
+                        {form.managers.first_name} {form.managers.last_name}
+                      </p>
+                    </div>
+                  )}
+                  
+                  {form.teams && (
+                    <div className="bg-purple-50 rounded-lg p-3">
+                      <div className="flex items-center gap-2">
+                        <MapPin className="h-4 w-4 text-purple-600" />
+                        <span className="text-sm font-medium text-purple-900">Team</span>
+                      </div>
+                      <p className="text-sm text-purple-700 mt-1">
+                        {form.teams.name}
+                      </p>
+                    </div>
                   )}
                 </div>
+
+                {/* Timeline Tiles */}
+                <div className="grid grid-cols-2 gap-2 mb-4">
+                  <div className="bg-gray-50 rounded-lg p-3 text-center">
+                    <div className="text-xs font-medium text-gray-600 mb-1">Started</div>
+                    <div className="text-sm font-semibold text-gray-900">
+                      {formatDate(form.created_at)}
+                    </div>
+                  </div>
+                  <div className="bg-gray-50 rounded-lg p-3 text-center">
+                    <div className="text-xs font-medium text-gray-600 mb-1">Completed</div>
+                    <div className="text-sm font-semibold text-gray-900">
+                      {form.submitted_at ? formatDate(form.submitted_at) : 'Pending'}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Action Tile */}
+                <Button
+                  onClick={() => onViewDetails(form)}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-lg transition-colors shadow-sm"
+                >
+                  <Eye className="w-4 h-4 mr-2" />
+                  View Full Details
+                </Button>
               </div>
             </div>
           ))}
         </div>
+        
+        {/* Empty State Tile */}
+        {forms.length === 0 && (
+          <div className="flex items-center justify-center h-64">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Users className="h-8 w-8 text-gray-400" />
+              </div>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">No Applications Found</h3>
+              <p className="text-sm text-gray-500">Try adjusting your search or filter criteria</p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
