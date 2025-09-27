@@ -25,7 +25,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-secondary/10 to-accent/5">
-      {/* Header with Navigation */}
+      {/* Header with Login Dropdown */}
       <header className="sticky top-0 z-50 backdrop-blur-sm bg-background/80 border-b border-border/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center justify-between">
@@ -40,24 +40,13 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Navigation Menu */}
-            <div className="flex items-center gap-2 sm:gap-4">
-              <Link to="/onboarding">
-                <Button variant="default" className="flex items-center gap-2 text-sm px-3 py-2">
-                  <FileText className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span className="hidden sm:inline">Start Onboarding</span>
-                  <span className="sm:hidden">Onboard</span>
-                </Button>
-              </Link>
-              
-              <Link to="/user-login">
-                <Button variant="outline" className="flex items-center gap-2 text-sm px-3 py-2">
-                  <UserCheck className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span className="hidden sm:inline">Employee Login</span>
-                  <span className="sm:hidden">Login</span>
-                </Button>
-              </Link>
-            </div>
+            {/* Login Button */}
+            <Link to="/login">
+              <Button variant="outline" className="flex items-center gap-2 text-sm sm:text-base px-3 sm:px-4 py-2">
+                <LogIn className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">Login</span>
+              </Button>
+            </Link>
           </div>
         </div>
       </header>
@@ -78,7 +67,32 @@ const Index = () => {
               success. Complete your profile, upload your badge photo, and join the team.
             </p>
 
-            {/* Trust Indicators - Now Primary CTA */}
+            {/* Primary CTA */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 mb-12 px-4">
+              <Link to="/onboarding" className="w-full sm:w-auto">
+                <Button 
+                  size="lg"
+                  className="w-full flex items-center justify-center gap-3 text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1 min-h-[3rem] sm:min-h-[3.5rem]"
+                >
+                  <FileText className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
+                  <span className="whitespace-nowrap">Start Onboarding</span>
+                  <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
+                </Button>
+              </Link>
+              
+              <Link to="/user-login" className="w-full sm:w-auto">
+                <Button 
+                  variant="outline"
+                  size="lg"
+                  className="w-full flex items-center justify-center gap-3 text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1 min-h-[3rem] sm:min-h-[3.5rem]"
+                >
+                  <UserCheck className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
+                  <span className="whitespace-nowrap">Employee Login</span>
+                </Button>
+              </Link>
+            </div>
+
+            {/* Trust Indicators */}
             <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8 text-sm text-muted-foreground px-4">
               <div className="flex items-center gap-2">
                 <CheckCircle className="h-4 w-4 text-success flex-shrink-0" />
