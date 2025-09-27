@@ -396,105 +396,219 @@ export const RecruiterManagement: React.FC = () => {
               <p className="text-gray-500">No recruiters found</p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Recruiter</TableHead>
-                    <TableHead>Contact</TableHead>
-                    <TableHead>Roles</TableHead>
-                    <TableHead>Created</TableHead>
-                    <TableHead>Updated</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                   {filteredRecruiters.map((recruiter) => (
-                     <TableRow key={recruiter.id} className="cursor-pointer hover:bg-muted/50">
-                       <TableCell onClick={() => setSelectedRecruiter(recruiter)}>
-                         <div className="flex items-center gap-2">
-                           <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
-                             <UserPlus className="h-4 w-4 text-green-600" />
-                           </div>
-                           <div>
-                             <div className="font-medium">
-                               {recruiter.first_name} {recruiter.last_name}
+            <>
+              {/* Desktop Table View - Hidden on Mobile */}
+              <div className="hidden md:block overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Recruiter</TableHead>
+                      <TableHead>Contact</TableHead>
+                      <TableHead>Roles</TableHead>
+                      <TableHead>Created</TableHead>
+                      <TableHead>Updated</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                     {filteredRecruiters.map((recruiter) => (
+                       <TableRow key={recruiter.id} className="cursor-pointer hover:bg-muted/50">
+                         <TableCell onClick={() => setSelectedRecruiter(recruiter)}>
+                           <div className="flex items-center gap-2">
+                             <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+                               <UserPlus className="h-4 w-4 text-green-600" />
+                             </div>
+                             <div>
+                               <div className="font-medium">
+                                 {recruiter.first_name} {recruiter.last_name}
+                               </div>
                              </div>
                            </div>
-                         </div>
-                       </TableCell>
-                       <TableCell onClick={() => setSelectedRecruiter(recruiter)}>
-                         <div className="flex items-center gap-2">
-                           <Mail className="h-4 w-4 text-gray-400" />
-                           <span className="text-sm">{recruiter.email}</span>
-                         </div>
-                       </TableCell>
-                       <TableCell onClick={() => setSelectedRecruiter(recruiter)}>
-                         <div className="flex gap-1">
-                           <Badge variant="secondary" className="bg-green-100 text-green-800">
-                             Recruiter
-                           </Badge>
-                           {isAlsoManager(recruiter.email) && (
-                             <Badge variant="secondary" className="bg-blue-100 text-blue-800">
-                               Manager
+                         </TableCell>
+                         <TableCell onClick={() => setSelectedRecruiter(recruiter)}>
+                           <div className="flex items-center gap-2">
+                             <Mail className="h-4 w-4 text-gray-400" />
+                             <span className="text-sm">{recruiter.email}</span>
+                           </div>
+                         </TableCell>
+                         <TableCell onClick={() => setSelectedRecruiter(recruiter)}>
+                           <div className="flex gap-1">
+                             <Badge variant="secondary" className="bg-green-100 text-green-800">
+                               Recruiter
                              </Badge>
-                           )}
-                         </div>
-                       </TableCell>
-                       <TableCell onClick={() => setSelectedRecruiter(recruiter)}>{formatDate(recruiter.created_at)}</TableCell>
-                       <TableCell onClick={() => setSelectedRecruiter(recruiter)}>{formatDate(recruiter.updated_at)}</TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex gap-2 justify-end">
-                          {!isAlsoManager(recruiter.email) && (
+                             {isAlsoManager(recruiter.email) && (
+                               <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                                 Manager
+                               </Badge>
+                             )}
+                           </div>
+                         </TableCell>
+                         <TableCell onClick={() => setSelectedRecruiter(recruiter)}>{formatDate(recruiter.created_at)}</TableCell>
+                         <TableCell onClick={() => setSelectedRecruiter(recruiter)}>{formatDate(recruiter.updated_at)}</TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex gap-2 justify-end">
+                            {!isAlsoManager(recruiter.email) && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => promoteToManager(recruiter)}
+                                title="Also make this person a manager"
+                              >
+                                <Shield className="h-4 w-4" />
+                              </Button>
+                            )}
                             <Button
                               variant="outline"
                               size="sm"
-                              onClick={() => promoteToManager(recruiter)}
-                              title="Also make this person a manager"
+                              onClick={() => handleEdit(recruiter)}
                             >
-                              <Shield className="h-4 w-4" />
+                              <Edit className="h-4 w-4" />
                             </Button>
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button variant="outline" size="sm">
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Remove Recruiter</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    Are you sure you want to remove {recruiter.first_name} {recruiter.last_name} from recruiters? 
+                                    {isAlsoManager(recruiter.email) && " They will still remain as a manager."}
+                                    This action cannot be undone.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <AlertDialogAction 
+                                    onClick={() => handleDelete(recruiter.id, `${recruiter.first_name} ${recruiter.last_name}`)}
+                                    className="bg-red-600 hover:bg-red-700"
+                                  >
+                                    Remove Recruiter
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+
+              {/* Mobile Card View - Visible on Mobile Only */}
+              <div className="md:hidden space-y-4">
+                {filteredRecruiters.map((recruiter) => (
+                  <Card key={recruiter.id} className="mobile-card">
+                    <CardContent className="p-4">
+                      <div 
+                        className="cursor-pointer"
+                        onClick={() => setSelectedRecruiter(recruiter)}
+                      >
+                        {/* Header with Name and Avatar */}
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                              <UserPlus className="h-5 w-5 text-green-600" />
+                            </div>
+                            <div>
+                              <div className="font-medium text-base">
+                                {recruiter.first_name} {recruiter.last_name}
+                              </div>
+                              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                <Mail className="h-4 w-4" />
+                                {recruiter.email}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Roles */}
+                        <div className="flex flex-wrap gap-2 mb-3">
+                          <Badge variant="secondary" className="bg-green-100 text-green-800">
+                            Recruiter
+                          </Badge>
+                          {isAlsoManager(recruiter.email) && (
+                            <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                              Manager
+                            </Badge>
                           )}
+                        </div>
+
+                        {/* Dates */}
+                        <div className="space-y-2 mb-3">
+                          <div className="text-sm">
+                            <span className="text-muted-foreground">Created: </span>
+                            <span className="font-medium">{formatDate(recruiter.created_at)}</span>
+                          </div>
+                          <div className="text-sm">
+                            <span className="text-muted-foreground">Updated: </span>
+                            <span className="font-medium">{formatDate(recruiter.updated_at)}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Actions */}
+                      <div className="flex flex-wrap gap-2 pt-3 border-t">
+                        {!isAlsoManager(recruiter.email) && (
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => handleEdit(recruiter)}
+                            onClick={() => promoteToManager(recruiter)}
+                            className="mobile-button"
                           >
-                            <Edit className="h-4 w-4" />
+                            <Shield className="h-4 w-4 mr-1" />
+                            Make Manager
                           </Button>
-                          <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                              <Button variant="outline" size="sm">
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>Remove Recruiter</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                  Are you sure you want to remove {recruiter.first_name} {recruiter.last_name} from recruiters? 
-                                  {isAlsoManager(recruiter.email) && " They will still remain as a manager."}
-                                  This action cannot be undone.
-                                </AlertDialogDescription>
-                              </AlertDialogHeader>
-                              <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction 
-                                  onClick={() => handleDelete(recruiter.id, `${recruiter.first_name} ${recruiter.last_name}`)}
-                                  className="bg-red-600 hover:bg-red-700"
-                                >
-                                  Remove Recruiter
-                                </AlertDialogAction>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+                        )}
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleEdit(recruiter)}
+                          className="mobile-button"
+                        >
+                          <Edit className="h-4 w-4 mr-1" />
+                          Edit
+                        </Button>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="mobile-button text-red-600 hover:text-red-700"
+                            >
+                              <Trash2 className="h-4 w-4 mr-1" />
+                              Remove
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Remove Recruiter</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Are you sure you want to remove {recruiter.first_name} {recruiter.last_name} from recruiters? 
+                                {isAlsoManager(recruiter.email) && " They will still remain as a manager."}
+                                This action cannot be undone.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction 
+                                onClick={() => handleDelete(recruiter.id, `${recruiter.first_name} ${recruiter.last_name}`)}
+                                className="bg-red-600 hover:bg-red-700"
+                              >
+                                Remove Recruiter
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </>
           )}
         </CardContent>
       </Card>
