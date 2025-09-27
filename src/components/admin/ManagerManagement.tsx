@@ -93,15 +93,19 @@ export const ManagerManagement: React.FC = () => {
 
   const fetchManagers = async () => {
     try {
+      console.log('Fetching managers...');
       const { data: managersData, error: managersError } = await supabase
         .from('managers')
         .select('*')
         .order('created_at', { ascending: false });
 
+      console.log('Managers query result:', { managersData, managersError });
+
       if (managersError) {
+        console.error('Error fetching managers:', managersError);
         toast({
           title: "Error",
-          description: "Failed to fetch managers",
+          description: `Failed to fetch managers: ${managersError.message}`,
           variant: "destructive"
         });
         return;
@@ -120,6 +124,8 @@ export const ManagerManagement: React.FC = () => {
           )
         `);
 
+      console.log('Team assignments query result:', { teamAssignments, teamError });
+
       if (teamError) {
         console.error('Error fetching team assignments:', teamError);
       }
@@ -131,9 +137,15 @@ export const ManagerManagement: React.FC = () => {
           .map(ta => ta.teams).filter(Boolean) || []
       })) || [];
 
+      console.log('Final managers with teams:', managersWithTeams);
       setManagers(managersWithTeams);
     } catch (error) {
       console.error('Error fetching managers:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch managers. Please check console for details.",
+        variant: "destructive"
+      });
     } finally {
       setIsLoading(false);
     }
@@ -176,8 +188,11 @@ export const ManagerManagement: React.FC = () => {
   };
 
   const filterManagers = () => {
+    console.log('Filtering managers:', { managers, searchTerm, managersLength: managers.length });
+    
     if (!searchTerm) {
       setFilteredManagers(managers);
+      console.log('No search term, setting all managers:', managers);
       return;
     }
 
@@ -186,6 +201,7 @@ export const ManagerManagement: React.FC = () => {
       manager.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       manager.email.toLowerCase().includes(searchTerm.toLowerCase())
     );
+    console.log('Filtered managers:', filtered);
     setFilteredManagers(filtered);
   };
 
