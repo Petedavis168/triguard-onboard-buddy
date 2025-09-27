@@ -27,6 +27,9 @@ interface OnboardingFormProps {
 }
 
 export const OnboardingForm: React.FC<OnboardingFormProps> = ({ formId }) => {
+  // Add debug logging at the very start
+  console.log('OnboardingForm component RENDERING - formId:', formId);
+  
   const {
     form,
     currentStep,
@@ -37,6 +40,8 @@ export const OnboardingForm: React.FC<OnboardingFormProps> = ({ formId }) => {
     isLoading,
     generatedEmail,
   } = useOnboardingForm(formId);
+
+  console.log('OnboardingForm - currentStep:', currentStep, 'isLoading:', isLoading);
 
   const currentStepInfo = FORM_STEPS.find(step => step.id === currentStep);
   const progress = ((currentStep - 1) / (FORM_STEPS.length - 1)) * 100;

@@ -72,8 +72,14 @@ const Index = () => {
               <Button 
                 size="lg"
                 className="flex items-center gap-3 text-lg px-8 py-4 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1"
-                onClick={() => {
-                  console.log('BUTTON CLICKED! Going to onboarding...');
+                onMouseDown={() => {
+                  console.log('ONBOARDING BUTTON MOUSE DOWN!');
+                }}
+                onClick={(e) => {
+                  console.log('ONBOARDING BUTTON CLICKED! Event:', e);
+                  console.log('About to navigate with window.location...');
+                  e.preventDefault();
+                  e.stopPropagation();
                   window.location.href = '/onboarding';
                 }}
               >
