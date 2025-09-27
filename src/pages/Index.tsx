@@ -90,19 +90,6 @@ const Index = () => {
               success. Complete your profile, upload your badge photo, and join the team.
             </p>
 
-            {/* Primary CTA */}
-            <div className="flex justify-center mb-12 px-4">
-              <Button 
-                size="xl"
-                className="flex items-center justify-center gap-3 text-xl px-12 py-6 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 min-h-[4rem] bg-gradient-primary text-primary-foreground"
-                onClick={() => window.location.href = '/onboarding'}
-              >
-                <FileText className="h-6 w-6 flex-shrink-0" />
-                <span className="font-bold">START ONBOARDING</span>
-                <ArrowRight className="h-6 w-6 flex-shrink-0" />
-              </Button>
-            </div>
-
             {/* Trust Indicators */}
             <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8 text-sm text-muted-foreground px-4">
               <div className="flex items-center gap-2">
@@ -120,6 +107,18 @@ const Index = () => {
             </div>
 
           </div>
+        </section>
+
+        {/* Primary CTA Section */}
+        <section className="flex justify-center mb-16 sm:mb-20 px-4">
+          <button 
+            className="flex items-center justify-center gap-3 text-xl px-12 py-6 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 min-h-[4rem] bg-gradient-to-r from-primary to-accent text-white rounded-lg font-bold"
+            onClick={() => window.location.href = '/onboarding'}
+          >
+            <FileText className="h-6 w-6 flex-shrink-0" />
+            <span>START ONBOARDING</span>
+            <ArrowRight className="h-6 w-6 flex-shrink-0" />
+          </button>
         </section>
 
         {/* Complete Onboarding Experience Section */}
