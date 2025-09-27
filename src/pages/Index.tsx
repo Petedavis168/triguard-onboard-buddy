@@ -69,35 +69,26 @@ const Index = () => {
 
             {/* Primary CTA */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-12">
-              <Link to="/onboarding">
-                <Button 
-                  size="lg"
-                  className="flex items-center gap-3 text-lg px-8 py-4 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1"
-                  onClick={(e) => {
-                    console.log('Onboarding button clicked! Using Link navigation');
-                  }}
-                >
-                  <FileText className="h-5 w-5" />
-                  Start Onboarding
-                  <ArrowRight className="h-5 w-5" />
-                </Button>
-              </Link>
+              <Button 
+                size="lg"
+                className="flex items-center gap-3 text-lg px-8 py-4 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1"
+                onClick={() => {
+                  console.log('BUTTON CLICKED! Going to onboarding...');
+                  window.location.href = '/onboarding';
+                }}
+              >
+                <FileText className="h-5 w-5" />
+                Start Onboarding
+                <ArrowRight className="h-5 w-5" />
+              </Button>
               
               <Button 
                 variant="outline"
                 size="lg"
                 className="flex items-center gap-3 text-lg px-8 py-4 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  console.log('Employee Login button clicked!');
-                  try {
-                    navigate('/user-login');
-                    console.log('User login navigate completed');
-                  } catch (error) {
-                    console.error('User login navigate error:', error);
-                    window.location.href = '/user-login';
-                  }
+                onClick={() => {
+                  console.log('EMPLOYEE LOGIN CLICKED! Going to user login...');
+                  window.location.href = '/user-login';
                 }}
               >
                 <UserCheck className="h-5 w-5" />
@@ -119,6 +110,14 @@ const Index = () => {
                 <Shield className="h-4 w-4 text-warning" />
                 <span>Secure & Private</span>
               </div>
+            </div>
+            
+            {/* DEBUG: Test direct link */}
+            <div className="mt-8 text-center">
+              <p className="text-sm text-muted-foreground mb-2">Debug: Direct link test</p>
+              <a href="/onboarding" className="text-primary underline hover:text-primary-dark">
+                Direct link to onboarding (click to test)
+              </a>
             </div>
           </div>
         </section>
