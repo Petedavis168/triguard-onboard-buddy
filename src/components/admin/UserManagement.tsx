@@ -433,41 +433,162 @@ export const UserManagement: React.FC = () => {
               <p className="text-gray-500">No admin users found</p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Password Status</TableHead>
-                    <TableHead>Activity</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Created</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredUsers.map((user) => (
-                    <TableRow key={user.id}>
-                      <TableCell className="font-medium">
-                        {user.first_name} {user.last_name}
-                      </TableCell>
-                      <TableCell>{user.email}</TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
+            <>
+              {/* Desktop Table View - Hidden on Mobile */}
+              <div className="hidden md:block overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Email</TableHead>
+                      <TableHead>Password Status</TableHead>
+                      <TableHead>Activity</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Created</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredUsers.map((user) => (
+                      <TableRow key={user.id}>
+                        <TableCell className="font-medium">
+                          {user.first_name} {user.last_name}
+                        </TableCell>
+                        <TableCell>{user.email}</TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            {generatedPasswords[user.id] && (
+                              <div className="flex items-center gap-1 text-xs">
+                                <Input
+                                  type={visiblePasswords[user.id] ? "text" : "password"}
+                                  value={generatedPasswords[user.id]}
+                                  readOnly
+                                  className="h-7 w-24 text-xs"
+                                />
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => togglePasswordVisibility(user.id)}
+                                  className="h-7 w-7 p-0"
+                                >
+                                  {visiblePasswords[user.id] ? (
+                                    <EyeOff className="h-3 w-3" />
+                                  ) : (
+                                    <Eye className="h-3 w-3" />
+                                  )}
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => copyPassword(user.id)}
+                                  className="h-7 w-7 p-0"
+                                  title="Copy password"
+                                >
+                                  <Copy className="h-3 w-3" />
+                                </Button>
+                              </div>
+                            )}
+                            <Badge variant={user.force_password_change ? "destructive" : "default"}>
+                              {user.force_password_change ? 'Must Change' : 'Set'}
+                            </Badge>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="text-sm">
+                            {user.last_login_at ? (
+                              <div>
+                                <div>Last: {formatDate(user.last_login_at)}</div>
+                                {user.last_activity_at && (
+                                  <div className="text-xs text-muted-foreground">
+                                    Active: {formatDate(user.last_activity_at)}
+                                  </div>
+                                )}
+                              </div>
+                            ) : (
+                              <span className="text-muted-foreground">Never</span>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant={user.is_active ? "default" : "secondary"}>
+                            {user.is_active ? 'Active' : 'Inactive'}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>{formatDate(user.created_at)}</TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex gap-1 justify-end">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => regeneratePassword(user.id)}
+                              title="Regenerate Password"
+                            >
+                              <RotateCcw className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleEdit(user)}
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleDelete(user.id)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+
+              {/* Mobile Card View - Visible on Mobile Only */}
+              <div className="md:hidden space-y-4">
+                {filteredUsers.map((user) => (
+                  <Card key={user.id} className="mobile-card">
+                    <CardContent className="p-4">
+                      {/* Header with Name and Status */}
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0">
+                            <Users className="h-5 w-5 text-purple-600" />
+                          </div>
+                          <div>
+                            <div className="font-medium text-base">
+                              {user.first_name} {user.last_name}
+                            </div>
+                            <div className="text-sm text-muted-foreground">
+                              {user.email}
+                            </div>
+                          </div>
+                        </div>
+                        <Badge variant={user.is_active ? "default" : "secondary"}>
+                          {user.is_active ? 'Active' : 'Inactive'}
+                        </Badge>
+                      </div>
+
+                      {/* Password Status */}
+                      <div className="border-t pt-3 mb-3">
+                        <div className="text-sm font-medium text-muted-foreground mb-2">Password Status</div>
+                        <div className="flex flex-wrap items-center gap-2">
                           {generatedPasswords[user.id] && (
-                            <div className="flex items-center gap-1 text-xs">
+                            <div className="flex items-center gap-2">
                               <Input
                                 type={visiblePasswords[user.id] ? "text" : "password"}
                                 value={generatedPasswords[user.id]}
                                 readOnly
-                                className="h-7 w-24 text-xs"
+                                className="h-8 w-32 text-xs mobile-input"
                               />
                               <Button
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => togglePasswordVisibility(user.id)}
-                                className="h-7 w-7 p-0"
+                                className="h-8 w-8 p-0 mobile-button"
                               >
                                 {visiblePasswords[user.id] ? (
                                   <EyeOff className="h-3 w-3" />
@@ -479,7 +600,7 @@ export const UserManagement: React.FC = () => {
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => copyPassword(user.id)}
-                                className="h-7 w-7 p-0"
+                                className="h-8 w-8 p-0 mobile-button"
                                 title="Copy password"
                               >
                                 <Copy className="h-3 w-3" />
@@ -490,60 +611,66 @@ export const UserManagement: React.FC = () => {
                             {user.force_password_change ? 'Must Change' : 'Set'}
                           </Badge>
                         </div>
-                      </TableCell>
-                      <TableCell>
+                      </div>
+
+                      {/* Activity Information */}
+                      <div className="border-t pt-3 mb-3">
+                        <div className="text-sm font-medium text-muted-foreground mb-2">Activity</div>
                         <div className="text-sm">
                           {user.last_login_at ? (
-                            <div>
-                              <div>Last: {formatDate(user.last_login_at)}</div>
+                            <div className="space-y-1">
+                              <div>Last Login: {formatDate(user.last_login_at)}</div>
                               {user.last_activity_at && (
                                 <div className="text-xs text-muted-foreground">
-                                  Active: {formatDate(user.last_activity_at)}
+                                  Last Active: {formatDate(user.last_activity_at)}
                                 </div>
                               )}
                             </div>
                           ) : (
-                            <span className="text-muted-foreground">Never</span>
+                            <span className="text-muted-foreground">Never logged in</span>
                           )}
                         </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant={user.is_active ? "default" : "secondary"}>
-                          {user.is_active ? 'Active' : 'Inactive'}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>{formatDate(user.created_at)}</TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex gap-1 justify-end">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => regeneratePassword(user.id)}
-                            title="Regenerate Password"
-                          >
-                            <RotateCcw className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleEdit(user)}
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleDelete(user.id)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+                      </div>
+
+                      {/* Actions */}
+                      <div className="flex flex-wrap gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => regeneratePassword(user.id)}
+                          className="mobile-button"
+                        >
+                          <RotateCcw className="h-4 w-4 mr-1" />
+                          Reset Password
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleEdit(user)}
+                          className="mobile-button"
+                        >
+                          <Edit className="h-4 w-4 mr-1" />
+                          Edit
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleDelete(user.id)}
+                          className="mobile-button text-red-600 hover:text-red-700"
+                        >
+                          <Trash2 className="h-4 w-4 mr-1" />
+                          Delete
+                        </Button>
+                      </div>
+
+                      <div className="text-xs text-muted-foreground mt-3 pt-2 border-t">
+                        Created: {formatDate(user.created_at)}
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </>
           )}
         </CardContent>
       </Card>
