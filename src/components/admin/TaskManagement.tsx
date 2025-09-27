@@ -344,73 +344,104 @@ const TaskManagement = () => {
               <p className="text-muted-foreground">No tasks found</p>
             </div>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Task</TableHead>
-                  <TableHead>Manager</TableHead>
-                  <TableHead>Team</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Created</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {tasks.map((task) => (
-                  <TableRow key={task.id}>
-                    <TableCell>
-                      <div>
-                        <div className="font-medium">{task.title}</div>
-                        {task.description && (
-                          <div className="text-sm text-muted-foreground mt-1">
-                            {task.description.length > 100 
-                              ? `${task.description.substring(0, 100)}...`
-                              : task.description
-                            }
-                          </div>
-                        )}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {tasks.map((task) => (
+                <div key={task.id} className="bg-white rounded-xl border border-border/40 hover:shadow-lg transition-all duration-200 hover:border-blue-200 overflow-hidden">
+                  <div className="p-5">
+                    {/* Header with Title and Status */}
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center gap-3 min-w-0 flex-1">
+                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-sm flex-shrink-0 ${
+                          task.is_active ? 'bg-gradient-to-br from-green-500 to-green-600' : 'bg-gradient-to-br from-gray-400 to-gray-500'
+                        }`}>
+                          <CheckCircle className="h-6 w-6 text-white" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <h3 className={`font-semibold text-gray-900 leading-tight break-all ${
+                            task.title.length > 20 ? 'text-sm' : 'text-base'
+                          }`}>
+                            {task.title}
+                          </h3>
+                          <p className="text-sm text-gray-500 mt-0.5">
+                            Created: {formatDate(task.created_at)}
+                          </p>
+                        </div>
                       </div>
-                    </TableCell>
-                    <TableCell>
-                      {task.managers.first_name} {task.managers.last_name}
-                    </TableCell>
-                    <TableCell>{task.teams.name}</TableCell>
-                    <TableCell>
-                      <Badge variant={task.is_active ? "default" : "secondary"}>
-                        {task.is_active ? (
-                          <>
-                            <CheckCircle className="h-3 w-3 mr-1" />
-                            Active
-                          </>
-                        ) : (
-                          'Inactive'
-                        )}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>{formatDate(task.created_at)}</TableCell>
-                    <TableCell>
-                      <div className="flex gap-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleEdit(task)}
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleDelete(task.id)}
-                          disabled={!task.is_active}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                      <div className="flex-shrink-0 ml-2">
+                        <Badge variant={task.is_active ? "default" : "secondary"} className="text-xs">
+                          {task.is_active ? 'Active' : 'Inactive'}
+                        </Badge>
                       </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                    </div>
+
+                    {/* Description */}
+                    {task.description && (
+                      <div className="bg-gray-50 rounded-lg p-3 mb-4">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Clock className="h-4 w-4 text-gray-600" />
+                          <span className="text-sm font-medium text-gray-900">Task Description</span>
+                        </div>
+                        <p className={`text-gray-700 break-all ${
+                          task.description.length > 80 ? 'text-xs' : 'text-sm'
+                        }`}>
+                          {task.description}
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Assignment Info */}
+                    <div className="space-y-2 mb-4">
+                      <div className="bg-blue-50 rounded-lg p-3">
+                        <div className="flex items-center gap-2">
+                          <Edit className="h-4 w-4 text-blue-600" />
+                          <span className="text-sm font-medium text-blue-900">Assigned Manager</span>
+                        </div>
+                        <div className={`text-blue-700 mt-1 break-all ${
+                          `${task.managers.first_name} ${task.managers.last_name}`.length > 20 ? 'text-xs' : 'text-sm'
+                        }`}>
+                          {task.managers.first_name} {task.managers.last_name}
+                        </div>
+                      </div>
+                      
+                      <div className="bg-purple-50 rounded-lg p-3">
+                        <div className="flex items-center gap-2">
+                          <Plus className="h-4 w-4 text-purple-600" />
+                          <span className="text-sm font-medium text-purple-900">Target Team</span>
+                        </div>
+                        <div className={`text-purple-700 mt-1 break-all ${
+                          task.teams.name.length > 20 ? 'text-xs' : 'text-sm'
+                        }`}>
+                          {task.teams.name}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleEdit(task)}
+                        className="flex-1 hover:bg-blue-50 hover:border-blue-200"
+                      >
+                        <Edit className="h-4 w-4 mr-2" />
+                        Edit
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleDelete(task.id)}
+                        disabled={!task.is_active}
+                        className="flex-1 hover:bg-red-50 hover:border-red-200 disabled:opacity-50"
+                      >
+                        <Trash2 className="h-4 w-4 mr-2" />
+                        Delete
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           )}
         </CardContent>
       </Card>
