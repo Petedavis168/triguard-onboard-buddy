@@ -348,24 +348,24 @@ const ApplicationList: React.FC<ApplicationListProps> = ({ forms, onViewDetails 
       <div className="h-full overflow-y-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-4">
           {forms.map((form) => (
-            <div key={form.id} className="bg-white rounded-xl border border-border/40 hover:shadow-lg transition-all duration-200 hover:border-blue-200">
+            <div key={form.id} className="bg-white rounded-xl border border-border/40 hover:shadow-lg transition-all duration-200 hover:border-blue-200 overflow-hidden">
               <div className="p-5">
                 {/* Header Tile Section */}
                 <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-sm">
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-sm flex-shrink-0">
                       <User className="h-6 w-6 text-white" />
                     </div>
-                    <div>
-                      <h3 className="font-semibold text-base text-gray-900 leading-tight">
+                    <div className="min-w-0 flex-1">
+                      <h3 className="font-semibold text-base text-gray-900 leading-tight truncate">
                         {form.first_name} {form.last_name}
                       </h3>
-                      <p className="text-sm text-gray-500 mt-0.5">
+                      <p className="text-sm text-gray-500 mt-0.5 truncate">
                         ID: {form.id.slice(0, 8)}...
                       </p>
                     </div>
                   </div>
-                  <div className="flex-shrink-0">
+                  <div className="flex-shrink-0 ml-2">
                     {getStatusBadge(form.status, form.current_step)}
                   </div>
                 </div>
@@ -377,7 +377,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({ forms, onViewDetails 
                       <Mail className="h-4 w-4 text-blue-600" />
                       <span className="text-sm font-medium text-blue-900">Email Generated</span>
                     </div>
-                    <p className="text-sm text-blue-700 mt-1 font-mono">
+                    <p className="text-sm text-blue-700 mt-1 font-mono break-all truncate">
                       {form.generated_email}
                     </p>
                   </div>
