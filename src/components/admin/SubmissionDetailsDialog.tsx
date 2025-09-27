@@ -143,17 +143,22 @@ const SubmissionDetailsDialog: React.FC<SubmissionDetailsDialogProps> = ({
                   <DialogTitle className="text-lg sm:text-xl truncate">
                     {submission.first_name} {submission.last_name}
                   </DialogTitle>
-                  <DialogDescription className="flex flex-wrap items-center gap-2 mt-2">
-                    {getStatusBadge(submission.status)}
-                    <span>•</span>
-                    <span className="text-sm">Step {submission.current_step}/9</span>
-                    {submission.generated_email && (
-                      <>
-                        <span className="hidden sm:inline">•</span>
-                        <span className="text-sm truncate w-full sm:w-auto">{submission.generated_email}</span>
-                      </>
-                    )}
-                  </DialogDescription>
+                   <DialogDescription className="flex flex-wrap items-center gap-2 mt-2">
+                     {getStatusBadge(submission.status)}
+                     <span>•</span>
+                     <span className="text-sm">Step {submission.current_step}/9</span>
+                     {submission.generated_email && (
+                       <>
+                         <span className="hidden sm:inline">•</span>
+                         <span className="text-sm truncate w-full sm:w-auto">{submission.generated_email}</span>
+                       </>
+                     )}
+                     {!submission.voice_recording_url && (
+                       <Badge variant="destructive" className="text-xs">
+                         Missing Recording
+                       </Badge>
+                     )}
+                   </DialogDescription>
                 </div>
                 <div className="flex gap-2 flex-shrink-0">
                   {!isEditing ? (
@@ -178,17 +183,19 @@ const SubmissionDetailsDialog: React.FC<SubmissionDetailsDialogProps> = ({
 
             <Tabs defaultValue="personal" className="w-full">
               {/* Mobile-optimized tabs with horizontal scroll */}
-              <div className="overflow-x-auto mb-6">
-                <TabsList className="grid grid-cols-4 sm:grid-cols-7 w-full min-w-[300px]">
-                  <TabsTrigger value="personal" className="text-xs sm:text-sm">Personal</TabsTrigger>
-                  <TabsTrigger value="address" className="text-xs sm:text-sm">Address</TabsTrigger>
-                  <TabsTrigger value="sizing" className="text-xs sm:text-sm">Sizing</TabsTrigger>
-                  <TabsTrigger value="documents" className="text-xs sm:text-sm">Docs</TabsTrigger>
-                  <TabsTrigger value="banking" className="text-xs sm:text-sm">Banking</TabsTrigger>
-                  <TabsTrigger value="voice" className="text-xs sm:text-sm">Voice</TabsTrigger>
-                  <TabsTrigger value="tasks" className="text-xs sm:text-sm">Tasks</TabsTrigger>
-                </TabsList>
-              </div>
+               <div className="overflow-x-auto mb-6">
+                 <TabsList className="grid grid-cols-4 sm:grid-cols-7 w-full min-w-[300px]">
+                   <TabsTrigger value="personal" className="text-xs sm:text-sm">Personal</TabsTrigger>
+                   <TabsTrigger value="address" className="text-xs sm:text-sm">Address</TabsTrigger>
+                   <TabsTrigger value="sizing" className="text-xs sm:text-sm">Sizing</TabsTrigger>
+                   <TabsTrigger value="documents" className="text-xs sm:text-sm">Docs</TabsTrigger>
+                   <TabsTrigger value="banking" className="text-xs sm:text-sm">Banking</TabsTrigger>
+                   <TabsTrigger value="voice" className={`text-xs sm:text-sm ${!submission.voice_recording_url ? 'text-red-600 font-medium' : ''}`}>
+                     Voice {!submission.voice_recording_url && <span className="text-red-500 ml-1">●</span>}
+                   </TabsTrigger>
+                   <TabsTrigger value="tasks" className="text-xs sm:text-sm">Tasks</TabsTrigger>
+                 </TabsList>
+               </div>
 
               <TabsContent value="personal" className="space-y-4">
                 <Card>
@@ -433,12 +440,26 @@ const SubmissionDetailsDialog: React.FC<SubmissionDetailsDialogProps> = ({
                       Your browser does not support the audio element.
                     </audio>
                   </div>
-                ) : (
-                  <div className="text-center py-8">
-                    <Mic className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                    <p className="text-gray-500">No voice recording submitted</p>
-                  </div>
-                )}
+                 ) : (
+                   <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
+                     <div className="flex items-center justify-center mb-4">
+                       <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
+                         <Mic className="h-8 w-8 text-red-600" />
+                       </div>
+                     </div>
+                     <h3 className="text-lg font-semibold text-red-900 mb-2">No Voice Recording Available</h3>
+                     <p className="text-red-700 mb-4">
+                       This applicant has not submitted their voice pitch recording yet. 
+                       This is typically completed in Step 6 of the onboarding process.
+                     </p>
+                     <div className="bg-red-100 rounded-lg p-3">
+                       <p className="text-sm text-red-800">
+                         <strong>Next Steps:</strong> The applicant should complete their voice recording 
+                         to proceed with the onboarding process.
+                       </p>
+                     </div>
+                   </div>
+                 )}
               </CardContent>
             </Card>
           </TabsContent>
