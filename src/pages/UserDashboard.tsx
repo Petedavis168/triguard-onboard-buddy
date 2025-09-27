@@ -156,44 +156,38 @@ const UserDashboard = () => {
   };
 
   const handleStartAssignment = (assignment: Assignment) => {
-    toast({
-      title: "Starting Assignment",
-      description: `Loading ${assignment.title}...`,
-    });
-    
-    // Here you would typically navigate to the specific course/quiz/task
-    // For now, we'll just show a message
-    if (assignment.type === 'course') {
-      // navigate(`/course/${assignment.id}`);
-    } else if (assignment.type === 'quiz') {
-      // navigate(`/quiz/${assignment.id}`);
-    } else {
-      // Handle task completion
+    switch (assignment.type) {
+      case 'course':
+        navigate('/courses');
+        break;
+      case 'quiz':
+        navigate('/quizzes');
+        break;
+      case 'task':
+        if (assignment.title.toLowerCase().includes('onboarding')) {
+          navigate('/onboarding');
+        } else {
+          toast({
+            title: "Starting Task",
+            description: `Loading ${assignment.title}...`,
+          });
+        }
+        break;
+      default:
+        break;
     }
   };
 
   const handleQuickAction = (action: string) => {
     switch (action) {
       case 'courses':
-        toast({
-          title: "Browse Courses",
-          description: "Loading course catalog...",
-        });
-        // navigate('/courses');
+        navigate('/courses');
         break;
       case 'quiz':
-        toast({
-          title: "Take Quiz",
-          description: "Loading available quizzes...",
-        });
-        // navigate('/quizzes');
+        navigate('/quizzes');
         break;
       case 'certificates':
-        toast({
-          title: "View Certificates",
-          description: "Loading your certificates...",
-        });
-        // navigate('/certificates');
+        navigate('/certificates');
         break;
       case 'profile':
         setIsProfileDialogOpen(true);
@@ -229,7 +223,7 @@ const UserDashboard = () => {
                 <Trophy className="h-4 w-4 mr-2 text-yellow-500" />
                 Level 2 Roofer
               </Badge>
-              <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700" onClick={() => handleQuickAction('courses')}>
+              <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700" onClick={() => navigate('/courses')}>
                 <Play className="h-4 w-4 mr-2" />
                 Continue Learning
               </Button>
