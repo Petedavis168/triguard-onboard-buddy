@@ -14,8 +14,8 @@ interface GearSizingStepProps {
 
 export const GearSizingStep: React.FC<GearSizingStepProps> = ({ form }) => {
   return (
-    <div className="space-y-6 animate-fade-in">
-      <Card className="border-primary/20 bg-gradient-card shadow-soft hover-lift form-field-enhanced">
+    <div className="space-y-6">
+      <Card className="border-primary/20 bg-gradient-card shadow-soft">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-primary">
             <ShirtIcon className="h-5 w-5" />

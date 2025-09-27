@@ -18,8 +18,8 @@ export const BasicInformationStep: React.FC<BasicInformationStepProps> = ({
 }) => {
   const { formatPhoneNumber } = useOnboardingForm();
   return (
-    <div className="space-y-6 animate-fade-in">
-      <Card className="border-primary/20 bg-gradient-card shadow-soft hover-lift form-field-enhanced">
+    <div className="space-y-6">
+      <Card className="border-primary/20 bg-gradient-card shadow-soft">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-primary">
             <User className="h-5 w-5" />
@@ -131,10 +131,10 @@ export const BasicInformationStep: React.FC<BasicInformationStepProps> = ({
           </div>
 
           {generatedEmail && (
-            <div className="space-y-4 animate-slide-up">
+            <div className="space-y-4">
               <div className="p-6 bg-gradient-success rounded-xl border border-success/20 shadow-soft">
                 <div className="flex items-center gap-2 mb-4">
-                  <Sparkles className="h-5 w-5 text-success-foreground animate-pulse-glow" />
+                  <Sparkles className="h-5 w-5 text-success-foreground" />
                   <span className="font-semibold text-success-foreground">Your TriGuard Roofing Email Account:</span>
                 </div>
                 <div className="flex items-center gap-3 mb-4">
@@ -225,15 +225,15 @@ export const BasicInformationStep: React.FC<BasicInformationStepProps> = ({
                 <p className="font-semibold text-primary mb-3">What happens next:</p>
                 <ul className="space-y-2 text-sm text-muted-foreground">
                   <li className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+                    <div className="w-2 h-2 bg-primary rounded-full"></div>
                     We'll generate a unique company email address for you
                   </li>
                   <li className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+                    <div className="w-2 h-2 bg-primary rounded-full"></div>
                     Your information will be saved automatically as you progress
                   </li>
                   <li className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+                    <div className="w-2 h-2 bg-primary rounded-full"></div>
                     You can return anytime to continue where you left off
                   </li>
                 </ul>

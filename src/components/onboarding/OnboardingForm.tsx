@@ -82,12 +82,12 @@ export const OnboardingForm: React.FC<OnboardingFormProps> = ({ formId }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/50 to-indigo-100/70 p-4 animate-fade-in">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/50 to-indigo-100/70 p-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-8 animate-slide-up">
+        <div className="text-center mb-8">
           <div className="inline-flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center shadow-glow animate-float">
+            <div className="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center shadow-glow">
               <span className="text-xl font-bold text-white">TR</span>
             </div>
             <div>
@@ -99,7 +99,7 @@ export const OnboardingForm: React.FC<OnboardingFormProps> = ({ formId }) => {
           </div>
         </div>
 
-        <Card className="shadow-2xl border-0 bg-gradient-card hover-lift animate-scale-in">
+        <Card className="shadow-2xl border-0 bg-gradient-card">
           <CardHeader className="bg-gradient-primary text-primary-foreground rounded-t-xl relative overflow-hidden">
             {/* Subtle pattern overlay */}
             <div className="absolute inset-0 bg-white/5 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1)_0%,transparent_50%)]"></div>
@@ -129,7 +129,7 @@ export const OnboardingForm: React.FC<OnboardingFormProps> = ({ formId }) => {
           <CardContent className="p-8 bg-white/80 backdrop-blur-sm">
             <Form {...form}>
               <div className="space-y-8">
-                <div className="animate-fade-in">
+                <div className="">
                   {renderCurrentStep()}
                 </div>
 
@@ -142,7 +142,7 @@ export const OnboardingForm: React.FC<OnboardingFormProps> = ({ formId }) => {
                         variant="outline"
                         onClick={prevStep}
                         disabled={isLoading}
-                        className="flex items-center gap-2 hover-lift"
+                        className="flex items-center gap-2"
                         size="lg"
                       >
                         <ChevronLeft className="h-4 w-4" />
@@ -157,7 +157,7 @@ export const OnboardingForm: React.FC<OnboardingFormProps> = ({ formId }) => {
                       variant="secondary"
                       onClick={handleSave}
                       disabled={isLoading}
-                      className="flex items-center gap-2 hover-lift"
+                      className="flex items-center gap-2"
                       size="lg"
                     >
                       <Save className="h-4 w-4" />
@@ -170,7 +170,7 @@ export const OnboardingForm: React.FC<OnboardingFormProps> = ({ formId }) => {
                         onClick={nextStep}
                         disabled={isLoading}
                         variant="premium"
-                        className="flex items-center gap-2 animate-pulse-glow"
+                        className="flex items-center gap-2"
                         size="lg"
                       >
                         Continue
@@ -203,7 +203,7 @@ export const OnboardingForm: React.FC<OnboardingFormProps> = ({ formId }) => {
         </Card>
 
         {/* Admin Access & Footer */}
-        <div className="text-center mt-8 space-y-6 animate-fade-in">
+        <div className="text-center mt-8 space-y-6">
           <Link to="/admin-login">
             <Button variant="glass" size="sm" className="gap-2 hover-glow">
               <Settings className="h-4 w-4" />

@@ -69,9 +69,6 @@ All colors MUST be HSL.
     --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
     --shadow-glow: 0 0 20px hsl(217 91% 60% / 0.3);
     
-    /* Animation Variables */
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-bounce: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
     --sidebar-background: 0 0% 98%;
 
@@ -154,11 +151,6 @@ All colors MUST be HSL.
     @apply bg-background text-foreground font-sans antialiased;
   }
 
-  /* Smooth scrolling */
-  html {
-    scroll-behavior: smooth;
-  }
-
   /* Focus states */
   *:focus-visible {
     outline: 2px solid hsl(var(--ring));
@@ -193,109 +185,5 @@ All colors MUST be HSL.
 
   .bg-gradient-warning {
     background: var(--gradient-warning);
-  }
-
-  /* Animation classes */
-  .animate-float {
-    animation: float 3s ease-in-out infinite;
-  }
-
-  .animate-pulse-glow {
-    animation: pulse-glow 2s ease-in-out infinite alternate;
-  }
-
-  .animate-slide-up {
-    animation: slide-up 0.5s ease-out;
-  }
-
-  .animate-fade-in {
-    animation: fade-in 0.3s ease-out;
-  }
-
-  .animate-scale-in {
-    animation: scale-in 0.2s ease-out;
-  }
-
-  /* Interactive elements */
-  .hover-lift {
-    transition: var(--transition-smooth);
-  }
-
-  .hover-lift:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
-  }
-
-  .hover-glow:hover {
-    box-shadow: var(--shadow-glow);
-    transition: var(--transition-smooth);
-  }
-
-  /* Form enhancements */
-  .form-field-enhanced {
-    transition: var(--transition-smooth);
-  }
-
-  .form-field-enhanced:focus-within {
-    transform: scale(1.02);
-    box-shadow: var(--shadow-md);
-  }
-
-  /* Step indicators */
-  .step-indicator {
-    position: relative;
-    transition: var(--transition-bounce);
-  }
-
-  .step-indicator.active {
-    transform: scale(1.2);
-  }
-
-  .step-indicator.completed::after {
-    content: '✓';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: white;
-    font-size: 8px;
-    font-weight: bold;
-  }
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-}
-
-@keyframes pulse-glow {
-  from { box-shadow: 0 0 5px hsl(var(--primary) / 0.5); }
-  to { box-shadow: 0 0 20px hsl(var(--primary) / 0.8), 0 0 30px hsl(var(--primary) / 0.6); }
-}
-
-@keyframes slide-up {
-  from { 
-    opacity: 0; 
-    transform: translateY(20px); 
-  }
-  to { 
-    opacity: 1; 
-    transform: translateY(0); 
-  }
-}
-
-@keyframes fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes scale-in {
-  from { 
-    opacity: 0; 
-    transform: scale(0.95); 
-  }
-  to { 
-    opacity: 1; 
-    transform: scale(1); 
   }
 }

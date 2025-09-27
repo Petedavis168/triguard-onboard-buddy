@@ -38,7 +38,7 @@ const Index = () => {
 
             {/* Login Button */}
             <Link to="/login">
-              <Button variant="outline" className="flex items-center gap-2 hover-lift">
+              <Button variant="outline" className="flex items-center gap-2">
                 <LogIn className="h-4 w-4" />
                 Login
               </Button>
@@ -49,11 +49,11 @@ const Index = () => {
 
       <div className="max-w-7xl mx-auto px-6 py-12">
         {/* Hero Section */}
-        <section className="text-center mb-20 animate-fade-in">
+        <section className="text-center mb-20">
           <div className="mb-8">
             <h1 className="text-6xl md:text-7xl font-bold mb-6 leading-tight">
               Welcome to{' '}
-              <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-pulse-glow">
+              <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
                 TriGuard Roofing
               </span>
             </h1>
@@ -66,7 +66,7 @@ const Index = () => {
             {/* Primary CTA */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
               <Link to="/onboarding">
-                <Button size="lg" className="bg-gradient-primary hover:opacity-90 text-primary-foreground shadow-glow hover-lift px-8 py-6 text-lg font-semibold">
+                <Button size="lg" className="bg-gradient-primary hover:opacity-90 text-primary-foreground shadow-glow px-8 py-6 text-lg font-semibold">
                   <FileText className="h-5 w-5 mr-2" />
                   Start Onboarding
                   <ArrowRight className="h-5 w-5 ml-2" />
@@ -111,11 +111,11 @@ const Index = () => {
           {/* Feature Cards Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* Employee Onboarding */}
-            <Card className="shadow-xl border-0 bg-gradient-card hover-lift animate-scale-in group cursor-pointer overflow-hidden">
+            <Card className="shadow-xl border-0 bg-gradient-card group cursor-pointer overflow-hidden">
               <Link to="/onboarding">
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-blue-600/10"></div>
                 <CardHeader className="text-center relative z-10">
-                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform shadow-lg">
+                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
                     <FileText className="h-8 w-8 text-white" />
                   </div>
                   <CardTitle className="text-2xl mb-2">Personal Information</CardTitle>
@@ -125,10 +125,10 @@ const Index = () => {
             </Card>
 
             {/* Document Upload */}
-            <Card className="shadow-xl border-0 bg-gradient-card hover-lift animate-scale-in group cursor-pointer overflow-hidden">
+            <Card className="shadow-xl border-0 bg-gradient-card group cursor-pointer overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 via-transparent to-green-600/10"></div>
               <CardHeader className="text-center relative z-10">
-                <div className="w-16 h-16 bg-gradient-success rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform shadow-lg">
+                <div className="w-16 h-16 bg-gradient-success rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
                   <Shield className="h-8 w-8 text-success-foreground" />
                 </div>
                 <CardTitle className="text-2xl mb-2">Secure Documents</CardTitle>
@@ -137,10 +137,10 @@ const Index = () => {
             </Card>
 
             {/* Team Assignment */}
-            <Card className="shadow-xl border-0 bg-gradient-card hover-lift animate-scale-in group cursor-pointer overflow-hidden">
+            <Card className="shadow-xl border-0 bg-gradient-card group cursor-pointer overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-transparent to-purple-600/10"></div>
               <CardHeader className="text-center relative z-10">
-                <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform shadow-lg">
+                <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
                   <Users className="h-8 w-8 text-white" />
                 </div>
                 <CardTitle className="text-2xl mb-2">Team Integration</CardTitle>
@@ -153,10 +153,10 @@ const Index = () => {
         {/* Secondary Actions */}
         <section className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
           {/* Recruiting Dashboard */}
-          <Card className="shadow-xl border-0 bg-gradient-card hover-lift animate-scale-in group cursor-pointer">
+          <Card className="shadow-xl border-0 bg-gradient-card group cursor-pointer">
             <Link to="/recruiting">
               <CardHeader className="text-center">
-                <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-lg flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-lg flex items-center justify-center mx-auto mb-4">
                   <Users className="h-6 w-6 text-white" />
                 </div>
                 <CardTitle className="text-xl">Recruiting Dashboard</CardTitle>
@@ -170,7 +170,7 @@ const Index = () => {
           </Card>
 
           {/* Teams & Departments */}
-          <Card className="shadow-xl border-0 bg-gradient-card hover-lift animate-scale-in group">
+          <Card className="shadow-xl border-0 bg-gradient-card group">
             <CardHeader className="text-center">
               <div className="w-12 h-12 bg-gradient-warning rounded-lg flex items-center justify-center mx-auto mb-4">
                 <Building className="h-6 w-6 text-warning-foreground" />
@@ -185,7 +185,7 @@ const Index = () => {
           </Card>
 
           {/* Analytics */}
-          <Card className="shadow-xl border-0 bg-gradient-card hover-lift animate-scale-in group">
+          <Card className="shadow-xl border-0 bg-gradient-card group">
             <CardHeader className="text-center">
               <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-lg flex items-center justify-center mx-auto mb-4">
                 <BarChart3 className="h-6 w-6 text-white" />

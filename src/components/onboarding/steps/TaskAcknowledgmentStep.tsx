@@ -130,7 +130,7 @@ const TaskAcknowledgmentStep: React.FC<TaskAcknowledgmentStepProps> = ({ form })
         </CardHeader>
         <CardContent>
           <div className="text-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+            <div className="rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
           </div>
         </CardContent>
       </Card>
