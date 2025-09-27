@@ -692,50 +692,314 @@ export const ManagerManagement: React.FC = () => {
               <p className="text-gray-500">No managers found</p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Manager</TableHead>
-                    <TableHead>Contact</TableHead>
-                    <TableHead>Password</TableHead>
-                    <TableHead>Activity</TableHead>
-                    <TableHead>Roles</TableHead>
-                    <TableHead>Team</TableHead>
-                    <TableHead>Created</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredManagers.map((manager) => (
-                     <TableRow key={manager.id} className="cursor-pointer hover:bg-muted/50">
-                       <TableCell onClick={() => setSelectedManager(manager)}>
-                         <div className="flex items-center gap-2">
-                           <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-                             <Users className="h-4 w-4 text-blue-600" />
-                           </div>
-                           <div>
-                             <div className="font-medium">
-                               {manager.first_name} {manager.last_name}
+            <>
+              {/* Desktop Table View - Hidden on Mobile */}
+              <div className="hidden md:block overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Manager</TableHead>
+                      <TableHead>Contact</TableHead>
+                      <TableHead>Password</TableHead>
+                      <TableHead>Activity</TableHead>
+                      <TableHead>Roles</TableHead>
+                      <TableHead>Team</TableHead>
+                      <TableHead>Created</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredManagers.map((manager) => (
+                       <TableRow key={manager.id} className="cursor-pointer hover:bg-muted/50">
+                         <TableCell onClick={() => setSelectedManager(manager)}>
+                           <div className="flex items-center gap-2">
+                             <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                               <Users className="h-4 w-4 text-blue-600" />
+                             </div>
+                             <div>
+                               <div className="font-medium">
+                                 {manager.first_name} {manager.last_name}
+                               </div>
                              </div>
                            </div>
-                         </div>
-                       </TableCell>
-                       <TableCell onClick={() => setSelectedManager(manager)}>
-                         <div className="flex items-center gap-2">
-                           <Mail className="h-4 w-4 text-gray-400" />
-                           <span className="text-sm">{manager.email}</span>
-                         </div>
-                       </TableCell>
-                       <TableCell>
-                         <div className="flex items-center gap-2">
-                           {generatedPasswords.has(manager.id) ? (
-                              <div className="flex items-center gap-2">
+                         </TableCell>
+                         <TableCell onClick={() => setSelectedManager(manager)}>
+                           <div className="flex items-center gap-2">
+                             <Mail className="h-4 w-4 text-gray-400" />
+                             <span className="text-sm">{manager.email}</span>
+                           </div>
+                         </TableCell>
+                         <TableCell>
+                           <div className="flex items-center gap-2">
+                             {generatedPasswords.has(manager.id) ? (
+                                <div className="flex items-center gap-2">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => togglePasswordVisibility(manager.id)}
+                                    className="flex items-center gap-1"
+                                  >
+                                    {visiblePasswords.has(manager.id) ? (
+                                      <>
+                                        <EyeOff className="h-3 w-3" />
+                                        <span className="text-sm font-mono">
+                                          {generatedPasswords.get(manager.id)}
+                                        </span>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <Eye className="h-3 w-3" />
+                                        <span className="text-sm">Show Password</span>
+                                      </>
+                                    )}
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => copyPassword(manager.id)}
+                                    className="h-6 w-6 p-0"
+                                    title="Copy password"
+                                  >
+                                    <Copy className="h-3 w-3" />
+                                  </Button>
+                                  <Badge variant="outline" className="text-xs text-green-600">
+                                    Generated
+                                  </Badge>
+                                </div>
+                             ) : (
+                               <div className="flex items-center gap-2">
+                                 <Badge variant="secondary" className="text-xs">
+                                   Protected Hash
+                                 </Badge>
+                                 <span className="text-xs text-gray-500">
+                                   {manager.force_password_change ? '(Change Required)' : '(Secure)'}
+                                 </span>
+                               </div>
+                             )}
+                             <AlertDialog>
+                               <AlertDialogTrigger asChild>
+                                 <Button
+                                   variant="ghost"
+                                   size="sm"
+                                   className="h-6 w-6 p-0 ml-2"
+                                 >
+                                   <RefreshCw className="h-3 w-3" />
+                                 </Button>
+                                </AlertDialogTrigger>
+                               <AlertDialogContent className="max-w-md">
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Regenerate Password</AlertDialogTitle>
+                                  <AlertDialogDescription asChild>
+                                    <div className="space-y-4">
+                                      <p>
+                                        Are you sure you want to generate a new password for{' '}
+                                        <strong>{manager.first_name} {manager.last_name}</strong>?
+                                      </p>
+                                      
+                                      <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+                                        <p className="text-amber-800 text-sm font-medium mb-2">⚠️ Important:</p>
+                                        <ul className="text-amber-700 text-sm space-y-1">
+                                          <li>• Their current password will no longer work</li>
+                                          <li>• They will be forced to change the password on next login</li>
+                                          <li>• Any active sessions will be invalidated</li>
+                                        </ul>
+                                      </div>
+
+                                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                                        <p className="text-blue-800 text-sm font-medium mb-2">🔒 Security Requirements:</p>
+                                        <ul className="text-blue-700 text-sm space-y-1">
+                                          <li>• Password will contain company-relevant words</li>
+                                          <li>• Minimum 12 characters with mixed case</li>
+                                          <li>• Includes numbers for additional security</li>
+                                          <li>• Must be changed by manager on first login</li>
+                                        </ul>
+                                      </div>
+                                    </div>
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <AlertDialogAction 
+                                    onClick={() => regeneratePassword(manager)}
+                                    className="bg-orange-600 hover:bg-orange-700"
+                                  >
+                                    Generate New Password
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          </div>
+                        </TableCell>
+                         <TableCell onClick={() => setSelectedManager(manager)}>
+                           <div className="space-y-1">
+                             <div className="flex items-center gap-2 text-xs">
+                               <Clock className="h-3 w-3 text-green-600" />
+                               <span className="text-gray-600">Last login:</span>
+                               <span className="font-medium">{formatRelativeTime(manager.last_login_at)}</span>
+                             </div>
+                             <div className="flex items-center gap-2 text-xs">
+                               <Activity className="h-3 w-3 text-blue-600" />
+                               <span className="text-gray-600">Activity:</span>
+                               <span className="font-medium">{formatRelativeTime(manager.last_activity_at)}</span>
+                             </div>
+                           </div>
+                         </TableCell>
+                          <TableCell onClick={() => setSelectedManager(manager)}>
+                            <div className="flex gap-1">
+                              <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                                Manager
+                              </Badge>
+                              {manager.is_admin && (
+                                <Badge variant="secondary" className="bg-purple-100 text-purple-800">
+                                  Admin
+                                </Badge>
+                              )}
+                              {isAlsoRecruiter(manager.email) && (
+                                <Badge variant="secondary" className="bg-green-100 text-green-800">
+                                  Recruiter
+                                </Badge>
+                              )}
+                            </div>
+                          </TableCell>
+                          <TableCell onClick={() => setSelectedManager(manager)}>
+                            <div className="text-sm text-gray-600">
+                              {getTeamNames(manager)}
+                            </div>
+                          </TableCell>
+                          <TableCell onClick={() => setSelectedManager(manager)}>
+                            <span className="text-sm text-gray-600">
+                              {formatDate(manager.created_at)}
+                            </span>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center justify-end gap-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleEdit(manager)}
+                                className="h-8 w-8 p-0"
+                              >
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button variant="outline" size="sm" className="h-8 w-8 p-0 text-red-600 hover:text-red-700">
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>Confirm Deletion</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      Are you sure you want to delete {manager.first_name} {manager.last_name}? This action cannot be undone.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <AlertDialogAction
+                                      onClick={() => handleDelete(manager.id, `${manager.first_name} ${manager.last_name}`)}
+                                      className="bg-red-600 hover:bg-red-700"
+                                    >
+                                      Delete
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => promoteToRecruiter(manager)}
+                                disabled={isAlsoRecruiter(manager.email)}
+                                className="whitespace-nowrap"
+                              >
+                                <UserPlus className="h-4 w-4 mr-1" />
+                                {isAlsoRecruiter(manager.email) ? 'Is Recruiter' : 'Make Recruiter'}
+                              </Button>
+                            </div>
+                           </TableCell>
+                         </TableRow>
+                     ))}
+                   </TableBody>
+                 </Table>
+               </div>
+
+              {/* Mobile Card View - Visible on Mobile Only */}
+              <div className="md:hidden space-y-4">
+                {filteredManagers.map((manager) => (
+                  <Card key={manager.id} className="mobile-card">
+                    <CardContent className="p-4">
+                      <div 
+                        className="cursor-pointer"
+                        onClick={() => setSelectedManager(manager)}
+                      >
+                        {/* Header with Name and Avatar */}
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                              <Users className="h-5 w-5 text-blue-600" />
+                            </div>
+                            <div>
+                              <div className="font-medium text-base">
+                                {manager.first_name} {manager.last_name}
+                              </div>
+                              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                <Mail className="h-4 w-4" />
+                                {manager.email}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Roles */}
+                        <div className="flex flex-wrap gap-2 mb-3">
+                          <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                            Manager
+                          </Badge>
+                          {manager.is_admin && (
+                            <Badge variant="secondary" className="bg-purple-100 text-purple-800">
+                              Admin
+                            </Badge>
+                          )}
+                          {isAlsoRecruiter(manager.email) && (
+                            <Badge variant="secondary" className="bg-green-100 text-green-800">
+                              Recruiter
+                            </Badge>
+                          )}
+                        </div>
+
+                        {/* Team Info */}
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
+                          <Building className="h-4 w-4" />
+                          <span>Team: {getTeamNames(manager)}</span>
+                        </div>
+
+                        {/* Activity Info */}
+                        <div className="space-y-2 mb-3">
+                          <div className="flex items-center gap-2 text-xs">
+                            <Clock className="h-3 w-3 text-green-600" />
+                            <span className="text-muted-foreground">Last login:</span>
+                            <span className="font-medium">{formatRelativeTime(manager.last_login_at)}</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-xs">
+                            <Activity className="h-3 w-3 text-blue-600" />
+                            <span className="text-muted-foreground">Activity:</span>
+                            <span className="font-medium">{formatRelativeTime(manager.last_activity_at)}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Password Section */}
+                      <div className="border-t pt-3 mb-3">
+                        <div className="flex flex-col gap-2">
+                          <div className="text-sm font-medium text-muted-foreground">Password Management</div>
+                          <div className="flex flex-wrap items-center gap-2">
+                            {generatedPasswords.has(manager.id) ? (
+                              <div className="flex flex-wrap items-center gap-2">
                                 <Button
                                   variant="ghost"
                                   size="sm"
                                   onClick={() => togglePasswordVisibility(manager.id)}
-                                  className="flex items-center gap-1"
+                                  className="flex items-center gap-1 mobile-button"
                                 >
                                   {visiblePasswords.has(manager.id) ? (
                                     <>
@@ -747,7 +1011,7 @@ export const ManagerManagement: React.FC = () => {
                                   ) : (
                                     <>
                                       <Eye className="h-3 w-3" />
-                                      <span className="text-sm">Show Password</span>
+                                      <span className="text-sm">Show</span>
                                     </>
                                   )}
                                 </Button>
@@ -755,7 +1019,7 @@ export const ManagerManagement: React.FC = () => {
                                   variant="ghost"
                                   size="sm"
                                   onClick={() => copyPassword(manager.id)}
-                                  className="h-6 w-6 p-0"
+                                  className="mobile-button"
                                   title="Copy password"
                                 >
                                   <Copy className="h-3 w-3" />
@@ -764,160 +1028,135 @@ export const ManagerManagement: React.FC = () => {
                                   Generated
                                 </Badge>
                               </div>
-                           ) : (
-                             <div className="flex items-center gap-2">
-                               <Badge variant="secondary" className="text-xs">
-                                 Protected Hash
-                               </Badge>
-                               <span className="text-xs text-gray-500">
-                                 {manager.force_password_change ? '(Change Required)' : '(Secure)'}
-                               </span>
-                             </div>
-                           )}
-                           <AlertDialog>
-                             <AlertDialogTrigger asChild>
-                               <Button
-                                 variant="ghost"
-                                 size="sm"
-                                 className="h-6 w-6 p-0 ml-2"
-                               >
-                                 <RefreshCw className="h-3 w-3" />
-                               </Button>
-                              </AlertDialogTrigger>
-                             <AlertDialogContent className="max-w-md">
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>Regenerate Password</AlertDialogTitle>
-                                <AlertDialogDescription asChild>
-                                  <div className="space-y-4">
-                                    <p>
-                                      Are you sure you want to generate a new password for{' '}
-                                      <strong>{manager.first_name} {manager.last_name}</strong>?
-                                    </p>
-                                    
-                                    <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
-                                      <p className="text-amber-800 text-sm font-medium mb-2">⚠️ Important:</p>
-                                      <ul className="text-amber-700 text-sm space-y-1">
-                                        <li>• Their current password will no longer work</li>
-                                        <li>• They will be forced to change the password on next login</li>
-                                        <li>• Any active sessions will be invalidated</li>
-                                      </ul>
-                                    </div>
+                            ) : (
+                              <div className="flex flex-wrap items-center gap-2">
+                                <Badge variant="secondary" className="text-xs">
+                                  Protected Hash
+                                </Badge>
+                                <span className="text-xs text-muted-foreground">
+                                  {manager.force_password_change ? '(Change Required)' : '(Secure)'}
+                                </span>
+                              </div>
+                            )}
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="mobile-button"
+                                >
+                                  <RefreshCw className="h-3 w-3 mr-1" />
+                                  Reset
+                                </Button>
+                               </AlertDialogTrigger>
+                               <AlertDialogContent className="max-w-md">
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Regenerate Password</AlertDialogTitle>
+                                  <AlertDialogDescription asChild>
+                                    <div className="space-y-4">
+                                      <p>
+                                        Are you sure you want to generate a new password for{' '}
+                                        <strong>{manager.first_name} {manager.last_name}</strong>?
+                                      </p>
+                                      
+                                      <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+                                        <p className="text-amber-800 text-sm font-medium mb-2">⚠️ Important:</p>
+                                        <ul className="text-amber-700 text-sm space-y-1">
+                                          <li>• Their current password will no longer work</li>
+                                          <li>• They will be forced to change the password on next login</li>
+                                          <li>• Any active sessions will be invalidated</li>
+                                        </ul>
+                                      </div>
 
-                                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                                      <p className="text-blue-800 text-sm font-medium mb-2">🔒 Security Requirements:</p>
-                                      <ul className="text-blue-700 text-sm space-y-1">
-                                        <li>• Password will contain company-relevant words</li>
-                                        <li>• Minimum 12 characters with mixed case</li>
-                                        <li>• Includes numbers for additional security</li>
-                                        <li>• Must be changed by manager on first login</li>
-                                      </ul>
+                                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                                        <p className="text-blue-800 text-sm font-medium mb-2">🔒 Security Requirements:</p>
+                                        <ul className="text-blue-700 text-sm space-y-1">
+                                          <li>• Password will contain company-relevant words</li>
+                                          <li>• Minimum 12 characters with mixed case</li>
+                                          <li>• Includes numbers for additional security</li>
+                                          <li>• Must be changed by manager on first login</li>
+                                        </ul>
+                                      </div>
                                     </div>
-                                  </div>
-                                </AlertDialogDescription>
-                              </AlertDialogHeader>
-                              <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction 
-                                  onClick={() => regeneratePassword(manager)}
-                                  className="bg-orange-600 hover:bg-orange-700"
-                                >
-                                  Generate New Password
-                                </AlertDialogAction>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <AlertDialogAction 
+                                    onClick={() => regeneratePassword(manager)}
+                                    className="bg-orange-600 hover:bg-orange-700"
+                                  >
+                                    Generate New Password
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          </div>
                         </div>
-                      </TableCell>
-                       <TableCell onClick={() => setSelectedManager(manager)}>
-                         <div className="space-y-1">
-                           <div className="flex items-center gap-2 text-xs">
-                             <Clock className="h-3 w-3 text-green-600" />
-                             <span className="text-gray-600">Last login:</span>
-                             <span className="font-medium">{formatRelativeTime(manager.last_login_at)}</span>
-                           </div>
-                           <div className="flex items-center gap-2 text-xs">
-                             <Activity className="h-3 w-3 text-blue-600" />
-                             <span className="text-gray-600">Activity:</span>
-                             <span className="font-medium">{formatRelativeTime(manager.last_activity_at)}</span>
-                           </div>
-                         </div>
-                       </TableCell>
-                        <TableCell onClick={() => setSelectedManager(manager)}>
-                          <div className="flex gap-1">
-                            <Badge variant="secondary" className="bg-blue-100 text-blue-800">
-                              Manager
-                            </Badge>
-                            {manager.is_admin && (
-                              <Badge variant="secondary" className="bg-purple-100 text-purple-800">
-                                Admin
-                              </Badge>
-                            )}
-                            {isAlsoRecruiter(manager.email) && (
-                              <Badge variant="secondary" className="bg-green-100 text-green-800">
-                                Recruiter
-                              </Badge>
-                            )}
-                          </div>
-                        </TableCell>
-                        <TableCell onClick={() => setSelectedManager(manager)}>
-                          <div className="flex items-center gap-2">
-                            <Building className="h-4 w-4 text-gray-400" />
-                            <span className="text-sm">{getTeamNames(manager)}</span>
-                          </div>
-                        </TableCell>
-                       <TableCell onClick={() => setSelectedManager(manager)}>{formatDate(manager.created_at)}</TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex gap-2 justify-end">
-                          {!isAlsoRecruiter(manager.email) && (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => promoteToRecruiter(manager)}
-                              title="Also make this person a recruiter"
+                      </div>
+
+                      {/* Actions */}
+                      <div className="flex flex-wrap gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleEdit(manager)}
+                          className="mobile-button"
+                        >
+                          <Edit className="h-4 w-4 mr-1" />
+                          Edit
+                        </Button>
+                        
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => promoteToRecruiter(manager)}
+                          disabled={isAlsoRecruiter(manager.email)}
+                          className="mobile-button"
+                        >
+                          <UserPlus className="h-4 w-4 mr-1" />
+                          {isAlsoRecruiter(manager.email) ? 'Is Recruiter' : 'Make Recruiter'}
+                        </Button>
+
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="mobile-button text-red-600 hover:text-red-700"
                             >
-                              <UserPlus className="h-4 w-4" />
+                              <Trash2 className="h-4 w-4 mr-1" />
+                              Delete
                             </Button>
-                          )}
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleEdit(manager)}
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                              <Button variant="outline" size="sm">
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>Remove Manager</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                  Are you sure you want to remove {manager.first_name} {manager.last_name}? 
-                                  {isAlsoRecruiter(manager.email) && " They will still remain as a recruiter."}
-                                  This action cannot be undone and may affect tasks and assignments.
-                                </AlertDialogDescription>
-                              </AlertDialogHeader>
-                              <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction 
-                                  onClick={() => handleDelete(manager.id, `${manager.first_name} ${manager.last_name}`)}
-                                  className="bg-red-600 hover:bg-red-700"
-                                >
-                                  Remove Manager
-                                </AlertDialogAction>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Confirm Deletion</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Are you sure you want to delete {manager.first_name} {manager.last_name}? This action cannot be undone.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={() => handleDelete(manager.id, `${manager.first_name} ${manager.last_name}`)}
+                                className="bg-red-600 hover:bg-red-700"
+                              >
+                                Delete
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </div>
+
+                      <div className="text-xs text-muted-foreground mt-3 pt-2 border-t">
+                        Created: {formatDate(manager.created_at)}
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </>
           )}
         </CardContent>
       </Card>
