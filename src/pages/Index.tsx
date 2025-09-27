@@ -69,29 +69,19 @@ const Index = () => {
 
             {/* Primary CTA */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-12">
-              <Button 
-                size="lg"
-                className="flex items-center gap-3 text-lg px-8 py-4 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  console.log('Onboarding button clicked!');
-                  console.log('Navigate function:', typeof navigate, navigate);
-                  console.log('About to navigate to /onboarding');
-                  try {
-                    navigate('/onboarding');
-                    console.log('Navigate completed');
-                  } catch (error) {
-                    console.error('Navigate error:', error);
-                    // Fallback to window.location
-                    window.location.href = '/onboarding';
-                  }
-                }}
-              >
-                <FileText className="h-5 w-5" />
-                Start Onboarding
-                <ArrowRight className="h-5 w-5" />
-              </Button>
+              <Link to="/onboarding">
+                <Button 
+                  size="lg"
+                  className="flex items-center gap-3 text-lg px-8 py-4 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1"
+                  onClick={(e) => {
+                    console.log('Onboarding button clicked! Using Link navigation');
+                  }}
+                >
+                  <FileText className="h-5 w-5" />
+                  Start Onboarding
+                  <ArrowRight className="h-5 w-5" />
+                </Button>
+              </Link>
               
               <Button 
                 variant="outline"
