@@ -24,6 +24,8 @@ const courseSchema = z.object({
   duration_minutes: z.number().min(0),
   is_required: z.boolean(),
   is_active: z.boolean(),
+  video_url: z.string().optional(),
+  intro_text: z.string().optional(),
   roles: z.array(z.string()).optional(),
   positions: z.array(z.string()).optional(),
 });
@@ -46,6 +48,8 @@ function CourseManagement() {
       duration_minutes: 0,
       is_required: false,
       is_active: true,
+      video_url: "",
+      intro_text: "",
       roles: [],
       positions: [],
     },
@@ -212,6 +216,8 @@ function CourseManagement() {
       duration_minutes: course.duration_minutes,
       is_required: course.is_required,
       is_active: course.is_active,
+      video_url: course.video_url || "",
+      intro_text: course.intro_text || "",
       roles: courseRoles,
       positions: coursePositions,
     });
@@ -332,6 +338,44 @@ function CourseManagement() {
                       <FormControl>
                         <Textarea 
                           placeholder="Course description..."
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="intro_text"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Course Introduction</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          placeholder="Welcome message or course introduction..."
+                          rows={3}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="video_url"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="flex items-center gap-2">
+                        <Video className="h-4 w-4" />
+                        Video URL
+                      </FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="https://example.com/video.mp4 or YouTube/Vimeo URL"
                           {...field}
                         />
                       </FormControl>
@@ -568,6 +612,25 @@ function CourseManagement() {
                     {course.difficulty_level}
                   </Badge>
                 </div>
+              </div>
+
+              {/* Video and Intro indicators */}
+              <div className="flex items-center gap-2">
+                {course.video_url && (
+                  <div className="flex items-center gap-1 px-2 py-1 rounded-md bg-primary/10 text-primary">
+                    <Video className="h-3 w-3" />
+                    <span className="text-xs font-medium">Video</span>
+                  </div>
+                )}
+                {course.intro_text && (
+                  <div className="flex items-center gap-1 px-2 py-1 rounded-md bg-accent/10 text-accent-foreground">
+                    <Smartphone className="h-3 w-3" />
+                    <span className="text-xs font-medium">Intro</span>
+                  </div>
+                )}
+                {!course.video_url && !course.intro_text && (
+                  <span className="text-xs text-muted-foreground">Text-only course</span>
+                )}
               </div>
               
               {course.course_role_requirements && course.course_role_requirements.length > 0 && (

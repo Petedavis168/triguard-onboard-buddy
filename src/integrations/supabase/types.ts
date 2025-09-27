@@ -351,10 +351,12 @@ export type Database = {
           difficulty_level: string
           duration_minutes: number | null
           id: string
+          intro_text: string | null
           is_active: boolean
           is_required: boolean
           title: string
           updated_at: string
+          video_url: string | null
         }
         Insert: {
           category?: string
@@ -364,10 +366,12 @@ export type Database = {
           difficulty_level?: string
           duration_minutes?: number | null
           id?: string
+          intro_text?: string | null
           is_active?: boolean
           is_required?: boolean
           title: string
           updated_at?: string
+          video_url?: string | null
         }
         Update: {
           category?: string
@@ -377,10 +381,12 @@ export type Database = {
           difficulty_level?: string
           duration_minutes?: number | null
           id?: string
+          intro_text?: string | null
           is_active?: boolean
           is_required?: boolean
           title?: string
           updated_at?: string
+          video_url?: string | null
         }
         Relationships: [
           {
