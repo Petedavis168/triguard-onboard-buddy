@@ -481,7 +481,86 @@ export const useOnboardingForm = (formId?: string) => {
   };
 
   const nextStep = async () => {
-    // Get current step fields for validation
+    // Special handling for step 1 -> 2 (email generation)
+    if (currentStep === 1) {
+      const stepFields = getStepFields(currentStep);
+      const isValid = await form.trigger(stepFields);
+      
+      if (isValid) {
+        const formData = form.getValues();
+        
+        toast({
+          title: "Generating your company email...",
+          description: `Name: ${formData.first_name} ${formData.last_name}, Phone: ${formData.cell_phone}`,
+          duration: 3000,
+        });
+        
+        setIsLoading(true);
+        
+        try {
+          // Generate email first if it doesn't exist
+          if (!generatedEmail && formData.first_name && formData.last_name) {
+            const email = await generateEmail(formData.first_name, formData.last_name);
+            setGeneratedEmail(email);
+          }
+          
+          // Save data and advance to step 2 (email preview)
+          const saveResult = await saveFormData(formData, 2);
+          if (saveResult.success) {
+            setCurrentStep(2);
+            toast({
+              title: "Email Generated Successfully!",
+              description: "Please review and save your credentials before continuing.",
+              duration: 3000,
+            });
+          } else {
+            toast({
+              title: "Error Saving Data",
+              description: "Failed to generate email credentials. Please try again.",
+              variant: "destructive",
+            });
+          }
+        } catch (error) {
+          toast({
+            title: "Error Generating Email",
+            description: "Failed to create your company email. Please try again.",
+            variant: "destructive",
+          });
+        } finally {
+          setIsLoading(false);
+        }
+      } else {
+        toast({
+          title: "Please Complete Required Fields",
+          description: "Fill in all required fields before continuing.",
+          variant: "destructive",
+        });
+      }
+      return;
+    }
+
+    // Special handling for step 2 (email preview) - require explicit confirmation
+    if (currentStep === 2) {
+      if (!generatedEmail) {
+        toast({
+          title: "Email Not Generated",
+          description: "Please wait for your email credentials to be generated.",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      // Simple confirmation - just advance since the EmailPreviewStep component handles the UI
+      setCurrentStep(3);
+      toast({
+        title: "Moving to Address Information",
+        description: "Your credentials have been noted. Proceeding to address step.",
+        duration: 2000,
+      });
+      return;
+    }
+
+    // Standard handling for all other steps
     const stepFields = getStepFields(currentStep);
     const isValid = await form.trigger(stepFields);
     
