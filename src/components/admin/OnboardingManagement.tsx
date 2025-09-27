@@ -180,8 +180,8 @@ const OnboardingManagement = () => {
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      {/* Mobile-optimized Stats Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      {/* Mobile-optimized Stats Cards - Stacked vertically on mobile */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <Card className="shadow-sm hover:shadow-md transition-shadow border border-border/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">Total</CardTitle>
