@@ -72,25 +72,21 @@ const Index = () => {
               <Button 
                 size="lg"
                 className="flex items-center gap-3 text-lg px-8 py-4 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1"
-                asChild
+                onClick={() => navigate('/onboarding')}
               >
-                <Link to="/onboarding">
-                  <FileText className="h-5 w-5" />
-                  Start Onboarding
-                  <ArrowRight className="h-5 w-5" />
-                </Link>
+                <FileText className="h-5 w-5" />
+                Start Onboarding
+                <ArrowRight className="h-5 w-5" />
               </Button>
               
               <Button 
                 variant="outline"
                 size="lg"
                 className="flex items-center gap-3 text-lg px-8 py-4 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1"
-                asChild
+                onClick={() => navigate('/user-login')}
               >
-                <Link to="/user-login">
-                  <UserCheck className="h-5 w-5" />
-                  Employee Login
-                </Link>
+                <UserCheck className="h-5 w-5" />
+                Employee Login
               </Button>
             </div>
 
