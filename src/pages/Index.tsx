@@ -69,40 +69,31 @@ const Index = () => {
 
             {/* Primary CTA */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-12">
-              <div>
-                <button 
-                  type="button"
-                  className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1 flex items-center gap-3 text-lg cursor-pointer z-10 relative"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    console.log('Onboarding button clicked!');
-                    console.log('About to navigate to /onboarding');
-                    window.location.href = '/onboarding';
-                  }}
-                  onMouseDown={(e) => {
-                    console.log('Button mouse down event');
-                  }}
-                >
-                  <FileText className="h-5 w-5" />
-                  Start Onboarding
-                  <ArrowRight className="h-5 w-5" />
-                </button>
-              </div>
+              <Button 
+                size="lg"
+                className="flex items-center gap-3 text-lg px-8 py-4 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1"
+                onClick={() => {
+                  console.log('Onboarding button clicked - using navigate');
+                  navigate('/onboarding');
+                }}
+              >
+                <FileText className="h-5 w-5" />
+                Start Onboarding
+                <ArrowRight className="h-5 w-5" />
+              </Button>
               
-              <div>
-                <button 
-                  type="button"
-                  className="bg-white hover:bg-gray-50 text-gray-800 font-semibold py-4 px-8 rounded-lg border-2 border-gray-300 hover:border-blue-500 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1 flex items-center gap-3 text-lg"
-                  onClick={() => {
-                    console.log('Employee Login button clicked!');
-                    window.location.href = '/user-login';
-                  }}
-                >
-                  <UserCheck className="h-5 w-5" />
-                  Employee Login
-                </button>
-              </div>
+              <Button 
+                variant="outline"
+                size="lg"
+                className="flex items-center gap-3 text-lg px-8 py-4 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1"
+                onClick={() => {
+                  console.log('Employee Login button clicked - using navigate');
+                  navigate('/user-login');
+                }}
+              >
+                <UserCheck className="h-5 w-5" />
+                Employee Login
+              </Button>
             </div>
 
             {/* Trust Indicators */}
