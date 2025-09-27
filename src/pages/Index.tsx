@@ -85,10 +85,23 @@ const Index = () => {
               </span>
             </h1>
             
-            <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed px-4">
+            <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto mb-6 sm:mb-8 leading-relaxed px-4">
               Start your journey with us! Our streamlined onboarding process will get you ready for 
               success. Complete your profile, upload your badge photo, and join the team.
             </p>
+
+            {/* Primary CTA */}
+            <div className="flex justify-center mb-12 px-4">
+              <Button 
+                size="xl"
+                className="flex items-center justify-center gap-3 text-xl px-12 py-6 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 min-h-[4rem] bg-gradient-primary text-primary-foreground"
+                onClick={() => window.location.href = '/onboarding'}
+              >
+                <FileText className="h-6 w-6 flex-shrink-0" />
+                <span className="font-bold">START ONBOARDING</span>
+                <ArrowRight className="h-6 w-6 flex-shrink-0" />
+              </Button>
+            </div>
 
             {/* Trust Indicators */}
             <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8 text-sm text-muted-foreground px-4">
