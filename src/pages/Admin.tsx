@@ -341,238 +341,55 @@ export const Admin: React.FC = () => {
             <TaskManagement />
           </div>
         );
-        case 'lms':
-          return (
-            <div className="space-y-4 sm:space-y-6">
-              <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
-                <div className="p-2 sm:p-3 rounded-lg sm:rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 shadow-md">
-                  <BookOpen className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-white" />
-                </div>
-                <div>
-                  <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground">Learning Management</h2>
-                  <p className="text-xs sm:text-sm text-muted-foreground">Manage courses, quizzes, and training programs</p>
-                </div>
-              </div>
-              <LMSManagement />
-            </div>
-          );
-        case 'departments':
-          return (
-            <div className="space-y-4 sm:space-y-6">
-              <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
-                <div className="p-2 sm:p-3 rounded-lg sm:rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-md">
-                  <Building2 className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-white" />
-                </div>
-                <div>
-                  <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground">Department Management</h2>
-                  <p className="text-xs sm:text-sm text-muted-foreground">Organize departments and team structures</p>
-                </div>
-              </div>
-              <DepartmentManagement />
-            </div>
-          );
-        case 'positions':
-          return (
-            <div className="space-y-4 sm:space-y-6">
-              <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
-                <div className="p-2 sm:p-3 rounded-lg sm:rounded-xl bg-gradient-to-br from-teal-500 to-teal-600 shadow-md">
-                  <UserCog className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-white" />
-                </div>
-                <div>
-                  <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground">Position Management</h2>
-                  <p className="text-xs sm:text-sm text-muted-foreground">Define roles and position hierarchies</p>
-                </div>
-              </div>
-              <PositionManagement />
-            </div>
-          );
+        
+      case 'lms':
         return (
-          <div className="space-y-8 lg:space-y-12">
-            {/* Hero Section */}
-            <div className="text-center py-8 lg:py-16 relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-accent/5 to-primary/5 rounded-3xl"></div>
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(120,119,198,0.1),transparent_70%)]"></div>
-              <div className="relative z-10 px-4">
-                <div className="inline-flex items-center justify-center p-4 rounded-2xl bg-gradient-primary shadow-xl mb-6 ring-4 ring-primary/10">
-                  <Users className="h-12 w-12 lg:h-16 lg:w-16 text-primary-foreground" />
-                </div>
-                <h3 className="text-3xl lg:text-5xl font-bold text-foreground mb-4 bg-gradient-to-r from-primary via-primary/80 to-accent bg-clip-text text-transparent">
-                  Command Center
-                </h3>
-                <p className="text-muted-foreground max-w-3xl mx-auto text-lg lg:text-xl leading-relaxed">
-                  Your comprehensive dashboard for managing TriGuard Roofing's operations, 
-                  from employee onboarding to team coordination and system administration.
-                </p>
+          <div className="space-y-4 sm:space-y-6">
+            <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+              <div className="p-2 sm:p-3 rounded-lg sm:rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 shadow-md">
+                <BookOpen className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-white" />
+              </div>
+              <div>
+                <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground">Learning Management</h2>
+                <p className="text-xs sm:text-sm text-muted-foreground">Manage courses, quizzes, and training programs</p>
               </div>
             </div>
-            
-            {/* Stats Cards */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-              <div className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-2xl p-6 border border-primary/20 hover:shadow-lg transition-all duration-300">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center">
-                    <FileText className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <p className="text-2xl font-bold text-primary">12</p>
-                    <p className="text-xs text-muted-foreground">Active Forms</p>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="bg-gradient-to-br from-success/10 to-success/5 rounded-2xl p-6 border border-success/20 hover:shadow-lg transition-all duration-300">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 bg-success/20 rounded-xl flex items-center justify-center">
-                    <UserCheck className="h-5 w-5 text-success" />
-                  </div>
-                  <div>
-                    <p className="text-2xl font-bold text-success">8</p>
-                    <p className="text-xs text-muted-foreground">Managers</p>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="bg-gradient-to-br from-warning/10 to-warning/5 rounded-2xl p-6 border border-warning/20 hover:shadow-lg transition-all duration-300">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 bg-warning/20 rounded-xl flex items-center justify-center">
-                    <Building className="h-5 w-5 text-warning" />
-                  </div>
-                  <div>
-                    <p className="text-2xl font-bold text-warning">5</p>
-                    <p className="text-xs text-muted-foreground">Teams</p>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="bg-gradient-to-br from-accent/10 to-accent/5 rounded-2xl p-6 border border-accent/20 hover:shadow-lg transition-all duration-300">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 bg-accent/20 rounded-xl flex items-center justify-center">
-                    <BookOpen className="h-5 w-5 text-accent-foreground" />
-                  </div>
-                  <div>
-                    <p className="text-2xl font-bold text-accent-foreground">24</p>
-                    <p className="text-xs text-muted-foreground">Courses</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Main Action Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-              <div 
-                className="group bg-gradient-to-br from-card via-card/95 to-card/90 rounded-2xl p-8 border border-primary/10 hover:border-primary/20 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 cursor-pointer backdrop-blur-sm" 
-                onClick={() => setActiveTab('onboarding')}
-              >
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-14 h-14 bg-gradient-primary rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <FileText className="h-7 w-7 text-primary-foreground" />
-                  </div>
-                  <div>
-                    <h4 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">Onboarding Hub</h4>
-                    <p className="text-muted-foreground text-sm">Employee Integration</p>
-                  </div>
-                </div>
-                <p className="text-muted-foreground leading-relaxed mb-4">
-                  Streamline the complete employee onboarding experience with our 9-step process, 
-                  from initial documentation to team integration and role assignment.
-                </p>
-                <div className="flex items-center text-primary text-sm font-medium group-hover:gap-3 gap-2 transition-all">
-                  <span>Manage Process</span>
-                  <span className="transform group-hover:translate-x-1 transition-transform">→</span>
-                </div>
-              </div>
-              
-              <div 
-                className="group bg-gradient-to-br from-card via-card/95 to-card/90 rounded-2xl p-8 border border-success/10 hover:border-success/20 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 cursor-pointer backdrop-blur-sm" 
-                onClick={() => setActiveTab('lms')}
-              >
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <BookOpen className="h-7 w-7 text-white" />
-                  </div>
-                  <div>
-                    <h4 className="text-xl font-bold text-foreground group-hover:text-blue-600 transition-colors">Learning Center</h4>
-                    <p className="text-muted-foreground text-sm">Training & Development</p>
-                  </div>
-                </div>
-                <p className="text-muted-foreground leading-relaxed mb-4">
-                  Create comprehensive training programs with video content, interactive quizzes, 
-                  and role-based learning paths to ensure team excellence.
-                </p>
-                <div className="flex items-center text-blue-600 text-sm font-medium group-hover:gap-3 gap-2 transition-all">
-                  <span>Manage Courses</span>
-                  <span className="transform group-hover:translate-x-1 transition-transform">→</span>
-                </div>
-              </div>
-              
-              <div 
-                className="group bg-gradient-to-br from-card via-card/95 to-card/90 rounded-2xl p-8 border border-warning/10 hover:border-warning/20 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 cursor-pointer backdrop-blur-sm md:col-span-2 lg:col-span-1" 
-                onClick={() => setActiveTab('managers')}
-              >
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-14 h-14 bg-gradient-success rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <UserCheck className="h-7 w-7 text-success-foreground" />
-                  </div>
-                  <div>
-                    <h4 className="text-xl font-bold text-foreground group-hover:text-success transition-colors">Team Leadership</h4>
-                    <p className="text-muted-foreground text-sm">Manager Coordination</p>
-                  </div>
-                </div>
-                <p className="text-muted-foreground leading-relaxed mb-4">
-                  Coordinate with team managers, track leadership activities, and maintain 
-                  organizational structure across all departments and regions.
-                </p>
-                <div className="flex items-center text-success text-sm font-medium group-hover:gap-3 gap-2 transition-all">
-                  <span>View Managers</span>
-                  <span className="transform group-hover:translate-x-1 transition-transform">→</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Quick Actions Panel */}
-            <div className="bg-gradient-to-r from-muted/20 via-muted/10 to-muted/20 rounded-2xl p-8 border border-border/20">
-              <div className="text-center mb-8">
-                <h4 className="text-2xl font-bold text-foreground mb-2">Quick Actions</h4>
-                <p className="text-muted-foreground">Jump to common administrative tasks</p>
-              </div>
-              <div className="flex flex-wrap justify-center gap-4">
-                <Button 
-                  variant="outline" 
-                  className="bg-background/50 hover:bg-primary/10 hover:border-primary/30 hover:text-primary transition-all duration-200" 
-                  onClick={() => setActiveTab('onboarding')}
-                >
-                  <FileText className="h-4 w-4 mr-2" />
-                  Review Applications
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="bg-background/50 hover:bg-success/10 hover:border-success/30 hover:text-success transition-all duration-200" 
-                  onClick={() => setActiveTab('managers')}
-                >
-                  <UserCheck className="h-4 w-4 mr-2" />
-                  Add Manager
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="bg-background/50 hover:bg-blue-500/10 hover:border-blue-500/30 hover:text-blue-600 transition-all duration-200" 
-                  onClick={() => setActiveTab('lms')}
-                >
-                  <BookOpen className="h-4 w-4 mr-2" />
-                  Create Course
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="bg-background/50 hover:bg-warning/10 hover:border-warning/30 hover:text-warning transition-all duration-200" 
-                  onClick={() => setActiveTab('teams')}
-                >
-                  <Building className="h-4 w-4 mr-2" />
-                  Manage Teams
-                </Button>
-              </div>
-            </div>
+            <LMSManagement />
           </div>
         );
-      
+        
+      case 'departments':
+        return (
+          <div className="space-y-4 sm:space-y-6">
+            <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+              <div className="p-2 sm:p-3 rounded-lg sm:rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-md">
+                <Building2 className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-white" />
+              </div>
+              <div>
+                <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground">Department Management</h2>
+                <p className="text-xs sm:text-sm text-muted-foreground">Organize departments and team structures</p>
+              </div>
+            </div>
+            <DepartmentManagement />
+          </div>
+        );
+        
+      case 'positions':
+        return (
+          <div className="space-y-4 sm:space-y-6">
+            <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+              <div className="p-2 sm:p-3 rounded-lg sm:rounded-xl bg-gradient-to-br from-teal-500 to-teal-600 shadow-md">
+                <UserCog className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-white" />
+              </div>
+              <div>
+                <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground">Position Management</h2>
+                <p className="text-xs sm:text-sm text-muted-foreground">Define roles and position hierarchies</p>
+              </div>
+            </div>
+            <PositionManagement />
+          </div>
+        );
+        
       default:
         return null;
     }
