@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { 
@@ -19,6 +19,8 @@ import {
 } from 'lucide-react';
 
 const Index = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-secondary/10 to-accent/5">
       {/* Header with Login Dropdown */}
@@ -65,19 +67,24 @@ const Index = () => {
 
             {/* Primary CTA */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
-              <Button size="lg" className="bg-gradient-primary hover:opacity-90 text-primary-foreground shadow-glow px-8 py-6 text-lg font-semibold" asChild>
-                <Link to="/onboarding">
-                  <FileText className="h-5 w-5 mr-2" />
-                  Start Onboarding
-                  <ArrowRight className="h-5 w-5 ml-2" />
-                </Link>
+              <Button 
+                size="lg" 
+                className="bg-gradient-primary hover:opacity-90 text-primary-foreground shadow-glow px-8 py-6 text-lg font-semibold"
+                onClick={() => navigate('/onboarding')}
+              >
+                <FileText className="h-5 w-5 mr-2" />
+                Start Onboarding
+                <ArrowRight className="h-5 w-5 ml-2" />
               </Button>
               
-              <Button variant="outline" size="lg" className="border-primary/20 hover:border-primary/40 hover:bg-primary/5 px-8 py-6 text-lg" asChild>
-                <Link to="/user-login">
-                  <UserCheck className="h-5 w-5 mr-2" />
-                  Employee Login
-                </Link>
+              <Button 
+                variant="outline" 
+                size="lg" 
+                className="border-primary/20 hover:border-primary/40 hover:bg-primary/5 px-8 py-6 text-lg"
+                onClick={() => navigate('/user-login')}
+              >
+                <UserCheck className="h-5 w-5 mr-2" />
+                Employee Login
               </Button>
             </div>
 
