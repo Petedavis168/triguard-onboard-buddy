@@ -69,37 +69,27 @@ const Index = () => {
 
             {/* Primary CTA */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-12">
-              <Button 
-                size="lg"
-                className="flex items-center gap-3 text-lg px-8 py-4 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1"
-                onMouseDown={() => {
-                  console.log('ONBOARDING BUTTON MOUSE DOWN!');
-                }}
-                onClick={(e) => {
-                  console.log('ONBOARDING BUTTON CLICKED! Event:', e);
-                  console.log('About to navigate with window.location...');
-                  e.preventDefault();
-                  e.stopPropagation();
-                  window.location.href = '/onboarding';
-                }}
-              >
-                <FileText className="h-5 w-5" />
-                Start Onboarding
-                <ArrowRight className="h-5 w-5" />
-              </Button>
+              <Link to="/onboarding">
+                <Button 
+                  size="lg"
+                  className="flex items-center gap-3 text-lg px-8 py-4 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1"
+                >
+                  <FileText className="h-5 w-5" />
+                  Start Onboarding
+                  <ArrowRight className="h-5 w-5" />
+                </Button>
+              </Link>
               
-              <Button 
-                variant="outline"
-                size="lg"
-                className="flex items-center gap-3 text-lg px-8 py-4 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1"
-                onClick={() => {
-                  console.log('EMPLOYEE LOGIN CLICKED! Going to user login...');
-                  window.location.href = '/user-login';
-                }}
-              >
-                <UserCheck className="h-5 w-5" />
-                Employee Login
-              </Button>
+              <Link to="/user-login">
+                <Button 
+                  variant="outline"
+                  size="lg"
+                  className="flex items-center gap-3 text-lg px-8 py-4 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1"
+                >
+                  <UserCheck className="h-5 w-5" />
+                  Employee Login
+                </Button>
+              </Link>
             </div>
 
             {/* Trust Indicators */}
@@ -115,53 +105,6 @@ const Index = () => {
               <div className="flex items-center gap-2">
                 <Shield className="h-4 w-4 text-warning" />
                 <span>Secure & Private</span>
-              </div>
-            </div>
-            
-            {/* DEBUG: Test direct link */}
-            <div className="mt-8 text-center">
-              <p className="text-sm text-muted-foreground mb-2">Debug: Multiple test methods</p>
-              <div className="space-y-4">
-                <div>
-                  <a 
-                    href="/onboarding" 
-                    className="text-primary underline hover:text-primary-dark block"
-                    onClick={() => console.log('Direct link clicked!')}
-                  >
-                    Direct link to onboarding (click to test)
-                  </a>
-                </div>
-                <div>
-                  <form action="/onboarding" method="get">
-                    <button 
-                      type="submit" 
-                      className="bg-red-500 text-white px-4 py-2 rounded"
-                      onClick={() => console.log('Form button clicked!')}
-                    >
-                      Form Submit Test
-                    </button>
-                  </form>
-                </div>
-                <div>
-                  <button 
-                    className="bg-green-500 text-white px-4 py-2 rounded"
-                    onClick={() => {
-                      console.log('Simple test button clicked!');
-                      alert('Button works!');
-                    }}
-                  >
-                    Simple Click Test
-                  </button>
-                </div>
-                <div>
-                  <a 
-                    href="/test" 
-                    className="bg-purple-500 text-white px-4 py-2 rounded inline-block"
-                    onClick={() => console.log('Test page link clicked!')}
-                  >
-                    Go to Test Page
-                  </a>
-                </div>
               </div>
             </div>
           </div>
