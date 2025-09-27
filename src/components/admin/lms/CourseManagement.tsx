@@ -249,17 +249,24 @@ function CourseManagement() {
   }
 
   return (
-    <div className="space-y-4 p-4 md:p-6">
+    <div className="space-y-6">
+      {/* Header Section */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div className="flex items-center gap-2">
-          <Smartphone className="h-5 w-5 text-primary" />
-          <h2 className="text-xl md:text-2xl font-bold">Course Management</h2>
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+            <Book className="h-5 w-5 text-primary" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-foreground">Course Management</h2>
+            <p className="text-sm text-muted-foreground">Create and manage training courses</p>
+          </div>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button 
               onClick={() => { setEditingCourse(null); form.reset(); }}
-              className="w-full sm:w-auto"
+              className="w-full sm:w-auto bg-gradient-primary hover:bg-primary/90 shadow-soft"
+              size="lg"
             >
               <Plus className="h-4 w-4 mr-2" />
               Add Course
@@ -529,94 +536,109 @@ function CourseManagement() {
         </Dialog>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {/* Courses Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {courses.map((course) => (
-          <Card key={course.id} className="relative">
-            <CardHeader className="pb-3">
+          <Card key={course.id} className="bg-gradient-card shadow-soft hover:shadow-glow transition-all duration-300 border-border/20 backdrop-blur-sm">
+            <CardHeader className="pb-4">
               <div className="flex justify-between items-start">
-                <div>
-                  <CardTitle className="text-lg">{course.title}</CardTitle>
-                  <CardDescription className="text-sm">
-                    {course.description || "No description"}
+                <div className="flex-1">
+                  <CardTitle className="text-lg font-semibold text-foreground mb-2">{course.title}</CardTitle>
+                  <CardDescription className="text-sm text-muted-foreground line-clamp-2">
+                    {course.description || "No description provided"}
                   </CardDescription>
                 </div>
-                <Badge variant={course.is_active ? "default" : "secondary"}>
+                <Badge 
+                  variant={course.is_active ? "default" : "secondary"} 
+                  className={course.is_active ? "bg-success text-success-foreground" : ""}
+                >
                   {course.is_active ? "Active" : "Inactive"}
                 </Badge>
               </div>
             </CardHeader>
             
-            <CardContent>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Duration:</span>
-                  <div className="flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    <span>{course.duration_minutes} min</span>
-                  </div>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex items-center gap-2 text-sm">
+                  <Clock className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-muted-foreground">{course.duration_minutes} min</span>
                 </div>
-                
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Level:</span>
-                  <Badge variant="outline" className="text-xs">
+                <div className="flex items-center gap-2">
+                  <Badge variant="outline" className="text-xs capitalize">
                     {course.difficulty_level}
                   </Badge>
                 </div>
-                
-                {course.course_role_requirements && course.course_role_requirements.length > 0 && (
-                  <div className="text-sm">
-                    <span className="text-muted-foreground">Assigned to:</span>
-                    <div className="flex flex-wrap gap-1 mt-1">
-                      {course.course_role_requirements.map((req: any, idx: number) => (
-                        <Badge key={idx} variant="secondary" className="text-xs">
-                          {req.employee_role ? req.employee_role.replace('_', ' ') : req.positions?.name}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                
-                {course.is_required && (
-                  <Badge variant="destructive" className="text-xs">Required</Badge>
-                )}
               </div>
               
-              <div className="flex justify-end space-x-2 mt-4">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleEdit(course)}
-                >
-                  <Edit className="h-3 w-3" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleDelete(course.id)}
-                  className="text-destructive hover:text-destructive"
-                >
-                  <Trash2 className="h-3 w-3" />
-                </Button>
+              {course.course_role_requirements && course.course_role_requirements.length > 0 && (
+                <div>
+                  <p className="text-xs font-medium text-muted-foreground mb-2">Assigned to:</p>
+                  <div className="flex flex-wrap gap-1">
+                    {course.course_role_requirements.slice(0, 3).map((req: any, idx: number) => (
+                      <Badge key={idx} variant="secondary" className="text-xs">
+                        {req.employee_role ? req.employee_role.replace('_', ' ') : req.positions?.name}
+                      </Badge>
+                    ))}
+                    {course.course_role_requirements.length > 3 && (
+                      <Badge variant="secondary" className="text-xs">
+                        +{course.course_role_requirements.length - 3} more
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+              )}
+              
+              <div className="flex items-center justify-between pt-2">
+                {course.is_required && (
+                  <Badge variant="destructive" className="text-xs bg-warning text-warning-foreground">
+                    Required
+                  </Badge>
+                )}
+                <div className="flex gap-2 ml-auto">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleEdit(course)}
+                    className="h-8 w-8 p-0"
+                  >
+                    <Edit className="h-3 w-3" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleDelete(course.id)}
+                    className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
+                  >
+                    <Trash2 className="h-3 w-3" />
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
         ))}
       </div>
 
+      {/* Enhanced Empty State */}
       {courses.length === 0 && (
-        <Card>
-          <CardContent className="text-center py-8">
-            <Book className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No courses found</h3>
-            <p className="text-muted-foreground mb-4">
+        <div className="text-center py-16">
+          <div className="bg-gradient-card rounded-3xl p-12 shadow-glow border border-border/20 backdrop-blur-sm max-w-md mx-auto">
+            <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <Book className="h-8 w-8 text-primary" />
+            </div>
+            <h3 className="text-xl font-semibold text-foreground mb-3">No courses found</h3>
+            <p className="text-muted-foreground mb-6 leading-relaxed">
               Create your first course to start building your learning management system.
             </p>
-            <Button onClick={() => setIsDialogOpen(true)}>
+            <Button 
+              onClick={() => setIsDialogOpen(true)}
+              className="bg-gradient-primary hover:bg-primary/90 shadow-soft"
+              size="lg"
+            >
               <Plus className="h-4 w-4 mr-2" />
               Add Course
             </Button>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       )}
     </div>
   );

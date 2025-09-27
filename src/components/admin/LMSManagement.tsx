@@ -114,135 +114,144 @@ const LMSManagement = () => {
   }
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden">
-      {/* Compact Stats Overview */}
-      <div className="grid grid-cols-4 lg:grid-cols-7 gap-2 mb-4">
-        <div className="bg-white rounded-lg p-3 shadow-sm border border-border/30 hover:shadow-md transition-shadow">
-          <div className="flex items-center justify-between">
-            <div className="w-8 h-8 rounded bg-blue-100 flex items-center justify-center">
-              <BookOpen className="h-4 w-4 text-blue-600" />
-            </div>
-            <div className="text-right">
-              <div className="text-lg font-bold text-foreground">{stats.totalCourses}</div>
-              <div className="text-xs text-muted-foreground">Courses</div>
-            </div>
+    <div className="min-h-screen bg-gradient-primary p-6 space-y-6">
+      {/* Modern Header */}
+      <div className="bg-gradient-card rounded-2xl shadow-glow p-6 border border-border/20 backdrop-blur-sm">
+        <div className="flex items-center gap-4 mb-6">
+          <div className="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center">
+            <BookOpen className="h-6 w-6 text-primary" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">Learning Management</h1>
+            <p className="text-muted-foreground">Manage courses, quizzes, and training programs</p>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg p-3 shadow-sm border border-border/30 hover:shadow-md transition-shadow">
-          <div className="flex items-center justify-between">
-            <div className="w-8 h-8 rounded bg-green-100 flex items-center justify-center">
-              <CheckCircle className="h-4 w-4 text-green-600" />
-            </div>
-            <div className="text-right">
-              <div className="text-lg font-bold text-green-600">{stats.activeCourses}</div>
-              <div className="text-xs text-muted-foreground">Active</div>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg p-3 shadow-sm border border-border/30 hover:shadow-md transition-shadow">
-          <div className="flex items-center justify-between">
-            <div className="w-8 h-8 rounded bg-purple-100 flex items-center justify-center">
-              <Award className="h-4 w-4 text-purple-600" />
-            </div>
-            <div className="text-right">
-              <div className="text-lg font-bold text-purple-600">{stats.totalQuizzes}</div>
-              <div className="text-xs text-muted-foreground">Quizzes</div>
+        {/* Enhanced Stats Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+          <div className="bg-gradient-card rounded-xl p-4 shadow-soft hover:shadow-glow transition-all duration-300 border border-border/30">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                <BookOpen className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-foreground">{stats.totalCourses}</div>
+                <div className="text-sm text-muted-foreground">Courses</div>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="bg-white rounded-lg p-3 shadow-sm border border-border/30 hover:shadow-md transition-shadow">
-          <div className="flex items-center justify-between">
-            <div className="w-8 h-8 rounded bg-orange-100 flex items-center justify-center">
-              <Users className="h-4 w-4 text-orange-600" />
-            </div>
-            <div className="text-right">
-              <div className="text-lg font-bold text-orange-600">{stats.totalEnrollments}</div>
-              <div className="text-xs text-muted-foreground">Enrolled</div>
+          <div className="bg-gradient-card rounded-xl p-4 shadow-soft hover:shadow-glow transition-all duration-300 border border-border/30">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-success/10 rounded-lg flex items-center justify-center">
+                <CheckCircle className="h-5 w-5 text-success" />
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-success">{stats.activeCourses}</div>
+                <div className="text-sm text-muted-foreground">Active</div>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="bg-white rounded-lg p-3 shadow-sm border border-border/30 hover:shadow-md transition-shadow">
-          <div className="flex items-center justify-between">
-            <div className="w-8 h-8 rounded bg-teal-100 flex items-center justify-center">
-              <TrendingUp className="h-4 w-4 text-teal-600" />
-            </div>
-            <div className="text-right">
-              <div className="text-lg font-bold text-teal-600">{stats.completedCourses}</div>
-              <div className="text-xs text-muted-foreground">Completed</div>
+          <div className="bg-gradient-card rounded-xl p-4 shadow-soft hover:shadow-glow transition-all duration-300 border border-border/30">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-accent/10 rounded-lg flex items-center justify-center">
+                <Award className="h-5 w-5 text-accent" />
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-accent">{stats.totalQuizzes}</div>
+                <div className="text-sm text-muted-foreground">Quizzes</div>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="bg-white rounded-lg p-3 shadow-sm border border-border/30 hover:shadow-md transition-shadow">
-          <div className="flex items-center justify-between">
-            <div className="w-8 h-8 rounded bg-indigo-100 flex items-center justify-center">
-              <Award className="h-4 w-4 text-indigo-600" />
-            </div>
-            <div className="text-right">
-              <div className="text-lg font-bold text-indigo-600">{stats.averageScore}%</div>
-              <div className="text-xs text-muted-foreground">Avg Score</div>
+          <div className="bg-gradient-card rounded-xl p-4 shadow-soft hover:shadow-glow transition-all duration-300 border border-border/30">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-warning/10 rounded-lg flex items-center justify-center">
+                <Users className="h-5 w-5 text-warning" />
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-warning">{stats.totalEnrollments}</div>
+                <div className="text-sm text-muted-foreground">Enrolled</div>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="bg-white rounded-lg p-3 shadow-sm border border-border/30 hover:shadow-md transition-shadow">
-          <div className="flex items-center justify-between">
-            <div className="w-8 h-8 rounded bg-red-100 flex items-center justify-center">
-              <AlertCircle className="h-4 w-4 text-red-600" />
+          <div className="bg-gradient-card rounded-xl p-4 shadow-soft hover:shadow-glow transition-all duration-300 border border-border/30">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                <TrendingUp className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-primary">{stats.completedCourses}</div>
+                <div className="text-sm text-muted-foreground">Complete</div>
+              </div>
             </div>
-            <div className="text-right">
-              <div className="text-lg font-bold text-red-600">{stats.pendingReviews}</div>
-              <div className="text-xs text-muted-foreground">Reviews</div>
+          </div>
+
+          <div className="bg-gradient-card rounded-xl p-4 shadow-soft hover:shadow-glow transition-all duration-300 border border-border/30">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-success/10 rounded-lg flex items-center justify-center">
+                <Award className="h-5 w-5 text-success" />
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-success">{stats.averageScore}%</div>
+                <div className="text-sm text-muted-foreground">Avg Score</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-gradient-card rounded-xl p-4 shadow-soft hover:shadow-glow transition-all duration-300 border border-border/30">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-destructive/10 rounded-lg flex items-center justify-center">
+                <AlertCircle className="h-5 w-5 text-destructive" />
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-destructive">{stats.pendingReviews}</div>
+                <div className="text-sm text-muted-foreground">Reviews</div>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Main Content Tabs */}
-      <Card className="flex-1 shadow-md flex flex-col overflow-hidden">
-        <CardHeader className="pb-2 px-4 pt-3">
-          <div>
-            <CardTitle className="text-base font-semibold">Learning Management System</CardTitle>
-            <CardDescription className="text-xs text-muted-foreground">
-              Manage courses, quizzes, assignments, and track student progress
-            </CardDescription>
-          </div>
+      {/* Main Content Area */}
+      <Card className="bg-gradient-card shadow-glow border-border/20 backdrop-blur-sm">
+        <CardHeader className="pb-4">
+          <CardTitle className="text-xl font-semibold text-foreground">Learning Management System</CardTitle>
+          <CardDescription className="text-muted-foreground">
+            Manage courses, quizzes, assignments, and track student progress
+          </CardDescription>
         </CardHeader>
         
-        <div className="flex-1 overflow-hidden">
-          <Tabs defaultValue="courses" className="h-full flex flex-col">
-            <div className="px-4">
-              <TabsList className="grid w-full grid-cols-4 h-8 rounded-md mb-2">
-                <TabsTrigger value="courses" className="text-xs py-1">Courses</TabsTrigger>
-                <TabsTrigger value="quizzes" className="text-xs py-1">Quizzes</TabsTrigger>
-                <TabsTrigger value="assignments" className="text-xs py-1">Assignments</TabsTrigger>
-                <TabsTrigger value="progress" className="text-xs py-1">Progress</TabsTrigger>
+        <CardContent className="p-0">
+          <Tabs defaultValue="courses" className="w-full">
+            <div className="px-6 pb-6">
+              <TabsList className="grid w-full grid-cols-4 bg-muted/50 rounded-xl p-1">
+                <TabsTrigger value="courses" className="rounded-lg font-medium">Courses</TabsTrigger>
+                <TabsTrigger value="quizzes" className="rounded-lg font-medium">Quizzes</TabsTrigger>
+                <TabsTrigger value="assignments" className="rounded-lg font-medium">Assignments</TabsTrigger>
+                <TabsTrigger value="progress" className="rounded-lg font-medium">Progress</TabsTrigger>
               </TabsList>
             </div>
             
-            <div className="flex-1 overflow-hidden">
-              <TabsContent value="courses" className="h-full mt-0">
-                <CourseManagement />
-              </TabsContent>
-              
-              <TabsContent value="quizzes" className="h-full mt-0">
-                <QuizManagement onStatsUpdate={fetchLMSStats} />
-              </TabsContent>
-              
-              <TabsContent value="assignments" className="h-full mt-0">
-                <LearningAssignments onStatsUpdate={fetchLMSStats} />
-              </TabsContent>
-              
-              <TabsContent value="progress" className="h-full mt-0">
-                <StudentProgress />
-              </TabsContent>
-            </div>
+            <TabsContent value="courses" className="mt-0 px-6 pb-6">
+              <CourseManagement />
+            </TabsContent>
+            
+            <TabsContent value="quizzes" className="mt-0 px-6 pb-6">
+              <QuizManagement onStatsUpdate={fetchLMSStats} />
+            </TabsContent>
+            
+            <TabsContent value="assignments" className="mt-0 px-6 pb-6">
+              <LearningAssignments onStatsUpdate={fetchLMSStats} />
+            </TabsContent>
+            
+            <TabsContent value="progress" className="mt-0 px-6 pb-6">
+              <StudentProgress />
+            </TabsContent>
           </Tabs>
-        </div>
+        </CardContent>
       </Card>
     </div>
   );
