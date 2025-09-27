@@ -7,9 +7,29 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Plus, Edit, Trash2, Award, Clock, HelpCircle, CheckCircle } from 'lucide-react';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Switch } from '@/components/ui/switch';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Plus, Edit, Trash2, Award, Clock, HelpCircle, CheckCircle, Video, Mic, Play, Users, FileText } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/components/ui/use-toast';
+import { toast } from '@/hooks/use-toast';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+
+const quizSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  description: z.string().optional(),
+  instructions: z.string().optional(),
+  course_id: z.string().optional(),
+  time_limit_minutes: z.number().min(1),
+  passing_score: z.number().min(1).max(100),
+  max_attempts: z.number().min(1).max(10),
+  video_url: z.string().optional(),
+  intro_video_url: z.string().optional(),
+  requires_recording: z.boolean(),
+  recording_instructions: z.string().optional(),
+});
 
 interface Quiz {
   id: string;
@@ -22,6 +42,10 @@ interface Quiz {
   is_active: boolean;
   created_at: string;
   course_id: string | null;
+  video_url?: string | null;
+  intro_video_url?: string | null;
+  requires_recording?: boolean;
+  recording_instructions?: string | null;
   courses?: {
     title: string;
   };
@@ -50,16 +74,24 @@ const QuizManagement: React.FC<QuizManagementProps> = ({ onStatsUpdate }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingQuiz, setEditingQuiz] = useState<Quiz | null>(null);
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    instructions: '',
-    course_id: '',
-    time_limit_minutes: 30,
-    passing_score: 70,
-    max_attempts: 3,
+  const [activeTab, setActiveTab] = useState('basic');
+
+  const form = useForm<z.infer<typeof quizSchema>>({
+    resolver: zodResolver(quizSchema),
+    defaultValues: {
+      title: "",
+      description: "",
+      instructions: "",
+      course_id: "",
+      time_limit_minutes: 30,
+      passing_score: 70,
+      max_attempts: 3,
+      video_url: "",
+      intro_video_url: "",
+      requires_recording: false,
+      recording_instructions: "",
+    },
   });
-  const { toast } = useToast();
 
   useEffect(() => {
     fetchQuizzes();
@@ -106,17 +138,16 @@ const QuizManagement: React.FC<QuizManagementProps> = ({ onStatsUpdate }) => {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
+  const onSubmit = async (values: z.infer<typeof quizSchema>) => {
     try {
       const adminData = localStorage.getItem('admin_user');
       const managerId = adminData ? JSON.parse(adminData).id : null;
 
       const submitData = {
-        ...formData,
-        course_id: formData.course_id || null,
-        created_by: managerId
+        ...values,
+        course_id: values.course_id || null,
+        created_by: managerId,
+        is_active: true,
       };
 
       if (editingQuiz) {
@@ -139,22 +170,14 @@ const QuizManagement: React.FC<QuizManagementProps> = ({ onStatsUpdate }) => {
         if (error) throw error;
 
         toast({
-          title: "Success",
+          title: "Success", 
           description: "Quiz created successfully",
         });
       }
 
       setIsDialogOpen(false);
       setEditingQuiz(null);
-      setFormData({
-        title: '',
-        description: '',
-        instructions: '',
-        course_id: '',
-        time_limit_minutes: 30,
-        passing_score: 70,
-        max_attempts: 3,
-      });
+      form.reset();
       fetchQuizzes();
       onStatsUpdate?.();
     } catch (error) {
@@ -169,14 +192,18 @@ const QuizManagement: React.FC<QuizManagementProps> = ({ onStatsUpdate }) => {
 
   const handleEdit = (quiz: Quiz) => {
     setEditingQuiz(quiz);
-    setFormData({
+    form.reset({
       title: quiz.title,
-      description: quiz.description || '',
-      instructions: quiz.instructions || '',
-      course_id: quiz.course_id || '',
+      description: quiz.description || "",
+      instructions: quiz.instructions || "",
+      course_id: quiz.course_id || "",
       time_limit_minutes: quiz.time_limit_minutes,
       passing_score: quiz.passing_score,
       max_attempts: quiz.max_attempts,
+      video_url: quiz.video_url || "",
+      intro_video_url: quiz.intro_video_url || "",
+      requires_recording: quiz.requires_recording || false,
+      recording_instructions: quiz.recording_instructions || "",
     });
     setIsDialogOpen(true);
   };
@@ -209,281 +236,423 @@ const QuizManagement: React.FC<QuizManagementProps> = ({ onStatsUpdate }) => {
     }
   };
 
-  const getPassingScoreColor = (score: number) => {
-    if (score >= 90) return 'text-green-600';
-    if (score >= 70) return 'text-yellow-600';
-    return 'text-red-600';
+  const openDialog = () => {
+    setEditingQuiz(null);
+    form.reset();
+    setIsDialogOpen(true);
   };
 
   if (isLoading) {
     return (
-      <div className="text-center py-8">
-        <div className="rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-        <p className="mt-4 text-muted-foreground">Loading quizzes...</p>
+      <div className="flex justify-center items-center h-48">
+        <div className="rounded-full h-8 w-8 border-b-2 border-primary animate-spin"></div>
+        <p className="ml-4 text-muted-foreground">Loading quizzes...</p>
       </div>
     );
   }
 
   return (
-    <div className="h-full overflow-hidden p-4">
-      <div className="flex justify-between items-center mb-4">
-        <div>
-          <h3 className="text-lg font-semibold">Quiz Management</h3>
-          <p className="text-sm text-muted-foreground">Create and manage assessments and quizzes</p>
+    <div className="space-y-6">
+      {/* Header Section */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+            <Award className="h-5 w-5 text-primary" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-foreground">Quiz Management</h2>
+            <p className="text-sm text-muted-foreground">Create and manage interactive assessments</p>
+          </div>
         </div>
         
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button size="sm">
+            <Button onClick={openDialog} className="w-full sm:w-auto">
               <Plus className="h-4 w-4 mr-2" />
               Add Quiz
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          
+          <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>
-                {editingQuiz ? 'Edit Quiz' : 'Create New Quiz'}
-              </DialogTitle>
+              <DialogTitle>{editingQuiz ? 'Edit Quiz' : 'Create New Quiz'}</DialogTitle>
               <DialogDescription>
-                {editingQuiz ? 'Update quiz settings and information' : 'Create a new quiz or assessment for your courses'}
+                {editingQuiz ? 'Update quiz settings and multimedia content' : 'Create an interactive quiz with video content and recording options'}
               </DialogDescription>
             </DialogHeader>
             
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="title">Quiz Title</Label>
-                  <Input
-                    id="title"
-                    value={formData.title}
-                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                    placeholder="Enter quiz title"
-                    required
-                  />
-                </div>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                  <TabsList className="grid w-full grid-cols-3">
+                    <TabsTrigger value="basic">Basic Info</TabsTrigger>
+                    <TabsTrigger value="media">Media & Recording</TabsTrigger>
+                    <TabsTrigger value="settings">Settings</TabsTrigger>
+                  </TabsList>
+                  
+                  <TabsContent value="basic" className="space-y-4 mt-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="title"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Quiz Title</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Enter quiz title" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="course_id"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Associated Course</FormLabel>
+                            <Select onValueChange={field.onChange} value={field.value}>
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select course (optional)" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="">No Course (Standalone Quiz)</SelectItem>
+                                {courses.map((course) => (
+                                  <SelectItem key={course.id} value={course.id}>
+                                    {course.title}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    
+                    <FormField
+                      control={form.control}
+                      name="description"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Description</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder="Brief description of the quiz"
+                              rows={2}
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name="instructions"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Instructions</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder="Instructions for students taking the quiz"
+                              rows={3}
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </TabsContent>
+                  
+                  <TabsContent value="media" className="space-y-4 mt-4">
+                    <div className="grid grid-cols-1 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="intro_video_url"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="flex items-center gap-2">
+                              <Video className="h-4 w-4" />
+                              Introduction Video URL
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="https://example.com/intro-video.mp4 or YouTube/Vimeo URL"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="video_url"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="flex items-center gap-2">
+                              <Video className="h-4 w-4" />
+                              Main Content Video URL
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="https://example.com/quiz-content.mp4 or YouTube/Vimeo URL"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    
+                    <div className="space-y-4 p-4 border border-border/30 rounded-xl bg-gradient-card">
+                      <FormField
+                        control={form.control}
+                        name="requires_recording"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 bg-background/50">
+                            <div className="space-y-0.5">
+                              <FormLabel className="flex items-center gap-2">
+                                <Mic className="h-4 w-4 text-destructive" />
+                                Require Voice/Video Recording
+                              </FormLabel>
+                              <div className="text-sm text-muted-foreground">
+                                Students must submit a recording as part of this quiz
+                              </div>
+                            </div>
+                            <FormControl>
+                              <Switch
+                                checked={field.value}
+                                onCheckedChange={field.onChange}
+                              />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="recording_instructions"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Recording Instructions</FormLabel>
+                            <FormControl>
+                              <Textarea
+                                placeholder="e.g., 'Record a 2-minute explanation of the safety procedures covered in this quiz'"
+                                rows={3}
+                                disabled={!form.watch('requires_recording')}
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </TabsContent>
+                  
+                  <TabsContent value="settings" className="space-y-4 mt-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="time_limit_minutes"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Time Limit (minutes)</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                min="1"
+                                max="180"
+                                {...field}
+                                onChange={(e) => field.onChange(parseInt(e.target.value) || 30)}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="passing_score"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Passing Score (%)</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                min="1"
+                                max="100"
+                                {...field}
+                                onChange={(e) => field.onChange(parseInt(e.target.value) || 70)}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="max_attempts"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Max Attempts</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                min="1"
+                                max="10"
+                                {...field}
+                                onChange={(e) => field.onChange(parseInt(e.target.value) || 3)}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </TabsContent>
+                </Tabs>
                 
-                <div className="space-y-2">
-                  <Label htmlFor="course">Associated Course</Label>
-                  <Select
-                    value={formData.course_id}
-                    onValueChange={(value) => setFormData({ ...formData, course_id: value })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select course (optional)" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="">No Course (Standalone Quiz)</SelectItem>
-                      {courses.map((course) => (
-                        <SelectItem key={course.id} value={course.id}>
-                          {course.title}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                <div className="flex justify-end space-x-2 pt-6 border-t">
+                  <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
+                    Cancel
+                  </Button>
+                  <Button type="submit">
+                    {editingQuiz ? 'Update Quiz' : 'Create Quiz'}
+                  </Button>
                 </div>
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Brief description of the quiz"
-                  rows={2}
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="instructions">Instructions</Label>
-                <Textarea
-                  id="instructions"
-                  value={formData.instructions}
-                  onChange={(e) => setFormData({ ...formData, instructions: e.target.value })}
-                  placeholder="Instructions for students taking the quiz"
-                  rows={3}
-                />
-              </div>
-              
-              <div className="grid grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="time_limit">Time Limit (minutes)</Label>
-                  <Input
-                    id="time_limit"
-                    type="number"
-                    min="1"
-                    max="180"
-                    value={formData.time_limit_minutes}
-                    onChange={(e) => setFormData({ ...formData, time_limit_minutes: parseInt(e.target.value) || 30 })}
-                    placeholder="30"
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="passing_score">Passing Score (%)</Label>
-                  <Input
-                    id="passing_score"
-                    type="number"
-                    min="1"
-                    max="100"
-                    value={formData.passing_score}
-                    onChange={(e) => setFormData({ ...formData, passing_score: parseInt(e.target.value) || 70 })}
-                    placeholder="70"
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="max_attempts">Max Attempts</Label>
-                  <Input
-                    id="max_attempts"
-                    type="number"
-                    min="1"
-                    max="10"
-                    value={formData.max_attempts}
-                    onChange={(e) => setFormData({ ...formData, max_attempts: parseInt(e.target.value) || 3 })}
-                    placeholder="3"
-                  />
-                </div>
-              </div>
-              
-              <div className="flex justify-end gap-2 pt-4">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => {
-                    setIsDialogOpen(false);
-                    setEditingQuiz(null);
-                    setFormData({
-                      title: '',
-                      description: '',
-                      instructions: '',
-                      course_id: '',
-                      time_limit_minutes: 30,
-                      passing_score: 70,
-                      max_attempts: 3,
-                    });
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button type="submit">
-                  {editingQuiz ? 'Update Quiz' : 'Create Quiz'}
-                </Button>
-              </div>
-            </form>
+              </form>
+            </Form>
           </DialogContent>
         </Dialog>
       </div>
 
-      {/* Quiz Grid */}
-      <div className="h-full overflow-y-auto">
-        {quizzes.length === 0 ? (
-          <div className="text-center py-12">
-            <Award className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-500 mb-4">No quizzes found</p>
-            <Button onClick={() => setIsDialogOpen(true)}>
-              <Plus className="h-4 w-4 mr-2" />
-              Create Your First Quiz
-            </Button>
+      {/* Quizzes Grid */}
+      {quizzes.length === 0 ? (
+        <div className="text-center py-12">
+          <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <Award className="h-8 w-8 text-primary" />
           </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-4">
-            {quizzes.map((quiz) => (
-              <Card key={quiz.id} className="hover:shadow-lg transition-all duration-200 border border-purple-200 bg-purple-50">
-                <CardHeader className="pb-3">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center">
-                        <Award className="h-4 w-4 text-white" />
+          <h3 className="text-lg font-semibold text-foreground mb-2">No quizzes found</h3>
+          <p className="text-muted-foreground mb-6">Create your first interactive quiz with video content</p>
+          <Button onClick={openDialog} size="lg">
+            <Plus className="h-4 w-4 mr-2" />
+            Create Your First Quiz
+          </Button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {quizzes.map((quiz) => (
+            <Card key={quiz.id} className="bg-gradient-card shadow-soft hover:shadow-glow transition-all duration-300 border-border/20 backdrop-blur-sm">
+              <CardHeader className="pb-4">
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-primary/20 rounded-lg flex items-center justify-center">
+                        <Award className="h-4 w-4 text-primary" />
                       </div>
-                      <div className="min-w-0 flex-1">
-                        <CardTitle className={`text-sm font-semibold leading-tight break-all ${
-                          quiz.title.length > 25 ? 'text-xs' : 'text-sm'
-                        }`}>
-                          {quiz.title}
-                        </CardTitle>
-                        {quiz.courses && (
-                          <p className="text-xs text-purple-600 mt-1">
-                            {quiz.courses.title}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-1 ml-2">
-                      <Badge variant={quiz.is_active ? "default" : "secondary"} className="text-xs">
-                        {quiz.is_active ? 'Active' : 'Inactive'}
+                      <Badge 
+                        variant={quiz.is_active ? "default" : "secondary"} 
+                        className={quiz.is_active ? "bg-success text-success-foreground" : ""}
+                      >
+                        {quiz.is_active ? "Active" : "Inactive"}
                       </Badge>
                     </div>
+                    <CardTitle className="text-lg font-semibold text-foreground mb-2">{quiz.title}</CardTitle>
+                    {quiz.courses && (
+                      <p className="text-sm text-primary font-medium mb-2">
+                        Course: {quiz.courses.title}
+                      </p>
+                    )}
+                    <CardDescription className="text-sm text-muted-foreground line-clamp-2">
+                      {quiz.description || "No description provided"}
+                    </CardDescription>
                   </div>
-                </CardHeader>
+                </div>
+              </CardHeader>
+              
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex items-center gap-2 text-sm">
+                    <Clock className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-muted-foreground">{quiz.time_limit_minutes} min</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm">
+                    <CheckCircle className="h-4 w-4 text-success" />
+                    <span className="text-success">{quiz.passing_score}% pass</span>
+                  </div>
+                </div>
                 
-                <CardContent className="space-y-3">
-                  {quiz.description && (
-                    <p className={`text-gray-700 break-all ${
-                      quiz.description.length > 80 ? 'text-xs' : 'text-sm'
-                    }`}>
-                      {quiz.description.length > 100 
-                        ? `${quiz.description.substring(0, 100)}...`
-                        : quiz.description
-                      }
-                    </p>
+                {/* Media Indicators */}
+                <div className="flex items-center gap-2 flex-wrap">
+                  {quiz.intro_video_url && (
+                    <div className="flex items-center gap-1 px-2 py-1 rounded-md bg-blue-100 text-blue-700">
+                      <Video className="h-3 w-3" />
+                      <span className="text-xs font-medium">Intro Video</span>
+                    </div>
                   )}
-                  
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="bg-white rounded-lg p-2 text-center">
-                      <div className="flex items-center justify-center gap-1 text-xs text-gray-600 mb-1">
-                        <Clock className="h-3 w-3" />
-                        <span>Time Limit</span>
-                      </div>
-                      <div className="text-sm font-semibold">{quiz.time_limit_minutes} min</div>
+                  {quiz.video_url && (
+                    <div className="flex items-center gap-1 px-2 py-1 rounded-md bg-purple-100 text-purple-700">
+                      <Play className="h-3 w-3" />
+                      <span className="text-xs font-medium">Content Video</span>
                     </div>
-                    
-                    <div className="bg-white rounded-lg p-2 text-center">
-                      <div className="flex items-center justify-center gap-1 text-xs text-gray-600 mb-1">
-                        <CheckCircle className="h-3 w-3" />
-                        <span>Passing</span>
-                      </div>
-                      <div className={`text-sm font-semibold ${getPassingScoreColor(quiz.passing_score)}`}>
-                        {quiz.passing_score}%
-                      </div>
+                  )}
+                  {quiz.requires_recording && (
+                    <div className="flex items-center gap-1 px-2 py-1 rounded-md bg-red-100 text-red-700">
+                      <Mic className="h-3 w-3" />
+                      <span className="text-xs font-medium">Recording Required</span>
                     </div>
+                  )}
+                  {!quiz.intro_video_url && !quiz.video_url && !quiz.requires_recording && (
+                    <span className="text-xs text-muted-foreground">Text-only quiz</span>
+                  )}
+                </div>
+                
+                <div className="flex items-center justify-between text-xs text-muted-foreground">
+                  <div className="flex items-center gap-1">
+                    <HelpCircle className="h-3 w-3" />
+                    <span>{quiz.quiz_questions?.length || 0} questions</span>
                   </div>
-                  
-                  <div className="flex items-center justify-between text-xs text-gray-600">
-                    <div className="flex items-center gap-1">
-                      <HelpCircle className="h-3 w-3" />
-                      <span>{quiz.quiz_questions?.length || 0} questions</span>
-                    </div>
-                    <span>Max {quiz.max_attempts} attempts</span>
-                  </div>
-                  
-                  <div className="flex gap-2 pt-2">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handleEdit(quiz)}
-                      className="flex-1 hover:bg-purple-50 hover:border-purple-200"
-                    >
-                      <Edit className="h-3 w-3 mr-1" />
-                      Edit
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handleDelete(quiz.id)}
-                      disabled={!quiz.is_active}
-                      className="flex-1 hover:bg-red-50 hover:border-red-200 disabled:opacity-50"
-                    >
-                      <Trash2 className="h-3 w-3 mr-1" />
-                      Delete
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        )}
-      </div>
+                  <span>Max {quiz.max_attempts} attempts</span>
+                </div>
+                
+                <div className="flex gap-2 pt-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleEdit(quiz)}
+                    className="flex-1"
+                  >
+                    <Edit className="h-3 w-3 mr-1" />
+                    Edit
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleDelete(quiz.id)}
+                    disabled={!quiz.is_active}
+                    className="flex-1 hover:bg-destructive/10 hover:border-destructive/20 hover:text-destructive"
+                  >
+                    <Trash2 className="h-3 w-3 mr-1" />
+                    Delete
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

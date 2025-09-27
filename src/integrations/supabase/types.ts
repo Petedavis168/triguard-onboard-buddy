@@ -1399,6 +1399,9 @@ export type Database = {
           question_text: string
           question_type: string
           quiz_id: string
+          recording_prompt: string | null
+          requires_recording: boolean | null
+          video_url: string | null
         }
         Insert: {
           correct_answer?: string | null
@@ -1411,6 +1414,9 @@ export type Database = {
           question_text: string
           question_type?: string
           quiz_id: string
+          recording_prompt?: string | null
+          requires_recording?: boolean | null
+          video_url?: string | null
         }
         Update: {
           correct_answer?: string | null
@@ -1423,6 +1429,9 @@ export type Database = {
           question_text?: string
           question_type?: string
           quiz_id?: string
+          recording_prompt?: string | null
+          requires_recording?: boolean | null
+          video_url?: string | null
         }
         Relationships: [
           {
@@ -1443,6 +1452,7 @@ export type Database = {
           is_correct: boolean | null
           points_earned: number | null
           question_id: string
+          recording_url: string | null
           selected_option_id: string | null
           text_response: string | null
         }
@@ -1454,6 +1464,7 @@ export type Database = {
           is_correct?: boolean | null
           points_earned?: number | null
           question_id: string
+          recording_url?: string | null
           selected_option_id?: string | null
           text_response?: string | null
         }
@@ -1465,6 +1476,7 @@ export type Database = {
           is_correct?: boolean | null
           points_earned?: number | null
           question_id?: string
+          recording_url?: string | null
           selected_option_id?: string | null
           text_response?: string | null
         }
@@ -1500,13 +1512,17 @@ export type Database = {
           description: string | null
           id: string
           instructions: string | null
+          intro_video_url: string | null
           is_active: boolean
           lesson_id: string | null
           max_attempts: number | null
           passing_score: number
+          recording_instructions: string | null
+          requires_recording: boolean | null
           time_limit_minutes: number | null
           title: string
           updated_at: string
+          video_url: string | null
         }
         Insert: {
           course_id?: string | null
@@ -1515,13 +1531,17 @@ export type Database = {
           description?: string | null
           id?: string
           instructions?: string | null
+          intro_video_url?: string | null
           is_active?: boolean
           lesson_id?: string | null
           max_attempts?: number | null
           passing_score?: number
+          recording_instructions?: string | null
+          requires_recording?: boolean | null
           time_limit_minutes?: number | null
           title: string
           updated_at?: string
+          video_url?: string | null
         }
         Update: {
           course_id?: string | null
@@ -1530,13 +1550,17 @@ export type Database = {
           description?: string | null
           id?: string
           instructions?: string | null
+          intro_video_url?: string | null
           is_active?: boolean
           lesson_id?: string | null
           max_attempts?: number | null
           passing_score?: number
+          recording_instructions?: string | null
+          requires_recording?: boolean | null
           time_limit_minutes?: number | null
           title?: string
           updated_at?: string
+          video_url?: string | null
         }
         Relationships: [
           {

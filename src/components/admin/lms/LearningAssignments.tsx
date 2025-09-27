@@ -3,13 +3,27 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Plus, Edit, Trash2, ClipboardList, Clock, User, BookOpen, Award } from 'lucide-react';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Plus, Edit, Trash2, ClipboardList, Clock, User, BookOpen, Award, Users, Calendar, Target, AlertCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/components/ui/use-toast';
+import { toast } from '@/hooks/use-toast';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+
+const assignmentSchema = z.object({
+  assignment_type: z.enum(['course', 'quiz']),
+  course_id: z.string().optional(),
+  quiz_id: z.string().optional(),
+  assigned_to: z.array(z.string()).min(1, "Must assign to at least one user"),
+  due_date: z.string().optional(),
+  priority: z.enum(['low', 'medium', 'high', 'urgent']),
+});
 
 interface LearningAssignment {
   id: string;
@@ -21,10 +35,14 @@ interface LearningAssignment {
   status: string;
   completion_notes: string | null;
   created_at: string;
+  course_id?: string | null;
+  quiz_id?: string | null;
   courses?: {
+    id: string;
     title: string;
   };
   quizzes?: {
+    id: string;
     title: string;
   };
   managers?: {
@@ -43,10 +61,11 @@ interface Quiz {
   title: string;
 }
 
-interface Manager {
+interface User {
   id: string;
   first_name: string;
   last_name: string;
+  email: string;
 }
 
 interface LearningAssignmentsProps {
@@ -57,25 +76,28 @@ const LearningAssignments: React.FC<LearningAssignmentsProps> = ({ onStatsUpdate
   const [assignments, setAssignments] = useState<LearningAssignment[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
-  const [managers, setManagers] = useState<Manager[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingAssignment, setEditingAssignment] = useState<LearningAssignment | null>(null);
-  const [formData, setFormData] = useState({
-    assignment_type: 'course',
-    course_id: '',
-    quiz_id: '',
-    assigned_to: '',
-    due_date: '',
-    priority: 'medium',
+
+  const form = useForm<z.infer<typeof assignmentSchema>>({
+    resolver: zodResolver(assignmentSchema),
+    defaultValues: {
+      assignment_type: 'course',
+      course_id: "",
+      quiz_id: "",
+      assigned_to: [],
+      due_date: "",
+      priority: 'medium',
+    },
   });
-  const { toast } = useToast();
 
   useEffect(() => {
     fetchAssignments();
     fetchCourses();
     fetchQuizzes();
-    fetchManagers();
+    fetchUsers();
   }, []);
 
   const fetchAssignments = async () => {
@@ -84,8 +106,8 @@ const LearningAssignments: React.FC<LearningAssignmentsProps> = ({ onStatsUpdate
         .from('learning_assignments')
         .select(`
           *,
-          courses(title),
-          quizzes(title),
+          courses(id, title),
+          quizzes(id, title),
           managers!learning_assignments_assigned_by_fkey(first_name, last_name)
         `)
         .order('created_at', { ascending: false });
@@ -134,95 +156,74 @@ const LearningAssignments: React.FC<LearningAssignmentsProps> = ({ onStatsUpdate
     }
   };
 
-  const fetchManagers = async () => {
+  const fetchUsers = async () => {
     try {
+      // Fetch from onboarding_forms to get available users
       const { data, error } = await supabase
-        .from('managers')
-        .select('id, first_name, last_name')
-        .order('first_name');
+        .from('onboarding_forms')
+        .select('id, first_name, last_name, generated_email')
+        .eq('status', 'completed');
 
       if (error) throw error;
-      setManagers(data || []);
+      
+      // Transform to User format
+      const userData: User[] = (data || []).map(form => ({
+        id: form.id,
+        first_name: form.first_name,
+        last_name: form.last_name,
+        email: form.generated_email || '',
+      }));
+      
+      setUsers(userData);
     } catch (error) {
-      console.error('Error fetching managers:', error);
+      console.error('Error fetching users:', error);
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
+  const onSubmit = async (values: z.infer<typeof assignmentSchema>) => {
     try {
       const adminData = localStorage.getItem('admin_user');
       const managerId = adminData ? JSON.parse(adminData).id : null;
 
-      const submitData = {
-        assignment_type: formData.assignment_type,
-        course_id: formData.assignment_type === 'course' ? formData.course_id : null,
-        quiz_id: formData.assignment_type === 'quiz' ? formData.quiz_id : null,
-        assigned_to: formData.assigned_to,
-        assigned_by: managerId,
-        due_date: formData.due_date || null,
-        priority: formData.priority,
-      };
+      // Create assignments for each selected user
+      const assignmentPromises = values.assigned_to.map(userId => {
+        const submitData = {
+          assignment_type: values.assignment_type,
+          course_id: values.assignment_type === 'course' ? values.course_id : null,
+          quiz_id: values.assignment_type === 'quiz' ? values.quiz_id : null,
+          assigned_to: userId,
+          assigned_by: managerId,
+          due_date: values.due_date || null,
+          priority: values.priority,
+        };
 
-      if (editingAssignment) {
-        const { error } = await supabase
-          .from('learning_assignments')
-          .update(submitData)
-          .eq('id', editingAssignment.id);
+        return supabase.from('learning_assignments').insert([submitData]);
+      });
 
-        if (error) throw error;
+      const results = await Promise.all(assignmentPromises);
+      const errors = results.filter(result => result.error);
 
-        toast({
-          title: "Success",
-          description: "Assignment updated successfully",
-        });
-      } else {
-        const { error } = await supabase
-          .from('learning_assignments')
-          .insert([submitData]);
-
-        if (error) throw error;
-
-        toast({
-          title: "Success",
-          description: "Assignment created successfully",
-        });
+      if (errors.length > 0) {
+        throw new Error(`Failed to create ${errors.length} assignments`);
       }
 
-      setIsDialogOpen(false);
-      setEditingAssignment(null);
-      setFormData({
-        assignment_type: 'course',
-        course_id: '',
-        quiz_id: '',
-        assigned_to: '',
-        due_date: '',
-        priority: 'medium',
+      toast({
+        title: "Success",
+        description: `Created ${values.assigned_to.length} assignment${values.assigned_to.length > 1 ? 's' : ''} successfully`,
       });
+
+      setIsDialogOpen(false);
+      form.reset();
       fetchAssignments();
       onStatsUpdate?.();
     } catch (error) {
-      console.error('Error saving assignment:', error);
+      console.error('Error saving assignments:', error);
       toast({
         title: "Error",
-        description: "Failed to save assignment",
+        description: "Failed to save assignments",
         variant: "destructive",
       });
     }
-  };
-
-  const handleEdit = (assignment: LearningAssignment) => {
-    setEditingAssignment(assignment);
-    setFormData({
-      assignment_type: assignment.assignment_type,
-      course_id: assignment.courses ? 'course_id_here' : '', // Would need to get actual ID
-      quiz_id: assignment.quizzes ? 'quiz_id_here' : '', // Would need to get actual ID
-      assigned_to: assignment.assigned_to,
-      due_date: assignment.due_date ? assignment.due_date.split('T')[0] : '',
-      priority: assignment.priority,
-    });
-    setIsDialogOpen(true);
   };
 
   const handleDelete = async (assignmentId: string) => {
@@ -255,300 +256,424 @@ const LearningAssignments: React.FC<LearningAssignmentsProps> = ({ onStatsUpdate
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'completed': return 'bg-green-100 text-green-800';
-      case 'in_progress': return 'bg-blue-100 text-blue-800';
-      case 'assigned': return 'bg-gray-100 text-gray-800';
-      case 'overdue': return 'bg-red-100 text-red-800';
-      case 'needs_review': return 'bg-yellow-100 text-yellow-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'completed': return 'bg-success/10 text-success border-success/20';
+      case 'in_progress': return 'bg-primary/10 text-primary border-primary/20';
+      case 'assigned': return 'bg-muted text-muted-foreground border-border';
+      case 'overdue': return 'bg-destructive/10 text-destructive border-destructive/20';
+      case 'needs_review': return 'bg-warning/10 text-warning border-warning/20';
+      default: return 'bg-muted text-muted-foreground border-border';
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'urgent': return 'bg-red-100 text-red-800';
-      case 'high': return 'bg-orange-100 text-orange-800';
-      case 'medium': return 'bg-blue-100 text-blue-800';
-      case 'low': return 'bg-gray-100 text-gray-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'urgent': return 'bg-destructive/10 text-destructive border-destructive/20';
+      case 'high': return 'bg-warning/10 text-warning border-warning/20';
+      case 'medium': return 'bg-primary/10 text-primary border-primary/20';
+      case 'low': return 'bg-muted text-muted-foreground border-border';
+      default: return 'bg-muted text-muted-foreground border-border';
     }
   };
 
-  const formatDate = (dateString: string | null) => {
-    if (!dateString) return 'No due date';
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
+  const openDialog = () => {
+    setEditingAssignment(null);
+    form.reset();
+    setIsDialogOpen(true);
   };
 
   if (isLoading) {
     return (
-      <div className="text-center py-8">
-        <div className="rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-        <p className="mt-4 text-muted-foreground">Loading assignments...</p>
+      <div className="flex justify-center items-center h-48">
+        <div className="rounded-full h-8 w-8 border-b-2 border-primary animate-spin"></div>
+        <p className="ml-4 text-muted-foreground">Loading assignments...</p>
       </div>
     );
   }
 
   return (
-    <div className="h-full overflow-hidden p-4">
-      <div className="flex justify-between items-center mb-4">
-        <div>
-          <h3 className="text-lg font-semibold">Learning Assignments</h3>
-          <p className="text-sm text-muted-foreground">Assign courses and quizzes to team members</p>
+    <div className="space-y-6">
+      {/* Header Section */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+            <ClipboardList className="h-5 w-5 text-primary" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-foreground">Learning Assignments</h2>
+            <p className="text-sm text-muted-foreground">Assign courses and quizzes to team members</p>
+          </div>
         </div>
         
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button size="sm">
+            <Button onClick={openDialog} className="w-full sm:w-auto">
               <Plus className="h-4 w-4 mr-2" />
               New Assignment
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-xl">
+          
+          <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>
-                {editingAssignment ? 'Edit Assignment' : 'Create New Assignment'}
-              </DialogTitle>
+              <DialogTitle>{editingAssignment ? 'Edit Assignment' : 'Create New Assignment'}</DialogTitle>
               <DialogDescription>
-                {editingAssignment ? 'Update assignment details' : 'Assign learning content to team members'}
+                Assign learning content to multiple team members with due dates and priorities
               </DialogDescription>
             </DialogHeader>
             
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="assignment_type">Assignment Type</Label>
-                <Select
-                  value={formData.assignment_type}
-                  onValueChange={(value) => setFormData({ ...formData, assignment_type: value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select assignment type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="course">Course</SelectItem>
-                    <SelectItem value="quiz">Quiz</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <Tabs defaultValue="content" className="w-full">
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="content">Content Selection</TabsTrigger>
+                    <TabsTrigger value="assignment">Assignment Details</TabsTrigger>
+                  </TabsList>
+                  
+                  <TabsContent value="content" className="space-y-4 mt-4">
+                    <FormField
+                      control={form.control}
+                      name="assignment_type"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Assignment Type</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select assignment type" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="course">
+                                <div className="flex items-center gap-2">
+                                  <BookOpen className="h-4 w-4" />
+                                  Course
+                                </div>
+                              </SelectItem>
+                              <SelectItem value="quiz">
+                                <div className="flex items-center gap-2">
+                                  <Award className="h-4 w-4" />
+                                  Quiz
+                                </div>
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-              {formData.assignment_type === 'course' && (
-                <div className="space-y-2">
-                  <Label htmlFor="course">Course</Label>
-                  <Select
-                    value={formData.course_id}
-                    onValueChange={(value) => setFormData({ ...formData, course_id: value })}
-                    required
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select course" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {courses.map((course) => (
-                        <SelectItem key={course.id} value={course.id}>
-                          {course.title}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    {form.watch('assignment_type') === 'course' && (
+                      <FormField
+                        control={form.control}
+                        name="course_id"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Select Course</FormLabel>
+                            <Select onValueChange={field.onChange} value={field.value}>
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select course" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {courses.map((course) => (
+                                  <SelectItem key={course.id} value={course.id}>
+                                    {course.title}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    )}
+
+                    {form.watch('assignment_type') === 'quiz' && (
+                      <FormField
+                        control={form.control}
+                        name="quiz_id"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Select Quiz</FormLabel>
+                            <Select onValueChange={field.onChange} value={field.value}>
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select quiz" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {quizzes.map((quiz) => (
+                                  <SelectItem key={quiz.id} value={quiz.id}>
+                                    {quiz.title}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    )}
+                  </TabsContent>
+                  
+                  <TabsContent value="assignment" className="space-y-4 mt-4">
+                    <FormField
+                      control={form.control}
+                      name="assigned_to"
+                      render={() => (
+                        <FormItem>
+                          <div className="flex items-center justify-between mb-3">
+                            <FormLabel>Assign to Users</FormLabel>
+                            <div className="flex gap-2">
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={() => form.setValue('assigned_to', users.map(u => u.id))}
+                              >
+                                Select All
+                              </Button>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={() => form.setValue('assigned_to', [])}
+                              >
+                                Clear All
+                              </Button>
+                            </div>
+                          </div>
+                          
+                          <div className="grid grid-cols-1 gap-3 max-h-64 overflow-y-auto border border-border/30 rounded-lg p-4">
+                            {users.length === 0 ? (
+                              <div className="text-center py-8">
+                                <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                                <p className="text-muted-foreground">No completed onboarding users found</p>
+                                <p className="text-sm text-muted-foreground">Users must complete onboarding to receive assignments</p>
+                              </div>
+                            ) : (
+                              users.map((user) => (
+                                <FormField
+                                  key={user.id}
+                                  control={form.control}
+                                  name="assigned_to"
+                                  render={({ field }) => {
+                                    return (
+                                      <FormItem className="flex flex-row items-center space-x-3 space-y-0 p-3 border border-border/20 rounded-lg hover:bg-muted/30 transition-colors">
+                                        <FormControl>
+                                          <Checkbox
+                                            checked={field.value?.includes(user.id)}
+                                            onCheckedChange={(checked) => {
+                                              return checked
+                                                ? field.onChange([...(field.value || []), user.id])
+                                                : field.onChange(
+                                                    field.value?.filter(
+                                                      (value) => value !== user.id
+                                                    )
+                                                  )
+                                            }}
+                                          />
+                                        </FormControl>
+                                        <div className="flex items-center gap-3 flex-1">
+                                          <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center">
+                                            <User className="h-4 w-4 text-primary" />
+                                          </div>
+                                          <div>
+                                            <FormLabel className="text-sm font-medium cursor-pointer">
+                                              {user.first_name} {user.last_name}
+                                            </FormLabel>
+                                            <p className="text-xs text-muted-foreground">{user.email}</p>
+                                          </div>
+                                        </div>
+                                      </FormItem>
+                                    )
+                                  }}
+                                />
+                              ))
+                            )}
+                          </div>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="due_date"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Due Date (Optional)</FormLabel>
+                            <FormControl>
+                              <Input type="date" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="priority"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Priority</FormLabel>
+                            <Select onValueChange={field.onChange} value={field.value}>
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select priority" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="low">
+                                  <div className="flex items-center gap-2">
+                                    <div className="w-2 h-2 bg-muted rounded-full"></div>
+                                    Low Priority
+                                  </div>
+                                </SelectItem>
+                                <SelectItem value="medium">
+                                  <div className="flex items-center gap-2">
+                                    <div className="w-2 h-2 bg-primary rounded-full"></div>
+                                    Medium Priority
+                                  </div>
+                                </SelectItem>
+                                <SelectItem value="high">
+                                  <div className="flex items-center gap-2">
+                                    <div className="w-2 h-2 bg-warning rounded-full"></div>
+                                    High Priority
+                                  </div>
+                                </SelectItem>
+                                <SelectItem value="urgent">
+                                  <div className="flex items-center gap-2">
+                                    <div className="w-2 h-2 bg-destructive rounded-full animate-pulse"></div>
+                                    Urgent
+                                  </div>
+                                </SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </TabsContent>
+                </Tabs>
+                
+                <div className="flex justify-end space-x-2 pt-6 border-t">
+                  <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
+                    Cancel
+                  </Button>
+                  <Button type="submit">
+                    Create Assignment{form.watch('assigned_to')?.length > 1 ? 's' : ''}
+                  </Button>
                 </div>
-              )}
-
-              {formData.assignment_type === 'quiz' && (
-                <div className="space-y-2">
-                  <Label htmlFor="quiz">Quiz</Label>
-                  <Select
-                    value={formData.quiz_id}
-                    onValueChange={(value) => setFormData({ ...formData, quiz_id: value })}
-                    required
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select quiz" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {quizzes.map((quiz) => (
-                        <SelectItem key={quiz.id} value={quiz.id}>
-                          {quiz.title}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
-
-              <div className="space-y-2">
-                <Label htmlFor="assigned_to">Assign To (User ID)</Label>
-                <Input
-                  id="assigned_to"
-                  value={formData.assigned_to}
-                  onChange={(e) => setFormData({ ...formData, assigned_to: e.target.value })}
-                  placeholder="Enter user ID"
-                  required
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="due_date">Due Date</Label>
-                  <Input
-                    id="due_date"
-                    type="date"
-                    value={formData.due_date}
-                    onChange={(e) => setFormData({ ...formData, due_date: e.target.value })}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="priority">Priority</Label>
-                  <Select
-                    value={formData.priority}
-                    onValueChange={(value) => setFormData({ ...formData, priority: value })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select priority" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="low">Low</SelectItem>
-                      <SelectItem value="medium">Medium</SelectItem>
-                      <SelectItem value="high">High</SelectItem>
-                      <SelectItem value="urgent">Urgent</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              
-              <div className="flex justify-end gap-2 pt-4">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => {
-                    setIsDialogOpen(false);
-                    setEditingAssignment(null);
-                    setFormData({
-                      assignment_type: 'course',
-                      course_id: '',
-                      quiz_id: '',
-                      assigned_to: '',
-                      due_date: '',
-                      priority: 'medium',
-                    });
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button type="submit">
-                  {editingAssignment ? 'Update Assignment' : 'Create Assignment'}
-                </Button>
-              </div>
-            </form>
+              </form>
+            </Form>
           </DialogContent>
         </Dialog>
       </div>
 
       {/* Assignments Grid */}
-      <div className="h-full overflow-y-auto">
-        {assignments.length === 0 ? (
-          <div className="text-center py-12">
-            <ClipboardList className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-500 mb-4">No assignments found</p>
-            <Button onClick={() => setIsDialogOpen(true)}>
-              <Plus className="h-4 w-4 mr-2" />
-              Create Your First Assignment
-            </Button>
+      {assignments.length === 0 ? (
+        <div className="text-center py-12">
+          <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <ClipboardList className="h-8 w-8 text-primary" />
           </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-4">
-            {assignments.map((assignment) => (
-              <Card key={assignment.id} className="hover:shadow-lg transition-all duration-200 border border-orange-200 bg-orange-50">
-                <CardHeader className="pb-3">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center">
-                        {assignment.assignment_type === 'course' ? (
-                          <BookOpen className="h-4 w-4 text-white" />
-                        ) : (
-                          <Award className="h-4 w-4 text-white" />
-                        )}
+          <h3 className="text-lg font-semibold text-foreground mb-2">No assignments found</h3>
+          <p className="text-muted-foreground mb-6">Start assigning learning content to your team</p>
+          <Button onClick={openDialog} size="lg">
+            <Plus className="h-4 w-4 mr-2" />
+            Create Your First Assignment
+          </Button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {assignments.map((assignment) => {
+            // Find the assigned user
+            const assignedUser = users.find(u => u.id === assignment.assigned_to);
+            
+            return (
+              <Card key={assignment.id} className="bg-gradient-card shadow-soft hover:shadow-glow transition-all duration-300 border-border/20 backdrop-blur-sm">
+                <CardHeader className="pb-4">
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="w-8 h-8 bg-primary/20 rounded-lg flex items-center justify-center">
+                          {assignment.assignment_type === 'course' ? (
+                            <BookOpen className="h-4 w-4 text-primary" />
+                          ) : (
+                            <Award className="h-4 w-4 text-primary" />
+                          )}
+                        </div>
+                        <Badge className={`text-xs ${getStatusColor(assignment.status)}`}>
+                          {assignment.status.replace('_', ' ')}
+                        </Badge>
                       </div>
-                      <div className="min-w-0 flex-1">
-                        <CardTitle className="text-sm font-semibold leading-tight">
-                          {assignment.assignment_type === 'course' 
-                            ? assignment.courses?.title 
-                            : assignment.quizzes?.title
-                          }
-                        </CardTitle>
-                        <p className="text-xs text-orange-600 mt-1 capitalize">
-                          {assignment.assignment_type}
-                        </p>
+                      
+                      <CardTitle className="text-lg font-semibold text-foreground mb-2">
+                        {assignment.assignment_type === 'course' 
+                          ? assignment.courses?.title 
+                          : assignment.quizzes?.title
+                        }
+                      </CardTitle>
+                      
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <User className="h-4 w-4" />
+                        <span>
+                          {assignedUser ? `${assignedUser.first_name} ${assignedUser.last_name}` : 'Unknown User'}
+                        </span>
                       </div>
                     </div>
-                    <div className="flex flex-col gap-1 ml-2">
-                      <Badge className={`text-xs ${getStatusColor(assignment.status)}`}>
-                        {assignment.status.replace('_', ' ')}
-                      </Badge>
-                      <Badge className={`text-xs ${getPriorityColor(assignment.priority)}`}>
-                        {assignment.priority}
-                      </Badge>
-                    </div>
+                    
+                    <Badge className={`text-xs ${getPriorityColor(assignment.priority)}`}>
+                      {assignment.priority}
+                    </Badge>
                   </div>
                 </CardHeader>
                 
-                <CardContent className="space-y-3">
-                  <div className="bg-white rounded-lg p-3">
-                    <div className="flex items-center gap-2 mb-2">
-                      <User className="h-4 w-4 text-gray-600" />
-                      <span className="text-sm font-medium text-gray-900">Assignment Details</span>
-                    </div>
-                    <div className="space-y-1 text-xs text-gray-600">
-                      <div>Assigned to: {assignment.assigned_to.slice(0, 8)}...</div>
-                      <div>Assigned by: {assignment.managers?.first_name} {assignment.managers?.last_name}</div>
-                      <div className="flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
-                        Due: {formatDate(assignment.due_date)}
-                      </div>
-                    </div>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center gap-2 text-sm">
+                    <Calendar className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-muted-foreground">
+                      Due: {assignment.due_date 
+                        ? new Date(assignment.due_date).toLocaleDateString()
+                        : 'No due date'
+                      }
+                    </span>
+                  </div>
+                  
+                  <div className="flex items-center gap-2 text-sm">
+                    <Target className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-muted-foreground capitalize">
+                      {assignment.assignment_type} Assignment
+                    </span>
                   </div>
                   
                   {assignment.completion_notes && (
-                    <div className="bg-blue-50 rounded-lg p-2">
-                      <div className="text-xs font-medium text-blue-900 mb-1">Notes:</div>
-                      <div className="text-xs text-blue-700">
-                        {assignment.completion_notes.length > 80 
-                          ? `${assignment.completion_notes.substring(0, 80)}...`
-                          : assignment.completion_notes
-                        }
-                      </div>
+                    <div className="p-3 bg-muted/30 rounded-lg">
+                      <p className="text-sm text-muted-foreground">
+                        <strong>Notes:</strong> {assignment.completion_notes}
+                      </p>
                     </div>
                   )}
                   
                   <div className="flex gap-2 pt-2">
                     <Button
-                      size="sm"
                       variant="outline"
-                      onClick={() => handleEdit(assignment)}
-                      className="flex-1 hover:bg-orange-50 hover:border-orange-200"
-                    >
-                      <Edit className="h-3 w-3 mr-1" />
-                      Edit
-                    </Button>
-                    <Button
                       size="sm"
-                      variant="outline"
                       onClick={() => handleDelete(assignment.id)}
-                      className="flex-1 hover:bg-red-50 hover:border-red-200"
+                      className="flex-1 hover:bg-destructive/10 hover:border-destructive/20 hover:text-destructive"
                     >
                       <Trash2 className="h-3 w-3 mr-1" />
-                      Delete
+                      Remove
                     </Button>
                   </div>
                 </CardContent>
               </Card>
-            ))}
-          </div>
-        )}
-      </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };
