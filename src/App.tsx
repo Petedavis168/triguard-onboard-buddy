@@ -32,11 +32,11 @@ const App = () => {
           <Route path="/admin-login" element={<AdminLogin />} />
           <Route path="/admin-password-change" element={<AdminPasswordChange />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/user-dashboard" element={<UserDashboard />} />
           <Route path="/manager-login" element={<ManagerLogin />} />
           <Route path="/manager-password-change" element={<ManagerPasswordChange />} />
           <Route path="/manager-dashboard" element={<ManagerDashboard />} />
           <Route path="/user-login" element={<UserLogin />} />
-          <Route path="/user-dashboard" element={<UserDashboard />} />
           <Route path="/recruiting" element={<RecruitingDashboard />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
