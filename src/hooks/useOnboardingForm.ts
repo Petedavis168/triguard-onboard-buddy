@@ -487,13 +487,41 @@ export const useOnboardingForm = (formId?: string) => {
     
     if (isValid) {
       const formData = form.getValues();
-      const saveResult = await saveFormData(formData, currentStep + 1);
-      if (saveResult.success) {
-        setCurrentStep(prev => Math.min(prev + 1, 11));
+      
+      // Show verification toast with entered data
+      const stepData = getStepDataSummary(currentStep, formData);
+      if (stepData) {
         toast({
-          title: "Progress Saved",
-          description: `Step ${currentStep} completed. Moving to step ${currentStep + 1}.`,
+          title: "Saving your information...",
+          description: stepData,
+          duration: 2000,
         });
+      }
+      
+      // Add loading state and delay to let users see their entered data
+      setIsLoading(true);
+      
+      try {
+        // Add a delay to show the verification
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        const saveResult = await saveFormData(formData, currentStep + 1);
+        if (saveResult.success) {
+          setCurrentStep(prev => Math.min(prev + 1, 11));
+          toast({
+            title: "Information Saved Successfully!",
+            description: `Step ${currentStep} completed. Moving to step ${currentStep + 1}.`,
+            duration: 1500,
+          });
+        } else {
+          toast({
+            title: "Error Saving Data",
+            description: "Failed to save your progress. Please try again.",
+            variant: "destructive",
+          });
+        }
+      } finally {
+        setIsLoading(false);
       }
     } else {
       toast({
@@ -535,6 +563,24 @@ export const useOnboardingForm = (formId?: string) => {
         return []; // Review step
       default:
         return [];
+    }
+  };
+
+  // Helper function to get a summary of entered data for verification
+  const getStepDataSummary = (step: number, formData: any): string => {
+    switch (step) {
+      case 1:
+        return `Name: ${formData.first_name} ${formData.last_name}, Phone: ${formData.cell_phone}, Email: ${formData.personal_email}`;
+      case 2:
+        return `Address: ${formData.street_address}, ${formData.city}, ${formData.state} ${formData.zip_code}`;
+      case 3:
+        return `Sizes - Shirt: ${formData.shirt_size}, Coat: ${formData.coat_size}, Pants: ${formData.pant_size}`;
+      case 5:
+        return `Team assignment and manager information saved`;
+      case 6:
+        return `W-9 completion status updated`;
+      default:
+        return "Information saved successfully";
     }
   };
 
