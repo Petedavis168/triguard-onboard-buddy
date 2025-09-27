@@ -186,17 +186,6 @@ export function AdminSidebar({ activeTab, onTabChange }: AdminSidebarProps) {
               {!isCollapsed && <span className="ml-2 text-muted-foreground">Back to Home</span>}
             </Button>
           </Link>
-          <Button 
-            variant="ghost" 
-            size="sm"
-            onClick={handleLogout}
-            className={`w-full justify-start text-sm font-medium hover:bg-destructive/10 hover:text-destructive transition-all duration-200 ${
-              isCollapsed ? 'justify-center px-2' : 'px-3'
-            }`}
-          >
-            <LogOut className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
-            {!isCollapsed && <span className="ml-2 text-muted-foreground">Logout</span>}
-          </Button>
         </div>
       </SidebarFooter>
     </Sidebar>

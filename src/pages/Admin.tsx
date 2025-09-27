@@ -451,7 +451,7 @@ export const Admin: React.FC = () => {
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <SidebarTrigger className="lg:hidden p-2 hover:bg-muted/50 rounded-lg transition-colors" />
+                  <SidebarTrigger className="p-2 hover:bg-muted/50 rounded-lg transition-colors" />
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-gradient-primary rounded-xl flex items-center justify-center shadow-lg">
                       <span className="text-lg font-bold text-primary-foreground">TR</span>
@@ -466,19 +466,10 @@ export const Admin: React.FC = () => {
                 </div>
                 
                 <div className="flex items-center gap-3">
-                  <SidebarTrigger className="hidden lg:flex p-2 hover:bg-muted/50 rounded-lg transition-colors" />
                   <div className="hidden sm:flex items-center gap-2 px-3 py-2 bg-muted/30 rounded-lg">
                     <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
                     <span className="text-sm text-muted-foreground">System Online</span>
                   </div>
-                  <Button 
-                    variant="outline" 
-                    onClick={handleLogout} 
-                    className="flex items-center gap-2 px-4 py-2 hover:bg-destructive/10 hover:border-destructive/20 hover:text-destructive transition-all duration-200"
-                  >
-                    <LogOut className="h-4 w-4" />
-                    <span className="hidden sm:inline">Logout</span>
-                  </Button>
                 </div>
               </div>
             </div>
