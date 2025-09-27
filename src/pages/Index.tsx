@@ -65,20 +65,20 @@ const Index = () => {
 
             {/* Primary CTA */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
-              <Link to="/onboarding">
-                <Button size="lg" className="bg-gradient-primary hover:opacity-90 text-primary-foreground shadow-glow px-8 py-6 text-lg font-semibold">
+              <Button size="lg" className="bg-gradient-primary hover:opacity-90 text-primary-foreground shadow-glow px-8 py-6 text-lg font-semibold" asChild>
+                <Link to="/onboarding">
                   <FileText className="h-5 w-5 mr-2" />
                   Start Onboarding
                   <ArrowRight className="h-5 w-5 ml-2" />
-                </Button>
-              </Link>
+                </Link>
+              </Button>
               
-              <Link to="/user-login">
-                <Button variant="outline" size="lg" className="border-primary/20 hover:border-primary/40 hover:bg-primary/5 px-8 py-6 text-lg">
+              <Button variant="outline" size="lg" className="border-primary/20 hover:border-primary/40 hover:bg-primary/5 px-8 py-6 text-lg" asChild>
+                <Link to="/user-login">
                   <UserCheck className="h-5 w-5 mr-2" />
                   Employee Login
-                </Button>
-              </Link>
+                </Link>
+              </Button>
             </div>
 
             {/* Trust Indicators */}
