@@ -72,9 +72,20 @@ const Index = () => {
               <Button 
                 size="lg"
                 className="flex items-center gap-3 text-lg px-8 py-4 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1"
-                onClick={() => {
-                  console.log('Onboarding button clicked - using navigate');
-                  navigate('/onboarding');
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  console.log('Onboarding button clicked!');
+                  console.log('Navigate function:', typeof navigate, navigate);
+                  console.log('About to navigate to /onboarding');
+                  try {
+                    navigate('/onboarding');
+                    console.log('Navigate completed');
+                  } catch (error) {
+                    console.error('Navigate error:', error);
+                    // Fallback to window.location
+                    window.location.href = '/onboarding';
+                  }
                 }}
               >
                 <FileText className="h-5 w-5" />
@@ -86,9 +97,17 @@ const Index = () => {
                 variant="outline"
                 size="lg"
                 className="flex items-center gap-3 text-lg px-8 py-4 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1"
-                onClick={() => {
-                  console.log('Employee Login button clicked - using navigate');
-                  navigate('/user-login');
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  console.log('Employee Login button clicked!');
+                  try {
+                    navigate('/user-login');
+                    console.log('User login navigate completed');
+                  } catch (error) {
+                    console.error('User login navigate error:', error);
+                    window.location.href = '/user-login';
+                  }
                 }}
               >
                 <UserCheck className="h-5 w-5" />
