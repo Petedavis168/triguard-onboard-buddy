@@ -22,6 +22,8 @@ import {
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
+import ProfileEditDialog from '@/components/user/ProfileEditDialog';
 
 interface UserProgress {
   onboarding_status: 'completed' | 'in_progress' | 'not_started';
@@ -54,7 +56,9 @@ interface Activity {
 const UserDashboard = () => {
   const [userProgress, setUserProgress] = useState<UserProgress | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchUserProgress();
@@ -146,6 +150,59 @@ const UserDashboard = () => {
     }
   };
 
+  const handleContinueOnboarding = () => {
+    // Navigate to onboarding form
+    navigate('/onboarding');
+  };
+
+  const handleStartAssignment = (assignment: Assignment) => {
+    toast({
+      title: "Starting Assignment",
+      description: `Loading ${assignment.title}...`,
+    });
+    
+    // Here you would typically navigate to the specific course/quiz/task
+    // For now, we'll just show a message
+    if (assignment.type === 'course') {
+      // navigate(`/course/${assignment.id}`);
+    } else if (assignment.type === 'quiz') {
+      // navigate(`/quiz/${assignment.id}`);
+    } else {
+      // Handle task completion
+    }
+  };
+
+  const handleQuickAction = (action: string) => {
+    switch (action) {
+      case 'courses':
+        toast({
+          title: "Browse Courses",
+          description: "Loading course catalog...",
+        });
+        // navigate('/courses');
+        break;
+      case 'quiz':
+        toast({
+          title: "Take Quiz",
+          description: "Loading available quizzes...",
+        });
+        // navigate('/quizzes');
+        break;
+      case 'certificates':
+        toast({
+          title: "View Certificates",
+          description: "Loading your certificates...",
+        });
+        // navigate('/certificates');
+        break;
+      case 'profile':
+        setIsProfileDialogOpen(true);
+        break;
+      default:
+        break;
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -172,7 +229,7 @@ const UserDashboard = () => {
                 <Trophy className="h-4 w-4 mr-2 text-yellow-500" />
                 Level 2 Roofer
               </Badge>
-              <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700">
+              <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700" onClick={() => handleQuickAction('courses')}>
                 <Play className="h-4 w-4 mr-2" />
                 Continue Learning
               </Button>
@@ -205,7 +262,7 @@ const UserDashboard = () => {
                   className="bg-orange-200 [&>div]:bg-gradient-to-r [&>div]:from-orange-500 [&>div]:to-yellow-500"
                 />
               </div>
-              <Button variant="outline" className="border-orange-300 text-orange-700 hover:bg-orange-100">
+              <Button variant="outline" className="border-orange-300 text-orange-700 hover:bg-orange-100" onClick={handleContinueOnboarding}>
                 <ArrowRight className="h-4 w-4 mr-2" />
                 Continue Onboarding
               </Button>
@@ -312,7 +369,7 @@ const UserDashboard = () => {
                         {assignment.priority}
                       </Badge>
                     </div>
-                    <Button size="sm" className="w-full">
+                    <Button size="sm" className="w-full" onClick={() => handleStartAssignment(assignment)}>
                       <Play className="h-4 w-4 mr-2" />
                       Start {assignment.type === 'course' ? 'Course' : assignment.type === 'quiz' ? 'Quiz' : 'Task'}
                     </Button>
@@ -364,19 +421,19 @@ const UserDashboard = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Button className="w-full justify-start" variant="outline">
+                <Button className="w-full justify-start" variant="outline" onClick={() => handleQuickAction('courses')}>
                   <BookOpen className="h-4 w-4 mr-2" />
                   Browse Courses
                 </Button>
-                <Button className="w-full justify-start" variant="outline">
+                <Button className="w-full justify-start" variant="outline" onClick={() => handleQuickAction('quiz')}>
                   <FileText className="h-4 w-4 mr-2" />
                   Take a Quiz
                 </Button>
-                <Button className="w-full justify-start" variant="outline">
+                <Button className="w-full justify-start" variant="outline" onClick={() => handleQuickAction('certificates')}>
                   <Trophy className="h-4 w-4 mr-2" />
                   View Certificates
                 </Button>
-                <Button className="w-full justify-start" variant="outline">
+                <Button className="w-full justify-start" variant="outline" onClick={() => handleQuickAction('profile')}>
                   <User className="h-4 w-4 mr-2" />
                   Update Profile
                 </Button>
@@ -418,6 +475,12 @@ const UserDashboard = () => {
             </Card>
           </div>
         </div>
+
+        {/* Profile Edit Dialog */}
+        <ProfileEditDialog 
+          isOpen={isProfileDialogOpen} 
+          onClose={() => setIsProfileDialogOpen(false)} 
+        />
       </div>
     </div>
   );
