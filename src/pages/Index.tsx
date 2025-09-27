@@ -72,10 +72,16 @@ const Index = () => {
               <div>
                 <button 
                   type="button"
-                  className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1 flex items-center gap-3 text-lg"
-                  onClick={() => {
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1 flex items-center gap-3 text-lg cursor-pointer z-10 relative"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
                     console.log('Onboarding button clicked!');
+                    console.log('About to navigate to /onboarding');
                     window.location.href = '/onboarding';
+                  }}
+                  onMouseDown={(e) => {
+                    console.log('Button mouse down event');
                   }}
                 >
                   <FileText className="h-5 w-5" />
