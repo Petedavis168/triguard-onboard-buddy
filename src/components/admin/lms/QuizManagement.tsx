@@ -140,13 +140,13 @@ const QuizManagement: React.FC<QuizManagementProps> = ({ onStatsUpdate }) => {
 
   const onSubmit = async (values: z.infer<typeof quizSchema>) => {
     try {
-      const adminData = localStorage.getItem('admin_user');
-      const managerId = adminData ? JSON.parse(adminData).id : null;
-
+      // Get admin user data from localStorage - fix the key
+      const adminEmail = localStorage.getItem('adminEmail');
+      
       const submitData = {
         ...values,
         course_id: values.course_id || null,
-        created_by: managerId,
+        created_by: null, // Will be set by RLS policies
         is_active: true,
       };
 
@@ -177,14 +177,26 @@ const QuizManagement: React.FC<QuizManagementProps> = ({ onStatsUpdate }) => {
 
       setIsDialogOpen(false);
       setEditingQuiz(null);
-      form.reset();
+      form.reset({
+        title: "",
+        description: "",
+        instructions: "",
+        course_id: "",
+        time_limit_minutes: 30,
+        passing_score: 70,
+        max_attempts: 3,
+        video_url: "",
+        intro_video_url: "",
+        requires_recording: false,
+        recording_instructions: "",
+      });
       fetchQuizzes();
       onStatsUpdate?.();
     } catch (error) {
       console.error('Error saving quiz:', error);
       toast({
         title: "Error",
-        description: "Failed to save quiz",
+        description: "Failed to save quiz. Please try again.",
         variant: "destructive",
       });
     }
@@ -238,7 +250,20 @@ const QuizManagement: React.FC<QuizManagementProps> = ({ onStatsUpdate }) => {
 
   const openDialog = () => {
     setEditingQuiz(null);
-    form.reset();
+    form.reset({
+      title: "",
+      description: "",
+      instructions: "",
+      course_id: "",
+      time_limit_minutes: 30,
+      passing_score: 70,
+      max_attempts: 3,
+      video_url: "",
+      intro_video_url: "",
+      requires_recording: false,
+      recording_instructions: "",
+    });
+    setActiveTab('basic');
     setIsDialogOpen(true);
   };
 
