@@ -409,57 +409,57 @@ const EmployeeProfileManagement = () => {
     <div className="space-y-4 sm:space-y-6">
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
-        <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20 hover:shadow-md transition-shadow">
+        <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20 hover:shadow-lg transition-all duration-200">
           <CardContent className="p-4 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-2xl sm:text-3xl font-bold text-primary">{stats.total}</p>
-                <p className="text-sm sm:text-base text-muted-foreground">Total Reps</p>
+                <p className="text-sm sm:text-base text-muted-foreground font-medium">Total Reps</p>
               </div>
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/20 rounded-lg flex items-center justify-center">
-                <Users className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
+              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-primary/20 rounded-xl flex items-center justify-center">
+                <Users className="h-6 w-6 sm:h-7 sm:w-7 text-primary" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-success/10 to-success/5 border-success/20 hover:shadow-md transition-shadow">
+        <Card className="bg-gradient-to-br from-green-500/10 to-green-500/5 border-green-500/20 hover:shadow-lg transition-all duration-200">
           <CardContent className="p-4 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-2xl sm:text-3xl font-bold text-success">{stats.active}</p>
-                <p className="text-sm sm:text-base text-muted-foreground">Active</p>
+                <p className="text-2xl sm:text-3xl font-bold text-green-600">{stats.active}</p>
+                <p className="text-sm sm:text-base text-muted-foreground font-medium">Active</p>
               </div>
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-success/20 rounded-lg flex items-center justify-center">
-                <CheckCircle className="h-5 w-5 sm:h-6 sm:w-6 text-success" />
+              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-green-500/20 rounded-xl flex items-center justify-center">
+                <CheckCircle className="h-6 w-6 sm:h-7 sm:w-7 text-green-600" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-muted/50 to-muted/25 border-muted/40 hover:shadow-md transition-shadow">
+        <Card className="bg-gradient-to-br from-orange-500/10 to-orange-500/5 border-orange-500/20 hover:shadow-lg transition-all duration-200">
           <CardContent className="p-4 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-2xl sm:text-3xl font-bold text-muted-foreground">{stats.inactive}</p>
-                <p className="text-sm sm:text-base text-muted-foreground">Inactive</p>
+                <p className="text-2xl sm:text-3xl font-bold text-orange-600">{stats.inactive}</p>
+                <p className="text-sm sm:text-base text-muted-foreground font-medium">Inactive</p>
               </div>
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-muted/40 rounded-lg flex items-center justify-center">
-                <AlertCircle className="h-5 w-5 sm:h-6 sm:w-6 text-muted-foreground" />
+              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-orange-500/20 rounded-xl flex items-center justify-center">
+                <AlertCircle className="h-6 w-6 sm:h-7 sm:w-7 text-orange-600" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-blue-500/10 to-blue-500/5 border-blue-500/20 hover:shadow-md transition-shadow">
+        <Card className="bg-gradient-to-br from-blue-500/10 to-blue-500/5 border-blue-500/20 hover:shadow-lg transition-all duration-200">
           <CardContent className="p-4 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-2xl sm:text-3xl font-bold text-blue-600">{stats.recentlyAdded}</p>
-                <p className="text-sm sm:text-base text-muted-foreground">New This Week</p>
+                <p className="text-sm sm:text-base text-muted-foreground font-medium">New This Week</p>
               </div>
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
-                <UserCheck className="h-5 w-5 sm:h-6 sm:w-6 text-blue-500" />
+              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-blue-500/20 rounded-xl flex items-center justify-center">
+                <UserCheck className="h-6 w-6 sm:h-7 sm:w-7 text-blue-600" />
               </div>
             </div>
           </CardContent>
@@ -474,14 +474,15 @@ const EmployeeProfileManagement = () => {
               <CardTitle className="text-lg sm:text-xl">Rep Profiles</CardTitle>
               <CardDescription className="text-sm">Manage rep information and photos</CardDescription>
             </div>
-            <div className="flex flex-col sm:flex-row gap-2">
+            <div className="flex flex-col sm:flex-row gap-3">
               <Button 
                 onClick={syncWithOnboardingForms}
                 variant="outline" 
-                className="w-full sm:w-auto"
+                className="w-full sm:w-auto bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200"
+                disabled={isLoading}
               >
                 <FileText className="h-4 w-4 mr-2" />
-                Sync From Onboarding
+                {isLoading ? 'Syncing...' : 'Sync From Onboarding'}
               </Button>
               <Button onClick={openDialog} className="w-full sm:w-auto">
                 <Plus className="h-4 w-4 mr-2" />
@@ -735,10 +736,26 @@ interface ProfileGridProps {
 const ProfileGrid: React.FC<ProfileGridProps> = ({ profiles, onEdit, onToggleStatus }) => {
   if (profiles.length === 0) {
     return (
-      <div className="text-center py-12">
-        <User className="mx-auto h-16 w-16 text-muted-foreground mb-4" />
-        <h3 className="text-lg font-semibold text-muted-foreground mb-2">No reps found</h3>
-        <p className="text-sm text-muted-foreground">Try adjusting your search or filters</p>
+      <div className="text-center py-16">
+        <div className="max-w-md mx-auto">
+          <div className="w-24 h-24 mx-auto mb-6 bg-primary/10 rounded-full flex items-center justify-center">
+            <Users className="h-12 w-12 text-primary" />
+          </div>
+          <h3 className="text-xl font-semibold text-foreground mb-3">No reps found</h3>
+          <p className="text-muted-foreground mb-6">
+            No rep profiles have been created yet. Click "Sync From Onboarding" to import profiles from submitted onboarding forms, or add reps manually.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Button variant="default" className="flex items-center gap-2">
+              <FileText className="h-4 w-4" />
+              Sync From Onboarding
+            </Button>
+            <Button variant="outline" className="flex items-center gap-2">
+              <Plus className="h-4 w-4" />
+              Add Rep Manually
+            </Button>
+          </div>
+        </div>
       </div>
     );
   }
@@ -780,114 +797,123 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ profile, onEdit, onToggleStat
   };
 
   return (
-    <Card className={`group hover:shadow-lg transition-all duration-200 ${getStatusColor(profile.is_active)}`}>
-      <CardHeader className="pb-3">
-        <div className="flex items-start justify-between mb-3">
-          <div className="flex items-center gap-3">
+    <Card className={`group hover:shadow-lg transition-all duration-300 ${getStatusColor(profile.is_active)} border-2`}>
+      <CardHeader className="pb-4">
+        <div className="flex items-start justify-between">
+          <div className="flex items-center gap-4">
             <div className="relative">
               {profile.profile_photo_url ? (
                 <img
                   src={profile.profile_photo_url}
                   alt={`${profile.first_name} ${profile.last_name}`}
-                  className="w-12 h-12 rounded-full object-cover border-2 border-border"
+                  className="w-16 h-16 rounded-full object-cover border-4 border-background shadow-lg"
                 />
               ) : (
-                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center border-2 border-border">
-                  <User className="h-6 w-6 text-primary" />
+                <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center border-4 border-background shadow-lg">
+                  <User className="h-8 w-8 text-primary" />
                 </div>
               )}
-              <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-background ${
-                profile.is_active ? 'bg-success' : 'bg-muted-foreground'
+              <div className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-3 border-background shadow-md ${
+                profile.is_active ? 'bg-green-500' : 'bg-orange-500'
               }`}></div>
             </div>
             <div className="min-w-0 flex-1">
-              <h3 className="font-semibold text-foreground truncate">
+              <h3 className="text-lg font-bold text-foreground truncate mb-2">
                 {profile.first_name} {profile.last_name}
               </h3>
-              <div className="flex items-center gap-1 mt-1">
-                <IdCard className="h-3 w-3 text-primary" />
-                <span className="text-sm font-mono text-primary/80 font-medium">
-                  Rep ID: {profile.employee_id}
+              <div className="flex items-center gap-2 mb-1">
+                <IdCard className="h-4 w-4 text-primary" />
+                <span className="text-sm font-mono text-primary font-semibold bg-primary/10 px-2 py-1 rounded-md">
+                  {profile.employee_id}
                 </span>
               </div>
               {profile.onboarding_form_id && (
-                <Badge variant="outline" className="text-xs mt-1">
+                <Badge variant="secondary" className="text-xs">
+                  <FileText className="h-3 w-3 mr-1" />
                   From Onboarding
                 </Badge>
               )}
             </div>
           </div>
-          <Badge variant={profile.is_active ? "default" : "secondary"} className="text-xs">
+          <Badge 
+            variant={profile.is_active ? "default" : "secondary"} 
+            className={`text-sm px-3 py-1 font-medium ${
+              profile.is_active 
+                ? 'bg-green-100 text-green-800 border-green-200' 
+                : 'bg-orange-100 text-orange-800 border-orange-200'
+            }`}
+          >
             {profile.is_active ? "Active" : "Inactive"}
           </Badge>
         </div>
       </CardHeader>
       
-      <CardContent className="space-y-3">
-        {/* Email */}
-        <div className="flex items-center gap-2">
-          <Mail className="h-4 w-4 text-blue-500 flex-shrink-0" />
-          {profile.email ? (
-            <span className="text-sm text-foreground truncate">{profile.email}</span>
-          ) : (
-            <span className="text-sm text-muted-foreground">No email</span>
-          )}
-        </div>
-
-        {/* Phone */}
-        <div className="flex items-center gap-2">
-          <Phone className="h-4 w-4 text-green-500 flex-shrink-0" />
-          {profile.phone ? (
-            <span className="text-sm text-foreground">{profile.phone}</span>
-          ) : (
-            <span className="text-sm text-muted-foreground">No phone</span>
-          )}
-        </div>
-
-        {/* Position */}
-        <div className="flex items-center gap-2">
-          <Building className="h-4 w-4 text-purple-500 flex-shrink-0" />
-          {profile.position ? (
-            <span className="text-sm text-foreground truncate">{profile.position}</span>
-          ) : (
-            <span className="text-sm text-muted-foreground">No position</span>
-          )}
-        </div>
-
-        {/* Department & Team */}
-        {(profile.department || profile.team) && (
-          <div className="flex items-center gap-2">
-            <Users className="h-4 w-4 text-orange-500 flex-shrink-0" />
-            <span className="text-sm text-foreground truncate">
-              {[profile.department, profile.team].filter(Boolean).join(' • ')}
-            </span>
+      <CardContent className="space-y-4">
+        {/* Contact Information */}
+        <div className="grid grid-cols-1 gap-3">
+          <div className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg">
+            <Mail className="h-5 w-5 text-blue-600 flex-shrink-0" />
+            {profile.email ? (
+              <span className="text-sm text-foreground font-medium truncate">{profile.email}</span>
+            ) : (
+              <span className="text-sm text-muted-foreground italic">No email provided</span>
+            )}
           </div>
-        )}
+
+          <div className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg">
+            <Phone className="h-5 w-5 text-green-600 flex-shrink-0" />
+            {profile.phone ? (
+              <span className="text-sm text-foreground font-medium">{profile.phone}</span>
+            ) : (
+              <span className="text-sm text-muted-foreground italic">No phone provided</span>
+            )}
+          </div>
+
+          {profile.position && (
+            <div className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg">
+              <Building className="h-5 w-5 text-purple-600 flex-shrink-0" />
+              <span className="text-sm text-foreground font-medium truncate">{profile.position}</span>
+            </div>
+          )}
+
+          {(profile.department || profile.team) && (
+            <div className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg">
+              <Users className="h-5 w-5 text-orange-600 flex-shrink-0" />
+              <span className="text-sm text-foreground font-medium truncate">
+                {[profile.department, profile.team].filter(Boolean).join(' • ')}
+              </span>
+            </div>
+          )}
+        </div>
 
         {/* Hire Date */}
-        <div className="flex items-center gap-2 pt-2 border-t border-border/40">
-          <Calendar className="h-3 w-3 text-muted-foreground" />
-          <span className="text-xs text-muted-foreground">
+        <div className="flex items-center gap-3 pt-2 border-t border-border/50">
+          <Calendar className="h-4 w-4 text-muted-foreground" />
+          <span className="text-xs text-muted-foreground font-medium">
             Hired: {formatDate(profile.hire_date)}
           </span>
         </div>
 
         {/* Action Buttons */}
-        <div className="flex gap-2 pt-3">
+        <div className="flex gap-3 pt-2">
           <Button
             onClick={() => onEdit(profile)}
             variant="outline"
             size="sm"
-            className="flex-1"
+            className="flex-1 hover:bg-primary hover:text-primary-foreground transition-colors"
           >
-            <Edit className="h-4 w-4 mr-1" />
-            Edit
+            <Edit className="h-4 w-4 mr-2" />
+            Edit Profile
           </Button>
           <Button
             onClick={() => onToggleStatus(profile)}
             variant={profile.is_active ? "outline" : "default"}
             size="sm"
-            className="flex-1"
+            className={`flex-1 transition-colors ${
+              profile.is_active 
+                ? "hover:bg-orange-500 hover:text-white border-orange-500 text-orange-600" 
+                : "hover:bg-green-600 bg-green-500"
+            }`}
           >
             {profile.is_active ? 'Deactivate' : 'Activate'}
           </Button>
