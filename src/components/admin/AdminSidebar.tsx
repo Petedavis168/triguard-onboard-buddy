@@ -1,18 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { 
-  FileText, 
-  Settings, 
-  UserCheck, 
-  UserPlus, 
-  Building, 
-  ListTodo, 
-  Users, 
-  ChevronLeft, 
-  LogOut,
-  Menu
-} from 'lucide-react';
+import { Users, Calendar, ClipboardList, UserCheck, Settings, BookOpen, FileText, Building2, UserCog, UserPlus, Building, ListTodo, ChevronLeft, LogOut } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -36,10 +25,34 @@ interface AdminSidebarProps {
 
 const menuItems = [
   {
+    id: 'overview',
+    title: 'Overview',
+    icon: Users,
+    description: 'System overview and quick actions'
+  },
+  {
     id: 'onboarding',
     title: 'Onboarding',
     icon: FileText,
     description: 'Track and manage employee onboarding processes'
+  },
+  {
+    id: 'lms',
+    title: 'Learning Management',
+    icon: BookOpen,
+    description: 'Manage courses, quizzes, and training programs'
+  },
+  {
+    id: 'departments',
+    title: 'Departments',
+    icon: Building2,
+    description: 'Organize departments and team structures'
+  },
+  {
+    id: 'positions',
+    title: 'Positions',
+    icon: UserCog,
+    description: 'Define roles and position hierarchies'
   },
   {
     id: 'users',
@@ -76,12 +89,6 @@ const menuItems = [
     title: 'API',
     icon: Settings,
     description: 'Configure external system connections'
-  },
-  {
-    id: 'overview',
-    title: 'Overview',
-    icon: Users,
-    description: 'System overview and quick actions'
   },
 ];
 

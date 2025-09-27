@@ -12,6 +12,9 @@ import { ManagerManagement } from '@/components/admin/ManagerManagement';
 import { RecruiterManagement } from '@/components/admin/RecruiterManagement';
 import ApiIntegration from '@/components/admin/ApiIntegration';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
+import LMSManagement from "@/components/admin/LMSManagement";
+import { DepartmentManagement } from "@/components/admin/DepartmentManagement";
+import { PositionManagement } from "@/components/admin/PositionManagement";
 import { 
   FileText, 
   Settings, 
@@ -19,7 +22,10 @@ import {
   UserPlus, 
   Building, 
   ListTodo, 
-  Users 
+  Users,
+  BookOpen,
+  Building2,
+  UserCog
 } from 'lucide-react';
 
 export const Admin: React.FC = () => {
@@ -160,8 +166,51 @@ export const Admin: React.FC = () => {
             <TaskManagement />
           </div>
         );
-      
-      case 'overview':
+        case 'lms':
+          return (
+            <div className="space-y-4 sm:space-y-6">
+              <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+                <div className="p-2 sm:p-3 rounded-lg sm:rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 shadow-md">
+                  <BookOpen className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground">Learning Management</h2>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Manage courses, quizzes, and training programs</p>
+                </div>
+              </div>
+              <LMSManagement />
+            </div>
+          );
+        case 'departments':
+          return (
+            <div className="space-y-4 sm:space-y-6">
+              <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+                <div className="p-2 sm:p-3 rounded-lg sm:rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-md">
+                  <Building2 className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground">Department Management</h2>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Organize departments and team structures</p>
+                </div>
+              </div>
+              <DepartmentManagement />
+            </div>
+          );
+        case 'positions':
+          return (
+            <div className="space-y-4 sm:space-y-6">
+              <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+                <div className="p-2 sm:p-3 rounded-lg sm:rounded-xl bg-gradient-to-br from-teal-500 to-teal-600 shadow-md">
+                  <UserCog className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground">Position Management</h2>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Define roles and position hierarchies</p>
+                </div>
+              </div>
+              <PositionManagement />
+            </div>
+          );
         return (
           <div className="space-y-6 sm:space-y-8">
             <div className="text-center py-8 sm:py-12 lg:py-16 relative">

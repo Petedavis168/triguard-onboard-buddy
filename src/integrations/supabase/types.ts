@@ -300,6 +300,48 @@ export type Database = {
           },
         ]
       }
+      course_role_requirements: {
+        Row: {
+          course_id: string
+          created_at: string
+          employee_role: Database["public"]["Enums"]["employee_role"] | null
+          id: string
+          is_required: boolean
+          position_id: string | null
+        }
+        Insert: {
+          course_id: string
+          created_at?: string
+          employee_role?: Database["public"]["Enums"]["employee_role"] | null
+          id?: string
+          is_required?: boolean
+          position_id?: string | null
+        }
+        Update: {
+          course_id?: string
+          created_at?: string
+          employee_role?: Database["public"]["Enums"]["employee_role"] | null
+          id?: string
+          is_required?: boolean
+          position_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "course_role_requirements_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "course_role_requirements_position_id_fkey"
+            columns: ["position_id"]
+            isOneToOne: false
+            referencedRelation: "positions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       courses: {
         Row: {
           category: string
@@ -349,6 +391,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      departments: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       email_addresses: {
         Row: {
@@ -802,6 +871,7 @@ export type Database = {
           direct_deposit_form_url: string | null
           documents_uploaded_at: string | null
           drivers_license_url: string | null
+          employee_role: Database["public"]["Enums"]["employee_role"] | null
           first_name: string
           gender: Database["public"]["Enums"]["gender_type"]
           generated_email: string | null
@@ -812,6 +882,7 @@ export type Database = {
           nickname: string | null
           pant_size: Database["public"]["Enums"]["size_type"]
           personal_email: string | null
+          position_id: string | null
           recruiter_id: string | null
           same_as_mailing: boolean
           shipping_city: string | null
@@ -850,6 +921,7 @@ export type Database = {
           direct_deposit_form_url?: string | null
           documents_uploaded_at?: string | null
           drivers_license_url?: string | null
+          employee_role?: Database["public"]["Enums"]["employee_role"] | null
           first_name: string
           gender: Database["public"]["Enums"]["gender_type"]
           generated_email?: string | null
@@ -860,6 +932,7 @@ export type Database = {
           nickname?: string | null
           pant_size: Database["public"]["Enums"]["size_type"]
           personal_email?: string | null
+          position_id?: string | null
           recruiter_id?: string | null
           same_as_mailing?: boolean
           shipping_city?: string | null
@@ -898,6 +971,7 @@ export type Database = {
           direct_deposit_form_url?: string | null
           documents_uploaded_at?: string | null
           drivers_license_url?: string | null
+          employee_role?: Database["public"]["Enums"]["employee_role"] | null
           first_name?: string
           gender?: Database["public"]["Enums"]["gender_type"]
           generated_email?: string | null
@@ -908,6 +982,7 @@ export type Database = {
           nickname?: string | null
           pant_size?: Database["public"]["Enums"]["size_type"]
           personal_email?: string | null
+          position_id?: string | null
           recruiter_id?: string | null
           same_as_mailing?: boolean
           shipping_city?: string | null
@@ -944,6 +1019,13 @@ export type Database = {
             columns: ["manager_id"]
             isOneToOne: false
             referencedRelation: "managers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "onboarding_forms_position_id_fkey"
+            columns: ["position_id"]
+            isOneToOne: false
+            referencedRelation: "positions"
             referencedColumns: ["id"]
           },
           {
@@ -1059,6 +1141,44 @@ export type Database = {
             columns: ["processed_by"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      positions: {
+        Row: {
+          created_at: string
+          department_id: string | null
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          department_id?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          department_id?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "positions_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
             referencedColumns: ["id"]
           },
         ]
@@ -1594,6 +1714,7 @@ export type Database = {
       teams: {
         Row: {
           created_at: string
+          department_id: string | null
           description: string | null
           id: string
           name: string
@@ -1601,6 +1722,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          department_id?: string | null
           description?: string | null
           id?: string
           name: string
@@ -1608,12 +1730,21 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          department_id?: string | null
           description?: string | null
           id?: string
           name?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "teams_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       timecards: {
         Row: {
@@ -1761,6 +1892,14 @@ export type Database = {
       }
     }
     Enums: {
+      employee_role:
+        | "ROOF_PRO"
+        | "ROOF_HAWK"
+        | "CSR"
+        | "APPOINTMENT_SETTER"
+        | "MANAGER"
+        | "REGIONAL_MANAGER"
+        | "ROOFER"
       form_status_type: "draft" | "in_progress" | "completed" | "submitted"
       gender_type: "male" | "female"
       job_status: "pending" | "in_progress" | "completed" | "cancelled"
@@ -1925,6 +2064,15 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      employee_role: [
+        "ROOF_PRO",
+        "ROOF_HAWK",
+        "CSR",
+        "APPOINTMENT_SETTER",
+        "MANAGER",
+        "REGIONAL_MANAGER",
+        "ROOFER",
+      ],
       form_status_type: ["draft", "in_progress", "completed", "submitted"],
       gender_type: ["male", "female"],
       job_status: ["pending", "in_progress", "completed", "cancelled"],
