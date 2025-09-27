@@ -158,9 +158,6 @@ export function AdminSidebar({ activeTab, onTabChange }: AdminSidebarProps) {
                         }`}>
                           {item.title}
                         </div>
-                        <div className="text-xs text-muted-foreground truncate mt-0.5">
-                          {item.description}
-                        </div>
                       </div>
                     )}
                     {!isCollapsed && activeTab === item.id && (
