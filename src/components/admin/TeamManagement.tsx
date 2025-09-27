@@ -298,86 +298,185 @@ export const TeamManagement: React.FC = () => {
               <p className="text-gray-500">No teams found</p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <Table>
-                 <TableHeader>
-                   <TableRow>
-                     <TableHead>Team Name</TableHead>
-                     <TableHead>Description</TableHead>
-                     <TableHead>Recruits</TableHead>
-                     <TableHead>Created</TableHead>
-                     <TableHead>Updated</TableHead>
-                     <TableHead className="text-right">Actions</TableHead>
-                   </TableRow>
-                 </TableHeader>
-                <TableBody>
-                  {filteredTeams.map((team) => (
-                    <TableRow key={team.id}>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
-                            <Building className="h-4 w-4 text-green-600" />
+            <>
+              {/* Desktop Table View - Hidden on Mobile */}
+              <div className="hidden md:block overflow-x-auto">
+                <Table>
+                   <TableHeader>
+                     <TableRow>
+                       <TableHead>Team Name</TableHead>
+                       <TableHead>Description</TableHead>
+                       <TableHead>Recruits</TableHead>
+                       <TableHead>Created</TableHead>
+                       <TableHead>Updated</TableHead>
+                       <TableHead className="text-right">Actions</TableHead>
+                     </TableRow>
+                   </TableHeader>
+                  <TableBody>
+                    {filteredTeams.map((team) => (
+                      <TableRow key={team.id}>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+                              <Building className="h-4 w-4 text-green-600" />
+                            </div>
+                            <span className="font-medium">{team.name}</span>
                           </div>
-                          <span className="font-medium">{team.name}</span>
+                        </TableCell>
+                         <TableCell>
+                           <div className="max-w-xs truncate text-sm text-gray-600">
+                             {team.description || 'No description'}
+                           </div>
+                         </TableCell>
+                         <TableCell>
+                           <div className="flex items-center gap-2">
+                             <Users className="h-4 w-4 text-blue-600" />
+                             <span className="font-medium text-blue-600">
+                               {team.recruit_count || 0}
+                             </span>
+                             <span className="text-sm text-gray-500">recruits</span>
+                           </div>
+                         </TableCell>
+                        <TableCell>{formatDate(team.created_at)}</TableCell>
+                        <TableCell>{formatDate(team.updated_at)}</TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex gap-2 justify-end">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleEdit(team)}
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button variant="outline" size="sm">
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Remove Team</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    Are you sure you want to remove the "{team.name}" team? 
+                                    This action cannot be undone and may affect managers and tasks assigned to this team.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <AlertDialogAction 
+                                    onClick={() => handleDelete(team.id, team.name)}
+                                    className="bg-red-600 hover:bg-red-700"
+                                  >
+                                    Remove Team
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+
+              {/* Mobile Card View - Visible on Mobile Only */}
+              <div className="md:hidden space-y-4">
+                {filteredTeams.map((team) => (
+                  <Card key={team.id} className="mobile-card">
+                    <CardContent className="p-4">
+                      {/* Header with Team Name and Icon */}
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                            <Building className="h-5 w-5 text-green-600" />
+                          </div>
+                          <div>
+                            <div className="font-medium text-base">
+                              {team.name}
+                            </div>
+                          </div>
                         </div>
-                      </TableCell>
-                       <TableCell>
-                         <div className="max-w-xs truncate text-sm text-gray-600">
-                           {team.description || 'No description'}
-                         </div>
-                       </TableCell>
-                       <TableCell>
-                         <div className="flex items-center gap-2">
-                           <Users className="h-4 w-4 text-blue-600" />
-                           <span className="font-medium text-blue-600">
-                             {team.recruit_count || 0}
-                           </span>
-                           <span className="text-sm text-gray-500">recruits</span>
-                         </div>
-                       </TableCell>
-                      <TableCell>{formatDate(team.created_at)}</TableCell>
-                      <TableCell>{formatDate(team.updated_at)}</TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex gap-2 justify-end">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleEdit(team)}
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                              <Button variant="outline" size="sm">
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>Remove Team</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                  Are you sure you want to remove the "{team.name}" team? 
-                                  This action cannot be undone and may affect managers and tasks assigned to this team.
-                                </AlertDialogDescription>
-                              </AlertDialogHeader>
-                              <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction 
-                                  onClick={() => handleDelete(team.id, team.name)}
-                                  className="bg-red-600 hover:bg-red-700"
-                                >
-                                  Remove Team
-                                </AlertDialogAction>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
+                        
+                        {/* Recruit Count Badge */}
+                        <div className="flex items-center gap-2 bg-blue-50 px-3 py-1 rounded-full">
+                          <Users className="h-4 w-4 text-blue-600" />
+                          <span className="font-medium text-blue-600 text-sm">
+                            {team.recruit_count || 0}
+                          </span>
+                          <span className="text-xs text-blue-500">recruits</span>
                         </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+                      </div>
+
+                      {/* Description */}
+                      <div className="mb-3">
+                        <div className="text-sm font-medium text-muted-foreground mb-1">Description</div>
+                        <div className="text-sm text-foreground">
+                          {team.description || 'No description'}
+                        </div>
+                      </div>
+
+                      {/* Dates */}
+                      <div className="space-y-2 mb-3">
+                        <div className="text-sm">
+                          <span className="text-muted-foreground">Created: </span>
+                          <span className="font-medium">{formatDate(team.created_at)}</span>
+                        </div>
+                        <div className="text-sm">
+                          <span className="text-muted-foreground">Updated: </span>
+                          <span className="font-medium">{formatDate(team.updated_at)}</span>
+                        </div>
+                      </div>
+
+                      {/* Actions */}
+                      <div className="flex flex-wrap gap-2 pt-3 border-t">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleEdit(team)}
+                          className="mobile-button"
+                        >
+                          <Edit className="h-4 w-4 mr-1" />
+                          Edit Team
+                        </Button>
+                        
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="mobile-button text-red-600 hover:text-red-700"
+                            >
+                              <Trash2 className="h-4 w-4 mr-1" />
+                              Remove
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Remove Team</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Are you sure you want to remove the "{team.name}" team? 
+                                This action cannot be undone and may affect managers and tasks assigned to this team.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction 
+                                onClick={() => handleDelete(team.id, team.name)}
+                                className="bg-red-600 hover:bg-red-700"
+                              >
+                                Remove Team
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </>
           )}
         </CardContent>
       </Card>
