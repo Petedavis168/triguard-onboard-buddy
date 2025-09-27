@@ -56,6 +56,187 @@ export type Database = {
         }
         Relationships: []
       }
+      appointments: {
+        Row: {
+          appointment_date: string
+          appointment_type: string | null
+          created_at: string | null
+          duration_minutes: number | null
+          id: string
+          job_id: string | null
+          notes: string | null
+          setter_id: string | null
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          appointment_date: string
+          appointment_type?: string | null
+          created_at?: string | null
+          duration_minutes?: number | null
+          id?: string
+          job_id?: string | null
+          notes?: string | null
+          setter_id?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          appointment_date?: string
+          appointment_type?: string | null
+          created_at?: string | null
+          duration_minutes?: number | null
+          id?: string
+          job_id?: string | null
+          notes?: string | null
+          setter_id?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "appointments_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "appointments_setter_id_fkey"
+            columns: ["setter_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      audit_logs: {
+        Row: {
+          action: string
+          changed_at: string | null
+          changed_by: string | null
+          id: string
+          new_values: Json | null
+          old_values: Json | null
+          record_id: string
+          table_name: string
+        }
+        Insert: {
+          action: string
+          changed_at?: string | null
+          changed_by?: string | null
+          id?: string
+          new_values?: Json | null
+          old_values?: Json | null
+          record_id: string
+          table_name: string
+        }
+        Update: {
+          action?: string
+          changed_at?: string | null
+          changed_by?: string | null
+          id?: string
+          new_values?: Json | null
+          old_values?: Json | null
+          record_id?: string
+          table_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_logs_changed_by_fkey"
+            columns: ["changed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      commissions: {
+        Row: {
+          base_amount: number
+          commission_amount: number
+          commission_rate: number
+          commission_type: string
+          created_at: string | null
+          earned_date: string
+          employee_id: string | null
+          id: string
+          job_id: string | null
+          override_amount: number | null
+          override_approved_by: string | null
+          override_reason: string | null
+          paid_date: string | null
+          payment_batch_id: string | null
+          status: Database["public"]["Enums"]["payment_status"] | null
+          updated_at: string | null
+        }
+        Insert: {
+          base_amount: number
+          commission_amount: number
+          commission_rate: number
+          commission_type: string
+          created_at?: string | null
+          earned_date: string
+          employee_id?: string | null
+          id?: string
+          job_id?: string | null
+          override_amount?: number | null
+          override_approved_by?: string | null
+          override_reason?: string | null
+          paid_date?: string | null
+          payment_batch_id?: string | null
+          status?: Database["public"]["Enums"]["payment_status"] | null
+          updated_at?: string | null
+        }
+        Update: {
+          base_amount?: number
+          commission_amount?: number
+          commission_rate?: number
+          commission_type?: string
+          created_at?: string | null
+          earned_date?: string
+          employee_id?: string | null
+          id?: string
+          job_id?: string | null
+          override_amount?: number | null
+          override_approved_by?: string | null
+          override_reason?: string | null
+          paid_date?: string | null
+          payment_batch_id?: string | null
+          status?: Database["public"]["Enums"]["payment_status"] | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "commissions_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "commissions_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "commissions_override_approved_by_fkey"
+            columns: ["override_approved_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "commissions_payment_batch_id_fkey"
+            columns: ["payment_batch_id"]
+            isOneToOne: false
+            referencedRelation: "payment_batches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       email_addresses: {
         Row: {
           created_at: string
@@ -82,6 +263,117 @@ export type Database = {
           last_name?: string
         }
         Relationships: []
+      }
+      jobs: {
+        Row: {
+          address: string
+          appointment_date: string | null
+          city: string
+          commission_amount: number | null
+          completion_date: string | null
+          created_at: string | null
+          created_by: string | null
+          customer_email: string | null
+          customer_name: string
+          customer_phone: string | null
+          id: string
+          installer_id: string | null
+          job_number: string
+          job_value: number
+          notes: string | null
+          regional_manager_id: string | null
+          sales_rep_id: string | null
+          setter_id: string | null
+          state: string
+          status: Database["public"]["Enums"]["job_status"] | null
+          updated_at: string | null
+          zip_code: string
+        }
+        Insert: {
+          address: string
+          appointment_date?: string | null
+          city: string
+          commission_amount?: number | null
+          completion_date?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          customer_email?: string | null
+          customer_name: string
+          customer_phone?: string | null
+          id?: string
+          installer_id?: string | null
+          job_number: string
+          job_value: number
+          notes?: string | null
+          regional_manager_id?: string | null
+          sales_rep_id?: string | null
+          setter_id?: string | null
+          state: string
+          status?: Database["public"]["Enums"]["job_status"] | null
+          updated_at?: string | null
+          zip_code: string
+        }
+        Update: {
+          address?: string
+          appointment_date?: string | null
+          city?: string
+          commission_amount?: number | null
+          completion_date?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          customer_email?: string | null
+          customer_name?: string
+          customer_phone?: string | null
+          id?: string
+          installer_id?: string | null
+          job_number?: string
+          job_value?: number
+          notes?: string | null
+          regional_manager_id?: string | null
+          sales_rep_id?: string | null
+          setter_id?: string | null
+          state?: string
+          status?: Database["public"]["Enums"]["job_status"] | null
+          updated_at?: string | null
+          zip_code?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "jobs_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobs_installer_id_fkey"
+            columns: ["installer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobs_regional_manager_id_fkey"
+            columns: ["regional_manager_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobs_sales_rep_id_fkey"
+            columns: ["sales_rep_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobs_setter_id_fkey"
+            columns: ["setter_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       manager_teams: {
         Row: {
@@ -351,6 +643,185 @@ export type Database = {
           },
         ]
       }
+      pay_rules: {
+        Row: {
+          applicable_roles: Database["public"]["Enums"]["user_role"][] | null
+          base_rate: number | null
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          rule_type: string
+          tier_1_rate: number | null
+          tier_1_threshold: number | null
+          tier_2_rate: number | null
+          tier_2_threshold: number | null
+          tier_3_rate: number | null
+          tier_3_threshold: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          applicable_roles?: Database["public"]["Enums"]["user_role"][] | null
+          base_rate?: number | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          rule_type: string
+          tier_1_rate?: number | null
+          tier_1_threshold?: number | null
+          tier_2_rate?: number | null
+          tier_2_threshold?: number | null
+          tier_3_rate?: number | null
+          tier_3_threshold?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          applicable_roles?: Database["public"]["Enums"]["user_role"][] | null
+          base_rate?: number | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          rule_type?: string
+          tier_1_rate?: number | null
+          tier_1_threshold?: number | null
+          tier_2_rate?: number | null
+          tier_2_threshold?: number | null
+          tier_3_rate?: number | null
+          tier_3_threshold?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      payment_batches: {
+        Row: {
+          batch_number: string
+          created_at: string | null
+          employee_count: number
+          id: string
+          pay_period_end: string
+          pay_period_start: string
+          processed_at: string | null
+          processed_by: string | null
+          status: Database["public"]["Enums"]["payment_status"] | null
+          total_amount: number
+          updated_at: string | null
+        }
+        Insert: {
+          batch_number: string
+          created_at?: string | null
+          employee_count: number
+          id?: string
+          pay_period_end: string
+          pay_period_start: string
+          processed_at?: string | null
+          processed_by?: string | null
+          status?: Database["public"]["Enums"]["payment_status"] | null
+          total_amount: number
+          updated_at?: string | null
+        }
+        Update: {
+          batch_number?: string
+          created_at?: string | null
+          employee_count?: number
+          id?: string
+          pay_period_end?: string
+          pay_period_start?: string
+          processed_at?: string | null
+          processed_by?: string | null
+          status?: Database["public"]["Enums"]["payment_status"] | null
+          total_amount?: number
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_batches_processed_by_fkey"
+            columns: ["processed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          annual_salary: number | null
+          commission_eligible: boolean | null
+          commission_rate: number | null
+          created_at: string | null
+          email: string
+          employee_id: string
+          first_name: string
+          hire_date: string | null
+          hourly_rate: number | null
+          id: string
+          is_active: boolean | null
+          last_name: string
+          manager_id: string | null
+          pay_type: Database["public"]["Enums"]["pay_type"]
+          phone: string | null
+          region_id: string | null
+          role: Database["public"]["Enums"]["user_role"]
+          updated_at: string | null
+        }
+        Insert: {
+          annual_salary?: number | null
+          commission_eligible?: boolean | null
+          commission_rate?: number | null
+          created_at?: string | null
+          email: string
+          employee_id: string
+          first_name: string
+          hire_date?: string | null
+          hourly_rate?: number | null
+          id: string
+          is_active?: boolean | null
+          last_name: string
+          manager_id?: string | null
+          pay_type?: Database["public"]["Enums"]["pay_type"]
+          phone?: string | null
+          region_id?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string | null
+        }
+        Update: {
+          annual_salary?: number | null
+          commission_eligible?: boolean | null
+          commission_rate?: number | null
+          created_at?: string | null
+          email?: string
+          employee_id?: string
+          first_name?: string
+          hire_date?: string | null
+          hourly_rate?: number | null
+          id?: string
+          is_active?: boolean | null
+          last_name?: string
+          manager_id?: string | null
+          pay_type?: Database["public"]["Enums"]["pay_type"]
+          phone?: string | null
+          region_id?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_profiles_manager_id"
+            columns: ["manager_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profiles_region_id_fkey"
+            columns: ["region_id"]
+            isOneToOne: false
+            referencedRelation: "regions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       recruiters: {
         Row: {
           created_at: string
@@ -377,6 +848,44 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      regions: {
+        Row: {
+          code: string
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          manager_id: string | null
+          name: string
+          updated_at: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          manager_id?: string | null
+          name: string
+          updated_at?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          manager_id?: string | null
+          name?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_regions_manager_id"
+            columns: ["manager_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       task_assignments: {
         Row: {
@@ -492,6 +1001,79 @@ export type Database = {
         }
         Relationships: []
       }
+      timecards: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          break_minutes: number | null
+          clock_in: string | null
+          clock_out: string | null
+          created_at: string | null
+          employee_id: string | null
+          id: string
+          job_id: string | null
+          notes: string | null
+          overtime_hours: number | null
+          regular_hours: number | null
+          updated_at: string | null
+          work_date: string
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          break_minutes?: number | null
+          clock_in?: string | null
+          clock_out?: string | null
+          created_at?: string | null
+          employee_id?: string | null
+          id?: string
+          job_id?: string | null
+          notes?: string | null
+          overtime_hours?: number | null
+          regular_hours?: number | null
+          updated_at?: string | null
+          work_date: string
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          break_minutes?: number | null
+          clock_in?: string | null
+          clock_out?: string | null
+          created_at?: string | null
+          employee_id?: string | null
+          id?: string
+          job_id?: string | null
+          notes?: string | null
+          overtime_hours?: number | null
+          regular_hours?: number | null
+          updated_at?: string | null
+          work_date?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "timecards_approved_by_fkey"
+            columns: ["approved_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "timecards_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "timecards_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -531,7 +1113,15 @@ export type Database = {
         Args: { password: string }
         Returns: string
       }
+      is_admin_manager: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
       is_admin_user: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      is_authenticated_admin: {
         Args: Record<PropertyKey, never>
         Returns: boolean
       }
@@ -559,6 +1149,9 @@ export type Database = {
     Enums: {
       form_status_type: "draft" | "in_progress" | "completed" | "submitted"
       gender_type: "male" | "female"
+      job_status: "pending" | "in_progress" | "completed" | "cancelled"
+      pay_type: "salary" | "hourly" | "commission"
+      payment_status: "pending" | "processed" | "paid" | "failed"
       shoe_size_type:
         | "6"
         | "6.5"
@@ -580,6 +1173,17 @@ export type Database = {
         | "14.5"
         | "15"
       size_type: "xs" | "s" | "m" | "l" | "xl" | "xxl" | "xxxl"
+      user_role:
+        | "admin"
+        | "roof_pro_sales"
+        | "recruiter"
+        | "manager"
+        | "setter"
+        | "regional_manager"
+        | "payroll_specialist"
+        | "csr"
+        | "executive_team"
+        | "installer"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -709,6 +1313,9 @@ export const Constants = {
     Enums: {
       form_status_type: ["draft", "in_progress", "completed", "submitted"],
       gender_type: ["male", "female"],
+      job_status: ["pending", "in_progress", "completed", "cancelled"],
+      pay_type: ["salary", "hourly", "commission"],
+      payment_status: ["pending", "processed", "paid", "failed"],
       shoe_size_type: [
         "6",
         "6.5",
@@ -731,6 +1338,18 @@ export const Constants = {
         "15",
       ],
       size_type: ["xs", "s", "m", "l", "xl", "xxl", "xxxl"],
+      user_role: [
+        "admin",
+        "roof_pro_sales",
+        "recruiter",
+        "manager",
+        "setter",
+        "regional_manager",
+        "payroll_specialist",
+        "csr",
+        "executive_team",
+        "installer",
+      ],
     },
   },
 } as const
