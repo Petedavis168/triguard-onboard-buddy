@@ -181,47 +181,55 @@ const OnboardingManagement = () => {
   return (
     <div className="space-y-4 sm:space-y-6">
       {/* Mobile-optimized Stats Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
-        <Card className="shadow-md">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <Card className="shadow-sm hover:shadow-md transition-shadow border border-border/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-xs sm:text-sm font-medium">Total</CardTitle>
-            <FileText className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
+            <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">Total</CardTitle>
+            <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+              <FileText className="h-4 w-4 text-blue-600" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-lg sm:text-2xl font-bold">{stats.total}</div>
+            <div className="text-2xl sm:text-3xl font-bold text-foreground">{stats.total}</div>
             <p className="text-xs text-muted-foreground">Applications</p>
           </CardContent>
         </Card>
 
-        <Card className="shadow-md">
+        <Card className="shadow-sm hover:shadow-md transition-shadow border border-border/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-xs sm:text-sm font-medium">Done</CardTitle>
-            <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
+            <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">Done</CardTitle>
+            <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+              <CheckCircle className="h-4 w-4 text-green-600" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-lg sm:text-2xl font-bold text-green-600">{stats.completed}</div>
+            <div className="text-2xl sm:text-3xl font-bold text-green-600">{stats.completed}</div>
             <p className="text-xs text-muted-foreground">Finished</p>
           </CardContent>
         </Card>
 
-        <Card className="shadow-md">
+        <Card className="shadow-sm hover:shadow-md transition-shadow border border-border/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-xs sm:text-sm font-medium">Active</CardTitle>
-            <Clock className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
+            <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">Active</CardTitle>
+            <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+              <Clock className="h-4 w-4 text-blue-600" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-lg sm:text-2xl font-bold text-blue-600">{stats.inProgress}</div>
+            <div className="text-2xl sm:text-3xl font-bold text-blue-600">{stats.inProgress}</div>
             <p className="text-xs text-muted-foreground">In Progress</p>
           </CardContent>
         </Card>
 
-        <Card className="shadow-md">
+        <Card className="shadow-sm hover:shadow-md transition-shadow border border-border/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-xs sm:text-sm font-medium">Draft</CardTitle>
-            <AlertCircle className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
+            <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">Draft</CardTitle>
+            <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
+              <AlertCircle className="h-4 w-4 text-gray-600" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-lg sm:text-2xl font-bold text-gray-600">{stats.draft}</div>
+            <div className="text-2xl sm:text-3xl font-bold text-gray-600">{stats.draft}</div>
             <p className="text-xs text-muted-foreground">Not Started</p>
           </CardContent>
         </Card>
@@ -411,64 +419,70 @@ const ApplicationList: React.FC<ApplicationListProps> = ({ forms, onViewDetails 
 
       {/* Mobile Card View */}
       <div className="lg:hidden">
-        <div className="space-y-4 p-4">
+        <div className="space-y-3 px-4 pb-4">
           {forms.map((form) => (
-            <Card key={form.id} className="mobile-card">
+            <Card key={form.id} className="mobile-card shadow-sm border border-border/50 hover:shadow-md transition-shadow">
               <CardContent className="p-4">
-                {/* Header with Name and Status */}
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                {/* Header with Name, Email and Status */}
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center flex-shrink-0">
                       <User className="h-5 w-5 text-blue-600" />
                     </div>
-                    <div>
-                      <div className="font-medium text-base">
+                    <div className="min-w-0 flex-1">
+                      <div className="font-semibold text-base text-foreground">
                         {form.first_name} {form.last_name}
                       </div>
                       {form.generated_email && (
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <Mail className="h-4 w-4" />
-                          {form.generated_email}
+                        <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
+                          <Mail className="h-3 w-3" />
+                          <span className="truncate">{form.generated_email}</span>
                         </div>
                       )}
                     </div>
                   </div>
-                  {getStatusBadge(form.status, form.current_step)}
+                  <div className="ml-2">
+                    {getStatusBadge(form.status, form.current_step)}
+                  </div>
                 </div>
 
-                {/* Assignment Info */}
-                <div className="space-y-2 mb-3">
-                  {form.managers && (
-                    <div className="flex items-center gap-2 text-sm">
-                      <Users className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-muted-foreground">Manager:</span>
-                      <span className="font-medium">
-                        {form.managers.first_name} {form.managers.last_name}
-                      </span>
+                {/* Assignment Info Grid */}
+                {(form.managers || form.teams) && (
+                  <div className="bg-muted/30 rounded-lg p-3 mb-4">
+                    <div className="grid grid-cols-1 gap-2">
+                      {form.managers && (
+                        <div className="flex items-center gap-2 text-sm">
+                          <Users className="h-4 w-4 text-blue-600" />
+                          <span className="text-muted-foreground">Manager:</span>
+                          <span className="font-medium text-foreground">
+                            {form.managers.first_name} {form.managers.last_name}
+                          </span>
+                        </div>
+                      )}
+                      {form.teams && (
+                        <div className="flex items-center gap-2 text-sm">
+                          <MapPin className="h-4 w-4 text-green-600" />
+                          <span className="text-muted-foreground">Team:</span>
+                          <span className="font-medium text-foreground">{form.teams.name}</span>
+                        </div>
+                      )}
                     </div>
-                  )}
-                  {form.teams && (
-                    <div className="flex items-center gap-2 text-sm">
-                      <MapPin className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-muted-foreground">Team:</span>
-                      <span className="font-medium">{form.teams.name}</span>
-                    </div>
-                  )}
-                </div>
+                  </div>
+                )}
 
-                {/* Dates */}
-                <div className="border-t pt-3 mb-3">
-                  <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div>
-                      <span className="text-muted-foreground">Started:</span>
-                      <div className="font-medium">{formatDate(form.created_at)}</div>
+                {/* Dates Section */}
+                <div className="border-t border-border/50 pt-3 mb-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="text-center">
+                      <div className="text-xs text-muted-foreground mb-1">Started</div>
+                      <div className="text-sm font-medium text-foreground">{formatDate(form.created_at)}</div>
                     </div>
-                    {form.submitted_at && (
-                      <div>
-                        <span className="text-muted-foreground">Completed:</span>
-                        <div className="font-medium">{formatDate(form.submitted_at)}</div>
+                    <div className="text-center">
+                      <div className="text-xs text-muted-foreground mb-1">Completed</div>
+                      <div className="text-sm font-medium text-foreground">
+                        {form.submitted_at ? formatDate(form.submitted_at) : '-'}
                       </div>
-                    )}
+                    </div>
                   </div>
                 </div>
 
@@ -477,7 +491,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({ forms, onViewDetails 
                   size="sm"
                   variant="outline"
                   onClick={() => onViewDetails(form)}
-                  className="w-full mobile-button"
+                  className="w-full mobile-button h-10 border-2 hover:bg-primary hover:text-primary-foreground transition-colors"
                 >
                   <Eye className="h-4 w-4 mr-2" />
                   View Details
