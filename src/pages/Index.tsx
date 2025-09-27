@@ -72,7 +72,12 @@ const Index = () => {
               <Button 
                 size="lg"
                 className="flex items-center gap-3 text-lg px-8 py-4 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1"
-                onClick={() => navigate('/onboarding')}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  console.log('Start Onboarding clicked');
+                  navigate('/onboarding');
+                }}
               >
                 <FileText className="h-5 w-5" />
                 Start Onboarding
@@ -83,7 +88,12 @@ const Index = () => {
                 variant="outline"
                 size="lg"
                 className="flex items-center gap-3 text-lg px-8 py-4 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1"
-                onClick={() => navigate('/user-login')}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  console.log('Employee Login clicked');
+                  navigate('/user-login');
+                }}
               >
                 <UserCheck className="h-5 w-5" />
                 Employee Login
