@@ -283,8 +283,8 @@ export const Admin: React.FC = () => {
                 <User className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-white" />
               </div>
               <div>
-                <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground">Employee Profiles</h2>
-                <p className="text-xs sm:text-sm text-muted-foreground">Manage employee information and photos</p>
+                <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground">Rep Profiles</h2>
+                <p className="text-xs sm:text-sm text-muted-foreground">Manage rep information and photos</p>
               </div>
             </div>
             <EmployeeProfileManagement />

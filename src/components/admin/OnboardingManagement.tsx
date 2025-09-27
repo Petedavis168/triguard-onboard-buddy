@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Search, Eye, FileText, Users, CheckCircle, Clock, AlertCircle, Mail, MapPin, User, Calendar, UserCheck, Building } from 'lucide-react';
+import { Search, Eye, FileText, Users, CheckCircle, Clock, AlertCircle, Mail, MapPin, User, Calendar, UserCheck, Building, IdCard } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 import SubmissionDetailsDialog from './SubmissionDetailsDialog';
@@ -332,7 +332,7 @@ const ApplicationGrid: React.FC<ApplicationGridProps> = ({ forms, onViewDetails 
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
       {forms.map((form) => (
         <ApplicationCard 
           key={form.id} 
@@ -354,11 +354,11 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({ form, onViewDetails }
     switch (status) {
       case 'completed':
       case 'submitted':
-        return <Badge className="bg-success text-success-foreground">Completed</Badge>;
+        return <Badge className="bg-success text-success-foreground font-medium">Completed</Badge>;
       case 'in_progress':
-        return <Badge variant="secondary" className="bg-primary/10 text-primary">Step {currentStep}/9</Badge>;
+        return <Badge variant="secondary" className="bg-blue-500/10 text-blue-600 border-blue-200 font-medium">Step {currentStep}/9</Badge>;
       case 'draft':
-        return <Badge variant="outline" className="border-muted-foreground/30">Draft</Badge>;
+        return <Badge variant="outline" className="border-amber-200 text-amber-700 bg-amber-50 font-medium">Draft</Badge>;
       default:
         return <Badge variant="outline">{status}</Badge>;
     }
@@ -377,102 +377,167 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({ form, onViewDetails }
     switch (status) {
       case 'completed':
       case 'submitted':
-        return 'border-success/20 bg-gradient-to-br from-success/5 to-success/2';
+        return 'border-success/30 bg-gradient-to-br from-success/8 to-success/3 hover:from-success/12 hover:to-success/5';
       case 'in_progress':
-        return 'border-primary/20 bg-gradient-to-br from-primary/5 to-primary/2';
+        return 'border-blue-500/30 bg-gradient-to-br from-blue-500/8 to-blue-500/3 hover:from-blue-500/12 hover:to-blue-500/5';
       case 'draft':
-        return 'border-muted/40 bg-muted/10';
+        return 'border-amber-200 bg-gradient-to-br from-amber-50 to-amber-25 hover:from-amber-100 hover:to-amber-50';
       default:
-        return 'border-border bg-card';
+        return 'border-border bg-card hover:bg-accent/50';
     }
   };
 
+  const getProgressPercentage = (status: string, currentStep: number) => {
+    if (status === 'completed' || status === 'submitted') return 100;
+    if (status === 'draft') return 0;
+    return Math.round((currentStep / 9) * 100);
+  };
+
+  const progress = getProgressPercentage(form.status, form.current_step);
+
   return (
-    <Card className={`group hover:shadow-lg transition-all duration-200 cursor-pointer ${getStatusColor(form.status)}`}>
-      <CardHeader className="pb-3">
-        <div className="flex items-start justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center ring-2 ring-primary/5">
-              <User className="h-5 w-5 text-primary" />
+    <Card className={`group hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-1 ${getStatusColor(form.status)} border-2`}>
+      <CardContent className="p-0">
+        {/* Header Section */}
+        <div className="p-5 pb-4">
+          <div className="flex items-start justify-between mb-4">
+            <div className="flex items-center gap-4">
+              <div className="relative">
+                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-lg ring-4 ring-primary/10">
+                  <User className="h-7 w-7 text-primary-foreground" />
+                </div>
+                <div className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-3 border-white shadow-sm ${
+                  form.status === 'completed' || form.status === 'submitted' ? 'bg-success' :
+                  form.status === 'in_progress' ? 'bg-blue-500' : 'bg-amber-500'
+                }`}></div>
+              </div>
+              <div className="min-w-0 flex-1">
+                <h3 className="font-bold text-lg text-foreground mb-1 truncate">
+                  {form.first_name} {form.last_name}
+                </h3>
+                <div className="flex items-center gap-2">
+                  <IdCard className="h-3.5 w-3.5 text-primary" />
+                  <span className="text-sm font-mono text-primary/80 font-medium">
+                    Rep ID: {form.id.slice(0, 8)}...
+                  </span>
+                </div>
+              </div>
             </div>
-            <div className="min-w-0 flex-1">
-              <h3 className="font-semibold text-foreground truncate">
-                {form.first_name} {form.last_name}
-              </h3>
-              <p className="text-xs text-muted-foreground font-mono">
-                ID: {form.id.slice(0, 8)}...
-              </p>
-            </div>
+            {getStatusBadge(form.status, form.current_step)}
           </div>
-          {getStatusBadge(form.status, form.current_step)}
-        </div>
-      </CardHeader>
-      
-      <CardContent className="space-y-4">
-        {/* Email */}
-        <div className="flex items-center gap-2">
-          <Mail className="h-4 w-4 text-blue-500 flex-shrink-0" />
-          {form.generated_email ? (
-            <span className="text-sm font-mono text-blue-600 truncate">
-              {form.generated_email}
-            </span>
-          ) : (
-            <span className="text-sm text-muted-foreground">No email assigned</span>
-          )}
-        </div>
 
-        {/* Manager */}
-        <div className="flex items-center gap-2">
-          <UserCheck className="h-4 w-4 text-purple-500 flex-shrink-0" />
-          {form.managers ? (
-            <span className="text-sm text-foreground truncate">
-              {form.managers.first_name} {form.managers.last_name}
-            </span>
-          ) : (
-            <span className="text-sm text-muted-foreground">No manager assigned</span>
-          )}
-        </div>
-
-        {/* Team */}
-        <div className="flex items-center gap-2">
-          <Building className="h-4 w-4 text-orange-500 flex-shrink-0" />
-          {form.teams ? (
-            <span className="text-sm text-foreground truncate">{form.teams.name}</span>
-          ) : (
-            <span className="text-sm text-muted-foreground">No team assigned</span>
-          )}
-        </div>
-
-        {/* Dates */}
-        <div className="grid grid-cols-2 gap-3 pt-2 border-t border-border/40">
-          <div className="space-y-1">
-            <div className="flex items-center gap-1">
-              <Calendar className="h-3 w-3 text-muted-foreground" />
-              <span className="text-xs text-muted-foreground">Started</span>
+          {/* Progress Bar */}
+          <div className="mb-4">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-xs font-medium text-muted-foreground">Progress</span>
+              <span className="text-xs font-bold text-foreground">{progress}%</span>
             </div>
-            <p className="text-sm font-medium">{formatDate(form.created_at)}</p>
-          </div>
-          
-          <div className="space-y-1">
-            <div className="flex items-center gap-1">
-              <CheckCircle className="h-3 w-3 text-muted-foreground" />
-              <span className="text-xs text-muted-foreground">Completed</span>
+            <div className="w-full bg-muted/40 rounded-full h-2.5 overflow-hidden">
+              <div 
+                className={`h-full rounded-full transition-all duration-500 ${
+                  form.status === 'completed' || form.status === 'submitted' ? 'bg-gradient-to-r from-success to-success/80' :
+                  form.status === 'in_progress' ? 'bg-gradient-to-r from-blue-500 to-blue-400' :
+                  'bg-gradient-to-r from-amber-400 to-amber-300'
+                }`}
+                style={{ width: `${progress}%` }}
+              ></div>
             </div>
-            <p className="text-sm font-medium">
-              {form.submitted_at ? formatDate(form.submitted_at) : 'Pending'}
-            </p>
           </div>
         </div>
 
-        {/* Action Button */}
-        <Button
-          onClick={() => onViewDetails(form)}
-          className="w-full mt-4 group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
-          variant="outline"
-        >
-          <Eye className="h-4 w-4 mr-2" />
-          View Details
-        </Button>
+        {/* Details Section */}
+        <div className="px-5 pb-4 space-y-3">
+          {/* Email */}
+          <div className="flex items-center gap-3 p-2.5 bg-white/60 dark:bg-black/20 rounded-lg">
+            <div className="w-8 h-8 bg-blue-500/10 rounded-lg flex items-center justify-center">
+              <Mail className="h-4 w-4 text-blue-600" />
+            </div>
+            {form.generated_email ? (
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-medium text-blue-600 truncate">{form.generated_email}</p>
+                <p className="text-xs text-muted-foreground">Company Email</p>
+              </div>
+            ) : (
+              <div className="min-w-0 flex-1">
+                <p className="text-sm text-muted-foreground">No email assigned</p>
+                <p className="text-xs text-muted-foreground">Pending setup</p>
+              </div>
+            )}
+          </div>
+
+          {/* Manager */}
+          <div className="flex items-center gap-3 p-2.5 bg-white/60 dark:bg-black/20 rounded-lg">
+            <div className="w-8 h-8 bg-purple-500/10 rounded-lg flex items-center justify-center">
+              <UserCheck className="h-4 w-4 text-purple-600" />
+            </div>
+            {form.managers ? (
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-medium text-foreground truncate">
+                  {form.managers.first_name} {form.managers.last_name}
+                </p>
+                <p className="text-xs text-muted-foreground">Manager</p>
+              </div>
+            ) : (
+              <div className="min-w-0 flex-1">
+                <p className="text-sm text-muted-foreground">No manager assigned</p>
+                <p className="text-xs text-muted-foreground">Pending assignment</p>
+              </div>
+            )}
+          </div>
+
+          {/* Team */}
+          <div className="flex items-center gap-3 p-2.5 bg-white/60 dark:bg-black/20 rounded-lg">
+            <div className="w-8 h-8 bg-orange-500/10 rounded-lg flex items-center justify-center">
+              <Building className="h-4 w-4 text-orange-600" />
+            </div>
+            {form.teams ? (
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-medium text-foreground truncate">{form.teams.name}</p>
+                <p className="text-xs text-muted-foreground">Team Assignment</p>
+              </div>
+            ) : (
+              <div className="min-w-0 flex-1">
+                <p className="text-sm text-muted-foreground">No team assigned</p>
+                <p className="text-xs text-muted-foreground">Pending assignment</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Footer Section */}
+        <div className="px-5 py-4 bg-gradient-to-r from-muted/30 to-muted/10 border-t border-border/30">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-4">
+              <div className="text-center">
+                <div className="flex items-center gap-1 mb-1">
+                  <Calendar className="h-3 w-3 text-muted-foreground" />
+                  <span className="text-xs text-muted-foreground font-medium">Started</span>
+                </div>
+                <p className="text-sm font-semibold text-foreground">{formatDate(form.created_at)}</p>
+              </div>
+              
+              <div className="text-center">
+                <div className="flex items-center gap-1 mb-1">
+                  <CheckCircle className="h-3 w-3 text-muted-foreground" />
+                  <span className="text-xs text-muted-foreground font-medium">Completed</span>
+                </div>
+                <p className="text-sm font-semibold text-foreground">
+                  {form.submitted_at ? formatDate(form.submitted_at) : 'Pending'}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Action Button */}
+          <Button
+            onClick={() => onViewDetails(form)}
+            className="w-full bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary/80 text-primary-foreground font-medium shadow-lg hover:shadow-xl transition-all duration-200 group-hover:scale-[1.02]"
+            size="lg"
+          >
+            <Eye className="h-4 w-4 mr-2" />
+            View Details
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );

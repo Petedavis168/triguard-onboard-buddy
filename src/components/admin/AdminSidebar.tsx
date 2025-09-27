@@ -38,9 +38,9 @@ const menuItems = [
   },
   {
     id: 'employees',
-    title: 'Employee Profiles',
+    title: 'Rep Profiles',
     icon: User,
-    description: 'Manage employee information and photos'
+    description: 'Manage rep information and photos'
   },
   {
     id: 'lms',

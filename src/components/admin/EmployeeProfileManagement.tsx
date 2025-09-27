@@ -116,11 +116,11 @@ const EmployeeProfileManagement = () => {
       calculateStats(data || []);
     } catch (error) {
       console.error('Error fetching profiles:', error);
-      toast({
-        title: "Error",
-        description: "Failed to fetch employee profiles",
-        variant: "destructive",
-      });
+        toast({
+          title: "Error",
+          description: "Failed to fetch rep profiles",
+          variant: "destructive",
+        });
     } finally {
       setIsLoading(false);
     }
@@ -235,7 +235,7 @@ const EmployeeProfileManagement = () => {
 
         toast({
           title: "Success",
-          description: "Employee profile updated successfully",
+          description: "Rep profile updated successfully",
         });
       } else {
         const { error } = await supabase
@@ -246,7 +246,7 @@ const EmployeeProfileManagement = () => {
 
         toast({
           title: "Success",
-          description: "Employee profile created successfully",
+          description: "Rep profile created successfully",
         });
       }
 
@@ -257,11 +257,11 @@ const EmployeeProfileManagement = () => {
       fetchProfiles();
     } catch (error) {
       console.error('Error saving profile:', error);
-      toast({
-        title: "Error",
-        description: "Failed to save employee profile",
-        variant: "destructive",
-      });
+        toast({
+          title: "Error",
+          description: "Failed to save rep profile",
+          variant: "destructive",
+        });
     }
   };
 
@@ -297,19 +297,19 @@ const EmployeeProfileManagement = () => {
 
       if (error) throw error;
 
-      toast({
-        title: "Success",
-        description: `Employee ${profile.is_active ? 'deactivated' : 'activated'} successfully`,
-      });
+        toast({
+          title: "Success",
+          description: `Rep ${profile.is_active ? 'deactivated' : 'activated'} successfully`,
+        });
 
       fetchProfiles();
     } catch (error) {
       console.error('Error updating status:', error);
-      toast({
-        title: "Error",
-        description: "Failed to update employee status",
-        variant: "destructive",
-      });
+        toast({
+          title: "Error",
+          description: "Failed to update rep status",
+          variant: "destructive",
+        });
     }
   };
 
@@ -317,7 +317,7 @@ const EmployeeProfileManagement = () => {
     return (
       <div className="text-center py-12">
         <div className="rounded-full h-12 w-12 border-b-2 border-primary mx-auto animate-spin"></div>
-        <p className="mt-4 text-muted-foreground">Loading employee profiles...</p>
+        <p className="mt-4 text-muted-foreground">Loading rep profiles...</p>
       </div>
     );
   }
@@ -331,7 +331,7 @@ const EmployeeProfileManagement = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-2xl sm:text-3xl font-bold text-primary">{stats.total}</p>
-                <p className="text-sm sm:text-base text-muted-foreground">Total Employees</p>
+                <p className="text-sm sm:text-base text-muted-foreground">Total Reps</p>
               </div>
               <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/20 rounded-lg flex items-center justify-center">
                 <Users className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
@@ -388,21 +388,21 @@ const EmployeeProfileManagement = () => {
         <CardHeader className="pb-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <CardTitle className="text-lg sm:text-xl">Employee Profiles</CardTitle>
-              <CardDescription className="text-sm">Manage employee information and photos</CardDescription>
+              <CardTitle className="text-lg sm:text-xl">Rep Profiles</CardTitle>
+              <CardDescription className="text-sm">Manage rep information and photos</CardDescription>
             </div>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
                 <Button onClick={openDialog} className="w-full sm:w-auto">
                   <Plus className="h-4 w-4 mr-2" />
-                  Add Employee
+                  Add Rep
                 </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
-                  <DialogTitle>{editingProfile ? 'Edit Employee Profile' : 'Create Employee Profile'}</DialogTitle>
+                  <DialogTitle>{editingProfile ? 'Edit Rep Profile' : 'Create Rep Profile'}</DialogTitle>
                   <DialogDescription>
-                    {editingProfile ? 'Update employee information and photo' : 'Add a new employee to the system with auto-generated employee ID'}
+                    {editingProfile ? 'Update rep information and photo' : 'Add a new rep to the system with auto-generated rep ID'}
                   </DialogDescription>
                 </DialogHeader>
 
@@ -586,7 +586,7 @@ const EmployeeProfileManagement = () => {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search employees..."
+              placeholder="Search reps..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -651,7 +651,7 @@ const ProfileGrid: React.FC<ProfileGridProps> = ({ profiles, onEdit, onToggleSta
         <div className="w-16 h-16 mx-auto mb-4 bg-muted/20 rounded-full flex items-center justify-center">
           <Users className="h-8 w-8 text-muted-foreground" />
         </div>
-        <h3 className="text-lg font-medium text-foreground mb-2">No employees found</h3>
+        <h3 className="text-lg font-medium text-foreground mb-2">No reps found</h3>
         <p className="text-sm text-muted-foreground">Try adjusting your search or filters</p>
       </div>
     );
@@ -720,9 +720,9 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ profile, onEdit, onToggleStat
               </h3>
               <div className="flex items-center gap-1 mt-1">
                 <IdCard className="h-3 w-3 text-primary" />
-                <span className="text-xs font-mono text-primary font-medium">
-                  {profile.employee_id}
-                </span>
+                  <span className="text-sm font-mono text-primary/80 font-medium">
+                    Rep ID: {profile.employee_id}
+                  </span>
               </div>
             </div>
           </div>
