@@ -3,70 +3,105 @@ import { Link } from 'react-router-dom';
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 p-4 md:p-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="bg-card rounded-2xl shadow-glow p-8 md:p-12 border border-border/20">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-6xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-4">
-              TriGuard Roofing
-            </h1>
-            <p className="text-lg md:text-xl text-muted-foreground">
-              Employee Onboarding System
-            </p>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 relative overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute inset-0 opacity-30">
+        <div className="absolute top-10 left-10 w-32 h-32 bg-blue-200 rounded-full blur-3xl"></div>
+        <div className="absolute top-40 right-20 w-48 h-48 bg-purple-200 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 left-20 w-40 h-40 bg-indigo-200 rounded-full blur-3xl"></div>
+      </div>
+      
+      <div className="relative z-10 px-4 py-8 md:py-16">
+        <div className="max-w-md mx-auto md:max-w-5xl">
+          {/* Header */}
+          <div className="text-center mb-12 md:mb-16">
+            <div className="mb-6">
+              <h1 className="text-4xl md:text-7xl font-black tracking-tight mb-3">
+                <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent">
+                  TriGuard
+                </span>
+                <br className="md:hidden" />
+                <span className="text-slate-800 ml-2 md:ml-0"> Roofing</span>
+              </h1>
+              <p className="text-lg md:text-2xl text-slate-600 font-medium mt-4">
+                Employee Onboarding System
+              </p>
+              <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto mt-6 rounded-full"></div>
+            </div>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-12">
+          {/* Main Actions */}
+          <div className="space-y-4 md:space-y-0 md:grid md:grid-cols-3 md:gap-6 mb-12 md:mb-16">
             <Link
               to="/onboarding"
-              className="group relative overflow-hidden bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl p-6 transition-all duration-300 hover:shadow-glow hover:scale-105 text-center"
+              className="group block relative overflow-hidden bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-2xl p-6 md:p-8 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/25 hover:-translate-y-1 mobile-card"
             >
-              <div className="relative z-10">
-                <div className="text-2xl mb-2">🚀</div>
-                <h3 className="font-semibold text-lg mb-2">Start Onboarding</h3>
-                <p className="text-sm opacity-90">Begin your journey with us</p>
+              <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
+              <div className="relative z-10 text-center">
+                <div className="text-4xl md:text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">🚀</div>
+                <h3 className="font-bold text-xl md:text-2xl mb-3">Start Onboarding</h3>
+                <p className="text-blue-100 text-sm md:text-base leading-relaxed">Begin your journey with our team</p>
               </div>
             </Link>
             
             <Link
               to="/user-login"
-              className="group relative overflow-hidden bg-secondary hover:bg-secondary/90 text-secondary-foreground rounded-xl p-6 transition-all duration-300 hover:shadow-glow hover:scale-105 text-center"
+              className="group block relative overflow-hidden bg-gradient-to-br from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800 text-white rounded-2xl p-6 md:p-8 transition-all duration-300 hover:shadow-2xl hover:shadow-slate-500/25 hover:-translate-y-1 mobile-card"
             >
-              <div className="relative z-10">
-                <div className="text-2xl mb-2">👤</div>
-                <h3 className="font-semibold text-lg mb-2">Employee Login</h3>
-                <p className="text-sm opacity-90">Access your dashboard</p>
+              <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
+              <div className="relative z-10 text-center">
+                <div className="text-4xl md:text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">👤</div>
+                <h3 className="font-bold text-xl md:text-2xl mb-3">Employee Login</h3>
+                <p className="text-slate-200 text-sm md:text-base leading-relaxed">Access your personal dashboard</p>
               </div>
             </Link>
             
             <Link
               to="/admin-login"
-              className="group relative overflow-hidden bg-accent hover:bg-accent/90 text-accent-foreground rounded-xl p-6 transition-all duration-300 hover:shadow-glow hover:scale-105 text-center"
+              className="group block relative overflow-hidden bg-gradient-to-br from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white rounded-2xl p-6 md:p-8 transition-all duration-300 hover:shadow-2xl hover:shadow-emerald-500/25 hover:-translate-y-1 mobile-card"
             >
-              <div className="relative z-10">
-                <div className="text-2xl mb-2">⚙️</div>
-                <h3 className="font-semibold text-lg mb-2">Admin Login</h3>
-                <p className="text-sm opacity-90">Management portal</p>
+              <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
+              <div className="relative z-10 text-center">
+                <div className="text-4xl md:text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">⚙️</div>
+                <h3 className="font-bold text-xl md:text-2xl mb-3">Admin Login</h3>
+                <p className="text-emerald-100 text-sm md:text-base leading-relaxed">Management portal access</p>
               </div>
             </Link>
           </div>
           
-          <div className="bg-muted/30 rounded-xl p-6 border border-border/30">
-            <h2 className="text-xl font-semibold text-center mb-6">Quick Access</h2>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          {/* Quick Access */}
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-white/50 shadow-xl">
+            <h2 className="text-xl md:text-2xl font-bold text-slate-800 text-center mb-6">Quick Access</h2>
+            <div className="flex flex-col sm:flex-row gap-6 sm:gap-8 justify-center items-center">
               <Link
                 to="/recruiting"
-                className="text-primary hover:text-primary/80 font-medium transition-colors underline-offset-4 hover:underline"
+                className="group flex items-center gap-3 text-blue-600 hover:text-blue-700 font-semibold text-lg transition-all duration-200 hover:scale-105 mobile-button"
               >
-                📊 Recruiting Dashboard
+                <span className="text-2xl group-hover:scale-110 transition-transform duration-200">📊</span>
+                <span className="border-b-2 border-transparent group-hover:border-blue-600 transition-colors duration-200">
+                  Recruiting Dashboard
+                </span>
               </Link>
-              <div className="hidden sm:block text-muted-foreground">•</div>
+              
+              <div className="hidden sm:block w-px h-8 bg-slate-300"></div>
+              
               <Link
                 to="/manager-login"
-                className="text-primary hover:text-primary/80 font-medium transition-colors underline-offset-4 hover:underline"
+                className="group flex items-center gap-3 text-purple-600 hover:text-purple-700 font-semibold text-lg transition-all duration-200 hover:scale-105 mobile-button"
               >
-                👔 Manager Login
+                <span className="text-2xl group-hover:scale-110 transition-transform duration-200">👔</span>
+                <span className="border-b-2 border-transparent group-hover:border-purple-600 transition-colors duration-200">
+                  Manager Login
+                </span>
               </Link>
             </div>
+          </div>
+          
+          {/* Footer */}
+          <div className="text-center mt-12 md:mt-16">
+            <p className="text-slate-500 text-sm md:text-base">
+              Streamlining your onboarding experience
+            </p>
           </div>
         </div>
       </div>
