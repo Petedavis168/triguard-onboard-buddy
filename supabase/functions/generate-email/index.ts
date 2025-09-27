@@ -100,8 +100,8 @@ const generateEmailAddress = async (firstName: string, lastName: string): Promis
     return baseEmail;
   }
 
-  // firstName.lastName email exists, try variations with numbers
-  for (let i = 1; i <= 99; i++) {
+  // firstName.lastName email exists, try variations with numbers starting at 2
+  for (let i = 2; i <= 99; i++) {
     const variantEmail = `${normalizedFirst}.${normalizedLast}${i}@triguardroofing.com`;
     
     const { data: existingVariant } = await supabase
