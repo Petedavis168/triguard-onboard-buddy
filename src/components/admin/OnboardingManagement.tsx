@@ -180,56 +180,56 @@ const OnboardingManagement = () => {
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      {/* Mobile-optimized Stats Cards - Stacked vertically on mobile */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      {/* Compact Stats Cards - 2x2 grid on mobile */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
         <Card className="shadow-sm hover:shadow-md transition-shadow border border-border/50">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">Total</CardTitle>
-            <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-              <FileText className="h-4 w-4 text-blue-600" />
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 px-3 pt-3 sm:px-6 sm:pt-6 sm:pb-2">
+            <CardTitle className="text-xs font-medium text-muted-foreground">Total</CardTitle>
+            <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-blue-100 flex items-center justify-center">
+              <FileText className="h-3 w-3 sm:h-4 sm:w-4 text-blue-600" />
             </div>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl sm:text-3xl font-bold text-foreground">{stats.total}</div>
+          <CardContent className="px-3 pb-3 sm:px-6 sm:pb-6">
+            <div className="text-xl sm:text-3xl font-bold text-foreground">{stats.total}</div>
             <p className="text-xs text-muted-foreground">Applications</p>
           </CardContent>
         </Card>
 
         <Card className="shadow-sm hover:shadow-md transition-shadow border border-border/50">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">Done</CardTitle>
-            <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
-              <CheckCircle className="h-4 w-4 text-green-600" />
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 px-3 pt-3 sm:px-6 sm:pt-6 sm:pb-2">
+            <CardTitle className="text-xs font-medium text-muted-foreground">Done</CardTitle>
+            <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-green-100 flex items-center justify-center">
+              <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 text-green-600" />
             </div>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl sm:text-3xl font-bold text-green-600">{stats.completed}</div>
+          <CardContent className="px-3 pb-3 sm:px-6 sm:pb-6">
+            <div className="text-xl sm:text-3xl font-bold text-green-600">{stats.completed}</div>
             <p className="text-xs text-muted-foreground">Finished</p>
           </CardContent>
         </Card>
 
         <Card className="shadow-sm hover:shadow-md transition-shadow border border-border/50">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">Active</CardTitle>
-            <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-              <Clock className="h-4 w-4 text-blue-600" />
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 px-3 pt-3 sm:px-6 sm:pt-6 sm:pb-2">
+            <CardTitle className="text-xs font-medium text-muted-foreground">Active</CardTitle>
+            <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-blue-100 flex items-center justify-center">
+              <Clock className="h-3 w-3 sm:h-4 sm:w-4 text-blue-600" />
             </div>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl sm:text-3xl font-bold text-blue-600">{stats.inProgress}</div>
+          <CardContent className="px-3 pb-3 sm:px-6 sm:pb-6">
+            <div className="text-xl sm:text-3xl font-bold text-blue-600">{stats.inProgress}</div>
             <p className="text-xs text-muted-foreground">In Progress</p>
           </CardContent>
         </Card>
 
         <Card className="shadow-sm hover:shadow-md transition-shadow border border-border/50">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">Draft</CardTitle>
-            <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
-              <AlertCircle className="h-4 w-4 text-gray-600" />
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 px-3 pt-3 sm:px-6 sm:pt-6 sm:pb-2">
+            <CardTitle className="text-xs font-medium text-muted-foreground">Draft</CardTitle>
+            <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-gray-100 flex items-center justify-center">
+              <AlertCircle className="h-3 w-3 sm:h-4 sm:w-4 text-gray-600" />
             </div>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl sm:text-3xl font-bold text-gray-600">{stats.draft}</div>
+          <CardContent className="px-3 pb-3 sm:px-6 sm:pb-6">
+            <div className="text-xl sm:text-3xl font-bold text-gray-600">{stats.draft}</div>
             <p className="text-xs text-muted-foreground">Not Started</p>
           </CardContent>
         </Card>
