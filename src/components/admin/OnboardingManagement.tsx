@@ -411,65 +411,79 @@ const ApplicationList: React.FC<ApplicationListProps> = ({ forms, onViewDetails 
 
       {/* Mobile Card View */}
       <div className="lg:hidden">
-        <div className="divide-y divide-gray-100">
+        <div className="space-y-4 p-4">
           {forms.map((form) => (
-            <div key={form.id} className="p-4 sm:p-6 hover:bg-gray-50/50">
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-2">
-                    <User className="h-4 w-4 text-gray-400 flex-shrink-0" />
-                    <h3 className="font-semibold text-gray-900 truncate">
-                      {form.first_name} {form.last_name}
-                    </h3>
+            <Card key={form.id} className="mobile-card">
+              <CardContent className="p-4">
+                {/* Header with Name and Status */}
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                      <User className="h-5 w-5 text-blue-600" />
+                    </div>
+                    <div>
+                      <div className="font-medium text-base">
+                        {form.first_name} {form.last_name}
+                      </div>
+                      {form.generated_email && (
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Mail className="h-4 w-4" />
+                          {form.generated_email}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  {form.generated_email && (
-                    <div className="flex items-center gap-2 mb-2">
-                      <Mail className="h-3 w-3 text-gray-400 flex-shrink-0" />
-                      <span className="text-sm text-gray-600 truncate">{form.generated_email}</span>
+                  {getStatusBadge(form.status, form.current_step)}
+                </div>
+
+                {/* Assignment Info */}
+                <div className="space-y-2 mb-3">
+                  {form.managers && (
+                    <div className="flex items-center gap-2 text-sm">
+                      <Users className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-muted-foreground">Manager:</span>
+                      <span className="font-medium">
+                        {form.managers.first_name} {form.managers.last_name}
+                      </span>
+                    </div>
+                  )}
+                  {form.teams && (
+                    <div className="flex items-center gap-2 text-sm">
+                      <MapPin className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-muted-foreground">Team:</span>
+                      <span className="font-medium">{form.teams.name}</span>
                     </div>
                   )}
                 </div>
-                <div className="flex flex-col items-end gap-2">
-                  {getStatusBadge(form.status, form.current_step)}
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => onViewDetails(form)}
-                    className="min-h-[32px] px-3 text-xs"
-                  >
-                    <Eye className="h-3 w-3 mr-1" />
-                    View
-                  </Button>
+
+                {/* Dates */}
+                <div className="border-t pt-3 mb-3">
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <span className="text-muted-foreground">Started:</span>
+                      <div className="font-medium">{formatDate(form.created_at)}</div>
+                    </div>
+                    {form.submitted_at && (
+                      <div>
+                        <span className="text-muted-foreground">Completed:</span>
+                        <div className="font-medium">{formatDate(form.submitted_at)}</div>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                {form.managers && (
-                  <div>
-                    <span className="text-gray-500">Manager:</span>
-                    <p className="text-gray-900 font-medium">
-                      {form.managers.first_name} {form.managers.last_name}
-                    </p>
-                  </div>
-                )}
-                {form.teams && (
-                  <div>
-                    <span className="text-gray-500">Team:</span>
-                    <p className="text-gray-900 font-medium">{form.teams.name}</p>
-                  </div>
-                )}
-                <div>
-                  <span className="text-gray-500">Started:</span>
-                  <p className="text-gray-900 font-medium">{formatDate(form.created_at)}</p>
-                </div>
-                {form.submitted_at && (
-                  <div>
-                    <span className="text-gray-500">Completed:</span>
-                    <p className="text-gray-900 font-medium">{formatDate(form.submitted_at)}</p>
-                  </div>
-                )}
-              </div>
-            </div>
+
+                {/* Action Button */}
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => onViewDetails(form)}
+                  className="w-full mobile-button"
+                >
+                  <Eye className="h-4 w-4 mr-2" />
+                  View Details
+                </Button>
+              </CardContent>
+            </Card>
           ))}
         </div>
       </div>
