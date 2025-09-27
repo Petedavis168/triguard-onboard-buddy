@@ -452,6 +452,71 @@ export type Database = {
         }
         Relationships: []
       }
+      employee_profiles: {
+        Row: {
+          created_at: string
+          department: string | null
+          email: string | null
+          employee_id: string
+          first_name: string
+          hire_date: string | null
+          id: string
+          is_active: boolean
+          last_name: string
+          manager_name: string | null
+          onboarding_form_id: string | null
+          phone: string | null
+          position: string | null
+          profile_photo_url: string | null
+          team: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          department?: string | null
+          email?: string | null
+          employee_id: string
+          first_name: string
+          hire_date?: string | null
+          id?: string
+          is_active?: boolean
+          last_name: string
+          manager_name?: string | null
+          onboarding_form_id?: string | null
+          phone?: string | null
+          position?: string | null
+          profile_photo_url?: string | null
+          team?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          department?: string | null
+          email?: string | null
+          employee_id?: string
+          first_name?: string
+          hire_date?: string | null
+          id?: string
+          is_active?: boolean
+          last_name?: string
+          manager_name?: string | null
+          onboarding_form_id?: string | null
+          phone?: string | null
+          position?: string | null
+          profile_photo_url?: string | null
+          team?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "employee_profiles_onboarding_form_id_fkey"
+            columns: ["onboarding_form_id"]
+            isOneToOne: false
+            referencedRelation: "onboarding_forms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       jobs: {
         Row: {
           address: string
@@ -1879,6 +1944,10 @@ export type Database = {
           last_name: string
           team_id: string
         }[]
+      }
+      generate_employee_id: {
+        Args: Record<PropertyKey, never>
+        Returns: string
       }
       generate_secure_password: {
         Args: Record<PropertyKey, never>

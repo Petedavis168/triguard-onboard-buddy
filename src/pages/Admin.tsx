@@ -16,6 +16,7 @@ import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import LMSManagement from "@/components/admin/LMSManagement";
 import { DepartmentManagement } from "@/components/admin/DepartmentManagement";
 import { PositionManagement } from "@/components/admin/PositionManagement";
+import EmployeeProfileManagement from "@/components/admin/EmployeeProfileManagement";
 import { 
   FileText, 
   Settings, 
@@ -26,7 +27,8 @@ import {
   Users,
   BookOpen,
   Building2,
-  UserCog
+  UserCog,
+  User
 } from 'lucide-react';
 
 export const Admin: React.FC = () => {
@@ -273,6 +275,22 @@ export const Admin: React.FC = () => {
           </div>
         );
       
+      case 'employees':
+        return (
+          <div className="space-y-4 sm:space-y-6">
+            <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+              <div className="p-2 sm:p-3 rounded-lg sm:rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 shadow-md">
+                <User className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-white" />
+              </div>
+              <div>
+                <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground">Employee Profiles</h2>
+                <p className="text-xs sm:text-sm text-muted-foreground">Manage employee information and photos</p>
+              </div>
+            </div>
+            <EmployeeProfileManagement />
+          </div>
+        );
+        
       case 'onboarding':
         return (
           <div className="space-y-4 sm:space-y-6">

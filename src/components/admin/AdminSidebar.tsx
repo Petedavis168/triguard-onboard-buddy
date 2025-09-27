@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Users, Calendar, ClipboardList, UserCheck, Settings, BookOpen, FileText, Building2, UserCog, UserPlus, Building, ListTodo, ChevronLeft, LogOut } from "lucide-react";
+import { Users, Calendar, ClipboardList, UserCheck, Settings, BookOpen, FileText, Building2, UserCog, UserPlus, Building, ListTodo, ChevronLeft, User } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -35,6 +35,12 @@ const menuItems = [
     title: 'Onboarding',
     icon: FileText,
     description: 'Track and manage employee onboarding processes'
+  },
+  {
+    id: 'employees',
+    title: 'Employee Profiles',
+    icon: User,
+    description: 'Manage employee information and photos'
   },
   {
     id: 'lms',
@@ -97,16 +103,6 @@ export function AdminSidebar({ activeTab, onTabChange }: AdminSidebarProps) {
   const navigate = useNavigate();
   const { toast } = useToast();
   const isCollapsed = state === 'collapsed';
-
-  const handleLogout = () => {
-    localStorage.removeItem('adminAuthenticated');
-    localStorage.removeItem('adminEmail');
-    toast({
-      title: "Logged Out",
-      description: "You have been successfully logged out",
-    });
-    navigate('/admin-login');
-  };
 
   return (
     <Sidebar className="border-r border-border/30 bg-card/30 backdrop-blur-sm">
