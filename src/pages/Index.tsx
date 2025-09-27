@@ -69,27 +69,29 @@ const Index = () => {
 
             {/* Primary CTA */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-12">
-              <Link to="/onboarding">
-                <Button 
-                  size="lg"
-                  className="flex items-center gap-3 text-lg px-8 py-4 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1"
-                >
+              <Button 
+                size="lg"
+                className="flex items-center gap-3 text-lg px-8 py-4 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1"
+                asChild
+              >
+                <Link to="/onboarding">
                   <FileText className="h-5 w-5" />
                   Start Onboarding
                   <ArrowRight className="h-5 w-5" />
-                </Button>
-              </Link>
+                </Link>
+              </Button>
               
-              <Link to="/user-login">
-                <Button 
-                  variant="outline"
-                  size="lg"
-                  className="flex items-center gap-3 text-lg px-8 py-4 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1"
-                >
+              <Button 
+                variant="outline"
+                size="lg"
+                className="flex items-center gap-3 text-lg px-8 py-4 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1"
+                asChild
+              >
+                <Link to="/user-login">
                   <UserCheck className="h-5 w-5" />
                   Employee Login
-                </Button>
-              </Link>
+                </Link>
+              </Button>
             </div>
 
             {/* Trust Indicators */}
