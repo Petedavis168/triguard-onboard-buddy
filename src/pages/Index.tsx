@@ -1,124 +1,72 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 
 const Index = () => {
-  console.log('INDEX COMPONENT IS RENDERING!!!');
-  
   return (
-    <div style={{
-      minHeight: '100vh',
-      backgroundColor: '#f1f5f9',
-      padding: '20px',
-      fontFamily: 'Arial, sans-serif'
-    }}>
-      <div style={{
-        backgroundColor: 'red',
-        color: 'white',
-        padding: '10px',
-        position: 'fixed',
-        top: '10px',
-        left: '10px',
-        zIndex: 9999,
-        fontSize: '14px',
-        fontWeight: 'bold'
-      }}>
-        INDEX COMPONENT LOADED!!!
-      </div>
-      
-      <div style={{
-        maxWidth: '800px',
-        margin: '0 auto',
-        backgroundColor: 'white',
-        padding: '40px',
-        borderRadius: '10px',
-        boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-      }}>
-        <h1 style={{
-          fontSize: '48px',
-          fontWeight: 'bold',
-          color: '#1e293b',
-          textAlign: 'center',
-          marginBottom: '20px'
-        }}>
-          TriGuard Roofing
-        </h1>
-        
-        <p style={{
-          fontSize: '18px',
-          color: '#64748b',
-          textAlign: 'center',
-          marginBottom: '40px'
-        }}>
-          Employee Onboarding System - Test Version
-        </p>
-        
-        <div style={{
-          display: 'flex',
-          gap: '20px',
-          justifyContent: 'center',
-          flexWrap: 'wrap'
-        }}>
-          <a href="/onboarding" style={{
-            backgroundColor: '#3b82f6',
-            color: 'white',
-            padding: '15px 30px',
-            borderRadius: '8px',
-            textDecoration: 'none',
-            fontWeight: 'bold',
-            fontSize: '16px'
-          }}>
-            Start Onboarding
-          </a>
+    <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 p-4 md:p-8">
+      <div className="max-w-4xl mx-auto">
+        <div className="bg-card rounded-2xl shadow-glow p-8 md:p-12 border border-border/20">
+          <div className="text-center mb-12">
+            <h1 className="text-4xl md:text-6xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-4">
+              TriGuard Roofing
+            </h1>
+            <p className="text-lg md:text-xl text-muted-foreground">
+              Employee Onboarding System
+            </p>
+          </div>
           
-          <a href="/user-login" style={{
-            backgroundColor: '#6b7280',
-            color: 'white',
-            padding: '15px 30px',
-            borderRadius: '8px',
-            textDecoration: 'none',
-            fontWeight: 'bold',
-            fontSize: '16px'
-          }}>
-            Employee Login
-          </a>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-12">
+            <Link
+              to="/onboarding"
+              className="group relative overflow-hidden bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl p-6 transition-all duration-300 hover:shadow-glow hover:scale-105 text-center"
+            >
+              <div className="relative z-10">
+                <div className="text-2xl mb-2">🚀</div>
+                <h3 className="font-semibold text-lg mb-2">Start Onboarding</h3>
+                <p className="text-sm opacity-90">Begin your journey with us</p>
+              </div>
+            </Link>
+            
+            <Link
+              to="/user-login"
+              className="group relative overflow-hidden bg-secondary hover:bg-secondary/90 text-secondary-foreground rounded-xl p-6 transition-all duration-300 hover:shadow-glow hover:scale-105 text-center"
+            >
+              <div className="relative z-10">
+                <div className="text-2xl mb-2">👤</div>
+                <h3 className="font-semibold text-lg mb-2">Employee Login</h3>
+                <p className="text-sm opacity-90">Access your dashboard</p>
+              </div>
+            </Link>
+            
+            <Link
+              to="/admin-login"
+              className="group relative overflow-hidden bg-accent hover:bg-accent/90 text-accent-foreground rounded-xl p-6 transition-all duration-300 hover:shadow-glow hover:scale-105 text-center"
+            >
+              <div className="relative z-10">
+                <div className="text-2xl mb-2">⚙️</div>
+                <h3 className="font-semibold text-lg mb-2">Admin Login</h3>
+                <p className="text-sm opacity-90">Management portal</p>
+              </div>
+            </Link>
+          </div>
           
-          <a href="/admin-login" style={{
-            backgroundColor: '#059669',
-            color: 'white',
-            padding: '15px 30px',
-            borderRadius: '8px',
-            textDecoration: 'none',
-            fontWeight: 'bold',
-            fontSize: '16px'
-          }}>
-            Admin Login
-          </a>
-        </div>
-        
-        <div style={{
-          marginTop: '40px',
-          padding: '20px',
-          backgroundColor: '#f8fafc',
-          borderRadius: '8px',
-          textAlign: 'center'
-        }}>
-          <h2 style={{ color: '#1e293b', marginBottom: '10px' }}>Quick Access</h2>
-          <div style={{ display: 'flex', gap: '15px', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link to="/recruiting" style={{
-              color: '#3b82f6',
-              textDecoration: 'none',
-              fontWeight: 'bold'
-            }}>
-              Recruiting Dashboard
-            </Link>
-            <Link to="/manager-login" style={{
-              color: '#3b82f6',
-              textDecoration: 'none',
-              fontWeight: 'bold'
-            }}>
-              Manager Login
-            </Link>
+          <div className="bg-muted/30 rounded-xl p-6 border border-border/30">
+            <h2 className="text-xl font-semibold text-center mb-6">Quick Access</h2>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Link
+                to="/recruiting"
+                className="text-primary hover:text-primary/80 font-medium transition-colors underline-offset-4 hover:underline"
+              >
+                📊 Recruiting Dashboard
+              </Link>
+              <div className="hidden sm:block text-muted-foreground">•</div>
+              <Link
+                to="/manager-login"
+                className="text-primary hover:text-primary/80 font-medium transition-colors underline-offset-4 hover:underline"
+              >
+                👔 Manager Login
+              </Link>
+            </div>
           </div>
         </div>
       </div>

@@ -1,95 +1,48 @@
-const App = () => (
-  <div style={{
-    minHeight: '100vh',
-    backgroundColor: '#f1f5f9',
-    padding: '20px',
-    fontFamily: 'Arial, sans-serif'
-  }}>
-    <div style={{
-      backgroundColor: 'red',
-      color: 'white', 
-      padding: '10px',
-      position: 'fixed',
-      top: '10px',
-      left: '10px',
-      zIndex: 9999,
-      fontSize: '14px',
-      fontWeight: 'bold'
-    }}>
-      BASIC APP LOADED!!!
-    </div>
-    
-    <div style={{
-      maxWidth: '800px',
-      margin: '0 auto',
-      backgroundColor: 'white',
-      padding: '40px',
-      borderRadius: '10px',
-      boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-    }}>
-      <h1 style={{
-        fontSize: '48px',
-        fontWeight: 'bold',
-        color: '#1e293b',
-        textAlign: 'center',
-        marginBottom: '20px'
-      }}>
-        TriGuard Roofing
-      </h1>
-      
-      <p style={{
-        fontSize: '18px',
-        color: '#64748b',
-        textAlign: 'center',
-        marginBottom: '40px'
-      }}>
-        Employee Onboarding System - Test Version
-      </p>
-      
-      <div style={{
-        display: 'flex',
-        gap: '20px',
-        justifyContent: 'center',
-        flexWrap: 'wrap'
-      }}>
-        <a href="/onboarding" style={{
-          backgroundColor: '#3b82f6',
-          color: 'white',
-          padding: '15px 30px',
-          borderRadius: '8px',
-          textDecoration: 'none',
-          fontWeight: 'bold',
-          fontSize: '16px'
-        }}>
-          Start Onboarding
-        </a>
-        
-        <a href="/user-login" style={{
-          backgroundColor: '#6b7280',
-          color: 'white',
-          padding: '15px 30px',
-          borderRadius: '8px',
-          textDecoration: 'none',
-          fontWeight: 'bold',
-          fontSize: '16px'
-        }}>
-          Employee Login
-        </a>
-        
-        <a href="/admin-login" style={{
-          backgroundColor: '#059669',
-          color: 'white',
-          padding: '15px 30px',
-          borderRadius: '8px',
-          textDecoration: 'none',
-          fontWeight: 'bold',
-          fontSize: '16px'
-        }}>
-          Admin Login
-        </a>
-      </div>
-    </div>
-  </div>
-);
+import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import Index from "./pages/Index";
+import Login from "./pages/Login";
+import { OnboardingForm } from "./components/onboarding/OnboardingForm";
+import Admin from "./pages/Admin";
+import AdminLogin from "./pages/AdminLogin";
+import ManagerLogin from "./pages/ManagerLogin";
+import ManagerPasswordChange from "./pages/ManagerPasswordChange";
+import AdminPasswordChange from "./pages/AdminPasswordChange";
+import ManagerDashboard from "./pages/ManagerDashboard";
+import UserLogin from "./pages/UserLogin";
+import UserDashboard from "./pages/UserDashboard";
+import RecruitingDashboard from "./pages/RecruitingDashboard";
+import NotFound from "./pages/NotFound";
+
+const queryClient = new QueryClient();
+
+const App = () => {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Toaster />
+      <Sonner />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/onboarding" element={<OnboardingForm />} />
+          <Route path="/admin-login" element={<AdminLogin />} />
+          <Route path="/admin-password-change" element={<AdminPasswordChange />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/manager-login" element={<ManagerLogin />} />
+          <Route path="/manager-password-change" element={<ManagerPasswordChange />} />
+          <Route path="/manager-dashboard" element={<ManagerDashboard />} />
+          <Route path="/user-login" element={<UserLogin />} />
+          <Route path="/user-dashboard" element={<UserDashboard />} />
+          <Route path="/recruiting" element={<RecruitingDashboard />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
