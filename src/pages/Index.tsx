@@ -65,20 +65,20 @@ const Index = () => {
 
             {/* Primary CTA */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
-              <Link to="/onboarding">
-                <Button size="lg" className="bg-gradient-primary hover:opacity-90 text-primary-foreground shadow-glow px-8 py-6 text-lg font-semibold">
+              <Button size="lg" className="bg-gradient-primary hover:opacity-90 text-primary-foreground shadow-glow px-8 py-6 text-lg font-semibold" asChild>
+                <Link to="/onboarding">
                   <FileText className="h-5 w-5 mr-2" />
                   Start Onboarding
                   <ArrowRight className="h-5 w-5 ml-2" />
-                </Button>
-              </Link>
+                </Link>
+              </Button>
               
-              <Link to="/user-login">
-                <Button variant="outline" size="lg" className="border-primary/20 hover:border-primary/40 hover:bg-primary/5 px-8 py-6 text-lg">
+              <Button variant="outline" size="lg" className="border-primary/20 hover:border-primary/40 hover:bg-primary/5 px-8 py-6 text-lg" asChild>
+                <Link to="/user-login">
                   <UserCheck className="h-5 w-5 mr-2" />
                   Employee Login
-                </Button>
-              </Link>
+                </Link>
+              </Button>
             </div>
 
             {/* Trust Indicators */}
@@ -112,16 +112,18 @@ const Index = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* Employee Onboarding */}
             <Card className="shadow-xl border-0 bg-gradient-card group cursor-pointer overflow-hidden">
-              <Link to="/onboarding">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-blue-600/10"></div>
-                <CardHeader className="text-center relative z-10">
-                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-                    <FileText className="h-8 w-8 text-white" />
-                  </div>
-                  <CardTitle className="text-2xl mb-2">Personal Information</CardTitle>
-                  <p className="text-muted-foreground">Complete your profile and personal details</p>
-                </CardHeader>
-              </Link>
+              <Button variant="ghost" className="h-full w-full p-0" asChild>
+                <Link to="/onboarding">
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-blue-600/10"></div>
+                  <CardHeader className="text-center relative z-10">
+                    <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                      <FileText className="h-8 w-8 text-white" />
+                    </div>
+                    <CardTitle className="text-2xl mb-2">Personal Information</CardTitle>
+                    <p className="text-muted-foreground">Complete your profile and personal details</p>
+                  </CardHeader>
+                </Link>
+              </Button>
             </Card>
 
             {/* Document Upload */}
@@ -154,19 +156,21 @@ const Index = () => {
         <section className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
           {/* Recruiting Dashboard */}
           <Card className="shadow-xl border-0 bg-gradient-card group cursor-pointer">
-            <Link to="/recruiting">
-              <CardHeader className="text-center">
-                <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <Users className="h-6 w-6 text-white" />
-                </div>
-                <CardTitle className="text-xl">Recruiting Dashboard</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground text-center">
-                  View and manage onboarding submissions with CRM-style tools
-                </p>
-              </CardContent>
-            </Link>
+            <Button variant="ghost" className="h-full w-full p-0" asChild>
+              <Link to="/recruiting">
+                <CardHeader className="text-center">
+                  <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <Users className="h-6 w-6 text-white" />
+                  </div>
+                  <CardTitle className="text-xl">Recruiting Dashboard</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground text-center">
+                    View and manage onboarding submissions with CRM-style tools
+                  </p>
+                </CardContent>
+              </Link>
+            </Button>
           </Card>
 
           {/* Teams & Departments */}
