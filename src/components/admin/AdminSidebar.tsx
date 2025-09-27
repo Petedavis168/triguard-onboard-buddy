@@ -109,40 +109,63 @@ export function AdminSidebar({ activeTab, onTabChange }: AdminSidebarProps) {
   };
 
   return (
-    <Sidebar className="border-r border-border/50">
-      {/* Header */}
-      <SidebarHeader className="p-4 border-b border-border/50">
+    <Sidebar className="border-r border-border/30 bg-card/30 backdrop-blur-sm">
+      {/* Enhanced Header */}
+      <SidebarHeader className="p-6 border-b border-border/30 bg-gradient-to-r from-primary/5 to-accent/5">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center shadow-md">
+          <div className="w-10 h-10 bg-gradient-primary rounded-xl flex items-center justify-center shadow-lg ring-2 ring-primary/20">
             <span className="text-sm font-bold text-primary-foreground">TR</span>
           </div>
           {!isCollapsed && (
-            <div>
-              <h2 className="text-sm font-bold text-foreground">TriGuard Roofing</h2>
-              <p className="text-xs text-muted-foreground">Admin Panel</p>
+            <div className="flex-1 min-w-0">
+              <h2 className="text-base font-bold text-foreground truncate">TriGuard Roofing</h2>
+              <p className="text-xs text-muted-foreground">Admin Control Panel</p>
             </div>
           )}
         </div>
       </SidebarHeader>
 
-      {/* Navigation Content */}
-      <SidebarContent className="px-2">
+      {/* Enhanced Navigation Content */}
+      <SidebarContent className="px-3 py-4">
         <SidebarGroup>
-          <SidebarGroupLabel className={isCollapsed ? "sr-only" : ""}>
-            Management
+          <SidebarGroupLabel className={`text-xs font-semibold text-muted-foreground/80 uppercase tracking-wider mb-3 ${isCollapsed ? "sr-only" : ""}`}>
+            Management Hub
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
-              {menuItems.map((item) => (
+            <SidebarMenu className="space-y-1">
+              {menuItems.map((item, index) => (
                 <SidebarMenuItem key={item.id}>
                   <SidebarMenuButton
                     onClick={() => onTabChange(item.id)}
                     isActive={activeTab === item.id}
                     tooltip={isCollapsed ? item.title : undefined}
-                    className="w-full justify-start"
+                    className={`
+                      w-full justify-start px-3 py-3 rounded-xl transition-all duration-200 group
+                      ${activeTab === item.id 
+                        ? 'bg-primary/10 text-primary shadow-sm border border-primary/20 hover:bg-primary/15' 
+                        : 'hover:bg-muted/50 hover:text-foreground hover:shadow-sm'
+                      }
+                      ${isCollapsed ? 'justify-center' : ''}
+                    `}
                   >
-                    <item.icon className="h-4 w-4 flex-shrink-0" />
-                    {!isCollapsed && <span>{item.title}</span>}
+                    <item.icon className={`h-5 w-5 flex-shrink-0 transition-colors ${
+                      activeTab === item.id ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground'
+                    }`} />
+                    {!isCollapsed && (
+                      <div className="flex-1 min-w-0 ml-3">
+                        <div className={`text-sm font-medium truncate ${
+                          activeTab === item.id ? 'text-primary' : 'text-foreground'
+                        }`}>
+                          {item.title}
+                        </div>
+                        <div className="text-xs text-muted-foreground truncate mt-0.5">
+                          {item.description}
+                        </div>
+                      </div>
+                    )}
+                    {!isCollapsed && activeTab === item.id && (
+                      <div className="w-1.5 h-1.5 bg-primary rounded-full flex-shrink-0"></div>
+                    )}
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -151,27 +174,31 @@ export function AdminSidebar({ activeTab, onTabChange }: AdminSidebarProps) {
         </SidebarGroup>
       </SidebarContent>
 
-      {/* Footer with Action Buttons */}
-      <SidebarFooter className="p-2 border-t border-border/50">
+      {/* Enhanced Footer */}
+      <SidebarFooter className="p-4 border-t border-border/30 bg-gradient-to-r from-muted/20 to-muted/10">
         <div className="space-y-2">
           <Link to="/" className="w-full">
             <Button 
-              variant="outline" 
+              variant="ghost" 
               size="sm"
-              className="w-full justify-start text-xs"
+              className={`w-full justify-start text-sm font-medium hover:bg-muted/50 transition-all duration-200 ${
+                isCollapsed ? 'justify-center px-2' : 'px-3'
+              }`}
             >
-              <ChevronLeft className="h-3 w-3 flex-shrink-0" />
-              {!isCollapsed && <span className="ml-2">Back to Home</span>}
+              <ChevronLeft className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
+              {!isCollapsed && <span className="ml-2 text-muted-foreground">Back to Home</span>}
             </Button>
           </Link>
           <Button 
-            variant="outline" 
+            variant="ghost" 
             size="sm"
             onClick={handleLogout}
-            className="w-full justify-start text-xs hover:text-destructive"
+            className={`w-full justify-start text-sm font-medium hover:bg-destructive/10 hover:text-destructive transition-all duration-200 ${
+              isCollapsed ? 'justify-center px-2' : 'px-3'
+            }`}
           >
-            <LogOut className="h-3 w-3 flex-shrink-0" />
-            {!isCollapsed && <span className="ml-2">Logout</span>}
+            <LogOut className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
+            {!isCollapsed && <span className="ml-2 text-muted-foreground">Logout</span>}
           </Button>
         </div>
       </SidebarFooter>
