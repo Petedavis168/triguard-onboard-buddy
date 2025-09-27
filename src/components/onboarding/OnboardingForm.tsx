@@ -82,41 +82,41 @@ export const OnboardingForm: React.FC<OnboardingFormProps> = ({ formId }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/50 to-indigo-100/70 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/50 to-indigo-100/70 p-2 sm:p-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center shadow-glow">
-              <span className="text-xl font-bold text-white">TR</span>
+        <div className="text-center mb-6 sm:mb-8 px-2">
+          <div className="inline-flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-primary rounded-xl flex items-center justify-center shadow-glow">
+              <span className="text-lg sm:text-xl font-bold text-white">TR</span>
             </div>
             <div>
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary-dark bg-clip-text text-transparent">
+              <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-r from-primary to-primary-dark bg-clip-text text-transparent">
                 TriGuard Roofing
               </h1>
-              <p className="text-lg text-muted-foreground">Employee Onboarding System</p>
+              <p className="text-sm sm:text-lg text-muted-foreground">Employee Onboarding System</p>
             </div>
           </div>
         </div>
 
-        <Card className="shadow-2xl border-0 bg-gradient-card">
-          <CardHeader className="bg-gradient-primary text-primary-foreground rounded-t-xl relative overflow-hidden">
+        <Card className="shadow-2xl border-0 bg-gradient-card mx-2 sm:mx-0">
+          <CardHeader className="bg-gradient-primary text-primary-foreground rounded-t-xl relative overflow-hidden p-4 sm:p-6">
             {/* Subtle pattern overlay */}
             <div className="absolute inset-0 bg-white/5 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1)_0%,transparent_50%)]"></div>
             
             <div className="relative z-10">
-              <CardTitle className="text-3xl font-bold text-center mb-2">
+              <CardTitle className="text-xl sm:text-2xl md:text-3xl font-bold text-center mb-2">
                 Welcome to Your Onboarding Journey
               </CardTitle>
-              <p className="text-primary-foreground/80 text-center mb-4">
+              <p className="text-primary-foreground/80 text-center mb-3 sm:mb-4 text-sm sm:text-base">
                 Step {currentStep} of {FORM_STEPS.length}: {currentStepInfo?.title}
               </p>
-              <p className="text-sm text-primary-foreground/70 text-center mb-6">
+              <p className="text-xs sm:text-sm text-primary-foreground/70 text-center mb-4 sm:mb-6 px-2">
                 {currentStepInfo?.description}
               </p>
               
-              <div className="space-y-3">
-                <Progress value={progress} className="h-3 bg-white/20 rounded-full">
+              <div className="space-y-2 sm:space-y-3">
+                <Progress value={progress} className="h-2 sm:h-3 bg-white/20 rounded-full">
                   <div className="h-full bg-gradient-to-r from-white to-primary-glow rounded-full transition-all duration-300"></div>
                 </Progress>
                 <p className="text-xs text-primary-foreground/80 text-center">
@@ -126,7 +126,7 @@ export const OnboardingForm: React.FC<OnboardingFormProps> = ({ formId }) => {
             </div>
           </CardHeader>
 
-          <CardContent className="p-8 bg-white/80 backdrop-blur-sm">
+          <CardContent className="p-4 sm:p-8 bg-white/80 backdrop-blur-sm">
             <Form {...form}>
               <div className="space-y-8">
                 <div className="">

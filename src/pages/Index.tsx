@@ -27,92 +27,90 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-secondary/10 to-accent/5">
       {/* Header with Login Dropdown */}
       <header className="sticky top-0 z-50 backdrop-blur-sm bg-background/80 border-b border-border/50">
-        <div className="max-w-7xl mx-auto px-6 py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-primary rounded-lg flex items-center justify-center shadow-md">
-                <span className="text-lg font-bold text-primary-foreground">TR</span>
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-primary rounded-lg flex items-center justify-center shadow-md">
+                <span className="text-sm sm:text-lg font-bold text-primary-foreground">TR</span>
               </div>
               <div>
-                <h1 className="text-xl font-bold text-foreground">TriGuard Roofing</h1>
-                <p className="text-sm text-muted-foreground">Employee Management</p>
+                <h1 className="text-lg sm:text-xl font-bold text-foreground">TriGuard Roofing</h1>
+                <p className="text-xs sm:text-sm text-muted-foreground hidden sm:block">Employee Management</p>
               </div>
             </div>
 
             {/* Login Button */}
             <Link to="/login">
-              <Button variant="outline" className="flex items-center gap-2">
-                <LogIn className="h-4 w-4" />
-                Login
+              <Button variant="outline" className="flex items-center gap-2 text-sm sm:text-base px-3 sm:px-4 py-2">
+                <LogIn className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">Login</span>
               </Button>
             </Link>
           </div>
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-6 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         {/* Hero Section */}
-        <section className="text-center mb-20">
-          <div className="mb-8">
-            <h1 className="text-6xl md:text-7xl font-bold mb-6 leading-tight">
+        <section className="text-center mb-16 sm:mb-20">
+          <div className="mb-6 sm:mb-8">
+            <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold mb-4 sm:mb-6 leading-tight px-4">
               Welcome to{' '}
               <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
                 TriGuard Roofing
               </span>
             </h1>
             
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8 leading-relaxed">
+            <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto mb-6 sm:mb-8 leading-relaxed px-4">
               Start your journey with us! Our streamlined onboarding process will get you ready for 
               success. Complete your profile, upload your badge photo, and join the team.
             </p>
 
             {/* Primary CTA */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-12">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 mb-12 px-4">
               <Button 
                 size="lg"
-                className="flex items-center gap-3 text-lg px-8 py-4 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  console.log('Start Onboarding clicked');
+                className="w-full sm:w-auto flex items-center justify-center gap-3 text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1 min-h-[3rem] sm:min-h-[3.5rem]"
+                onClick={() => {
+                  console.log('Navigating to onboarding');
                   navigate('/onboarding');
                 }}
+                type="button"
               >
-                <FileText className="h-5 w-5" />
-                Start Onboarding
-                <ArrowRight className="h-5 w-5" />
+                <FileText className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
+                <span className="whitespace-nowrap">Start Onboarding</span>
+                <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
               </Button>
               
               <Button 
                 variant="outline"
                 size="lg"
-                className="flex items-center gap-3 text-lg px-8 py-4 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  console.log('Employee Login clicked');
+                className="w-full sm:w-auto flex items-center justify-center gap-3 text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1 min-h-[3rem] sm:min-h-[3.5rem]"
+                onClick={() => {
+                  console.log('Navigating to user login');
                   navigate('/user-login');
                 }}
+                type="button"
               >
-                <UserCheck className="h-5 w-5" />
-                Employee Login
+                <UserCheck className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
+                <span className="whitespace-nowrap">Employee Login</span>
               </Button>
             </div>
 
             {/* Trust Indicators */}
-            <div className="flex flex-wrap items-center justify-center gap-8 text-sm text-muted-foreground">
+            <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8 text-sm text-muted-foreground px-4">
               <div className="flex items-center gap-2">
-                <CheckCircle className="h-4 w-4 text-success" />
-                <span>9-Step Process</span>
+                <CheckCircle className="h-4 w-4 text-success flex-shrink-0" />
+                <span className="whitespace-nowrap">9-Step Process</span>
               </div>
               <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4 text-primary" />
-                <span>15 Min Setup</span>
+                <Clock className="h-4 w-4 text-primary flex-shrink-0" />
+                <span className="whitespace-nowrap">15 Min Setup</span>
               </div>
               <div className="flex items-center gap-2">
-                <Shield className="h-4 w-4 text-warning" />
-                <span>Secure & Private</span>
+                <Shield className="h-4 w-4 text-warning flex-shrink-0" />
+                <span className="whitespace-nowrap">Secure & Private</span>
               </div>
             </div>
           </div>
