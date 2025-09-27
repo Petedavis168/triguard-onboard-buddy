@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { LogOut } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useAdminStats } from '@/hooks/useAdminStats';
 import { UserManagement } from '@/components/admin/UserManagement';
 import { TeamManagement } from '@/components/admin/TeamManagement';
 import TaskManagement from '@/components/admin/TaskManagement';
@@ -32,6 +33,7 @@ export const Admin: React.FC = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('overview');
+  const { stats, recentActivity, isLoading: statsLoading } = useAdminStats();
 
   useEffect(() => {
     // Check if admin is authenticated
@@ -76,11 +78,19 @@ export const Admin: React.FC = () => {
                   <div className="p-2 bg-primary/20 rounded-lg">
                     <FileText className="h-5 w-5 text-primary" />
                   </div>
-                  <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">+12%</span>
+                  {stats.onboardingForms.pending > 0 && (
+                    <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
+                      {stats.onboardingForms.pending} pending
+                    </span>
+                  )}
                 </div>
-                <h3 className="text-2xl font-bold text-foreground mb-1">24</h3>
-                <p className="text-sm text-muted-foreground">Active Forms</p>
-                <p className="text-xs text-muted-foreground mt-2">12 pending review</p>
+                <h3 className="text-2xl font-bold text-foreground mb-1">
+                  {statsLoading ? '—' : stats.onboardingForms.total}
+                </h3>
+                <p className="text-sm text-muted-foreground">Onboarding Forms</p>
+                <p className="text-xs text-muted-foreground mt-2">
+                  {stats.onboardingForms.completed} completed
+                </p>
               </div>
 
               <div className="bg-gradient-to-br from-success/10 to-success/5 rounded-xl p-6 border border-success/20">
@@ -88,23 +98,39 @@ export const Admin: React.FC = () => {
                   <div className="p-2 bg-success/20 rounded-lg">
                     <UserCheck className="h-5 w-5 text-success" />
                   </div>
-                  <span className="text-xs bg-success/10 text-success px-2 py-1 rounded-full">+3</span>
+                  {stats.managers.active > 0 && (
+                    <span className="text-xs bg-success/10 text-success px-2 py-1 rounded-full">
+                      {stats.managers.active} active
+                    </span>
+                  )}
                 </div>
-                <h3 className="text-2xl font-bold text-foreground mb-1">18</h3>
-                <p className="text-sm text-muted-foreground">Active Managers</p>
-                <p className="text-xs text-muted-foreground mt-2">8 teams managed</p>
+                <h3 className="text-2xl font-bold text-foreground mb-1">
+                  {statsLoading ? '—' : stats.managers.total}
+                </h3>
+                <p className="text-sm text-muted-foreground">Managers</p>
+                <p className="text-xs text-muted-foreground mt-2">
+                  {stats.teams.total} teams managed
+                </p>
               </div>
 
               <div className="bg-gradient-to-br from-warning/10 to-warning/5 rounded-xl p-6 border border-warning/20">
                 <div className="flex items-center justify-between mb-4">
                   <div className="p-2 bg-warning/20 rounded-lg">
-                    <Building className="h-5 w-5 text-warning" />
+                    <Building2 className="h-5 w-5 text-warning" />
                   </div>
-                  <span className="text-xs bg-warning/10 text-warning px-2 py-1 rounded-full">100%</span>
+                  {stats.teams.departments > 0 && (
+                    <span className="text-xs bg-warning/10 text-warning px-2 py-1 rounded-full">
+                      {stats.teams.departments} depts
+                    </span>
+                  )}
                 </div>
-                <h3 className="text-2xl font-bold text-foreground mb-1">12</h3>
-                <p className="text-sm text-muted-foreground">Active Teams</p>
-                <p className="text-xs text-muted-foreground mt-2">5 departments</p>
+                <h3 className="text-2xl font-bold text-foreground mb-1">
+                  {statsLoading ? '—' : stats.teams.total}
+                </h3>
+                <p className="text-sm text-muted-foreground">Teams</p>
+                <p className="text-xs text-muted-foreground mt-2">
+                  {stats.teams.departments} departments
+                </p>
               </div>
 
               <div className="bg-gradient-to-br from-blue-500/10 to-blue-500/5 rounded-xl p-6 border border-blue-500/20">
@@ -112,11 +138,19 @@ export const Admin: React.FC = () => {
                   <div className="p-2 bg-blue-500/20 rounded-lg">
                     <BookOpen className="h-5 w-5 text-blue-500" />
                   </div>
-                  <span className="text-xs bg-blue-500/10 text-blue-500 px-2 py-1 rounded-full">+5</span>
+                  {stats.learning.quizzes > 0 && (
+                    <span className="text-xs bg-blue-500/10 text-blue-500 px-2 py-1 rounded-full">
+                      {stats.learning.quizzes} quizzes
+                    </span>
+                  )}
                 </div>
-                <h3 className="text-2xl font-bold text-foreground mb-1">42</h3>
-                <p className="text-sm text-muted-foreground">Learning Modules</p>
-                <p className="text-xs text-muted-foreground mt-2">15 quizzes active</p>
+                <h3 className="text-2xl font-bold text-foreground mb-1">
+                  {statsLoading ? '—' : stats.learning.courses}
+                </h3>
+                <p className="text-sm text-muted-foreground">Learning Courses</p>
+                <p className="text-xs text-muted-foreground mt-2">
+                  {stats.learning.enrollments} enrollments
+                </p>
               </div>
             </div>
 
@@ -126,34 +160,41 @@ export const Admin: React.FC = () => {
               <div className="bg-card/50 backdrop-blur-sm rounded-xl border border-border/50 p-6">
                 <h3 className="text-lg font-semibold text-foreground mb-4">Recent Activity</h3>
                 <div className="space-y-4">
-                  <div className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg">
-                    <div className="w-2 h-2 bg-primary rounded-full"></div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-foreground">New onboarding form submitted</p>
-                      <p className="text-xs text-muted-foreground">John Smith • Sales Team • 2 minutes ago</p>
+                  {statsLoading ? (
+                    <div className="space-y-3">
+                      {[1, 2, 3].map((i) => (
+                        <div key={i} className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg animate-pulse">
+                          <div className="w-2 h-2 bg-muted rounded-full"></div>
+                          <div className="flex-1 space-y-1">
+                            <div className="w-3/4 h-3 bg-muted rounded"></div>
+                            <div className="w-1/2 h-2 bg-muted rounded"></div>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  </div>
-                  <div className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg">
-                    <div className="w-2 h-2 bg-success rounded-full"></div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-foreground">Manager assigned to team</p>
-                      <p className="text-xs text-muted-foreground">Sarah Johnson • Installation Team • 15 minutes ago</p>
+                  ) : recentActivity.length > 0 ? (
+                    recentActivity.map((activity) => (
+                      <div key={activity.id} className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg">
+                        <div 
+                          className={`w-2 h-2 rounded-full ${
+                            activity.color === 'primary' ? 'bg-primary' :
+                            activity.color === 'success' ? 'bg-success' :
+                            activity.color === 'warning' ? 'bg-warning' :
+                            'bg-blue-500'
+                          }`}
+                        ></div>
+                        <div className="flex-1">
+                          <p className="text-sm font-medium text-foreground">{activity.title}</p>
+                          <p className="text-xs text-muted-foreground">{activity.description}</p>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center py-8">
+                      <p className="text-sm text-muted-foreground">No recent activity to display</p>
+                      <p className="text-xs text-muted-foreground mt-1">Activity will appear as users interact with the system</p>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg">
-                    <div className="w-2 h-2 bg-warning rounded-full"></div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-foreground">Quiz completed</p>
-                      <p className="text-xs text-muted-foreground">Mike Davis • Safety Training • 1 hour ago</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-foreground">New course created</p>
-                      <p className="text-xs text-muted-foreground">Advanced Roofing Techniques • 3 hours ago</p>
-                    </div>
-                  </div>
+                  )}
                 </div>
               </div>
 
@@ -167,7 +208,9 @@ export const Admin: React.FC = () => {
                   >
                     <FileText className="h-5 w-5 text-primary mb-2" />
                     <p className="text-sm font-medium text-foreground">Review Forms</p>
-                    <p className="text-xs text-muted-foreground">12 pending</p>
+                    <p className="text-xs text-muted-foreground">
+                      {stats.onboardingForms.pending} pending
+                    </p>
                   </button>
                   
                   <button 
