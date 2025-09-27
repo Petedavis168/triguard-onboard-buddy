@@ -28,7 +28,7 @@ const courseSchema = z.object({
   positions: z.array(z.string()).optional(),
 });
 
-export function CourseManagement() {
+function CourseManagement() {
   const [courses, setCourses] = useState<any[]>([]);
   const [roles, setRoles] = useState<any[]>([]);
   const [positions, setPositions] = useState<any[]>([]);
@@ -621,3 +621,5 @@ export function CourseManagement() {
     </div>
   );
 }
+
+export default CourseManagement;

@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { BookOpen, Video, Users, Award, TrendingUp, Plus, Play, CheckCircle, Clock, AlertCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
-import { CourseManagement } from './lms/CourseManagement';
+import CourseManagement from './lms/CourseManagement';
 import QuizManagement from './lms/QuizManagement';
 import StudentProgress from './lms/StudentProgress';
 import LearningAssignments from './lms/LearningAssignments';
