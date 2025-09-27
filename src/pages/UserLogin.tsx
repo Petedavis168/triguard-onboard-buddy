@@ -33,9 +33,15 @@ const UserLogin = () => {
         .select('*')
         .eq('username', username.toLowerCase())
         .eq('user_password', password)
-        .single();
+        .maybeSingle();
 
-      if (error || !user) {
+      if (error) {
+        console.error('Database error:', error);
+        setError('Login failed. Please check your credentials.');
+        return;
+      }
+      
+      if (!user) {
         setError('Invalid username or password');
         return;
       }

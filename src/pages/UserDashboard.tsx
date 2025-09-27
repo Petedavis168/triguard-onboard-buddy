@@ -45,9 +45,28 @@ const UserDashboard = () => {
           )
         `)
         .eq('id', userId)
-        .single();
+        .maybeSingle();
 
-      if (userError) throw userError;
+      if (userError) {
+        console.error('Database error:', userError);
+        toast({
+          title: "Error",
+          description: "Failed to load profile data",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      if (!userData) {
+        toast({
+          title: "Error",
+          description: "User profile not found",
+          variant: "destructive",
+        });
+        navigate('/user-login');
+        return;
+      }
+      
       setUser(userData);
 
       // Fetch user's tasks
@@ -64,8 +83,12 @@ const UserDashboard = () => {
         .eq('onboarding_form_id', userId)
         .order('created_at', { ascending: false });
 
-      if (tasksError) throw tasksError;
-      setTasks(tasksData || []);
+      if (tasksError) {
+        console.error('Tasks error:', tasksError);
+        // Don't block the dashboard if tasks fail to load
+      } else {
+        setTasks(tasksData || []);
+      }
 
     } catch (error) {
       console.error('Error fetching user data:', error);
@@ -119,7 +142,7 @@ const UserDashboard = () => {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <div className="rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
           <p>Loading profile...</p>
         </div>
       </div>
