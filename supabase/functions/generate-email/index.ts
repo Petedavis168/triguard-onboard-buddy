@@ -26,9 +26,52 @@ const generateEmailAddress = async (firstName: string, lastName: string): Promis
   const normalizedFirst = normalizeString(firstName);
   const normalizedLast = normalizeString(lastName);
   
+  // First, try just the first name
+  const firstNameEmail = `${normalizedFirst}@triguardroofing.com`;
+  
+  // Check if first name email already exists
+  const { data: existingFirstName, error: checkFirstError } = await supabase
+    .from('email_addresses')
+    .select('email')
+    .eq('email', firstNameEmail)
+    .maybeSingle();
+
+  if (checkFirstError && checkFirstError.code !== 'PGRST116') {
+    throw new Error(`Error checking email existence: ${checkFirstError.message}`);
+  }
+
+  if (!existingFirstName) {
+    // First name email doesn't exist, save it and return
+    const { error: insertError } = await supabase
+      .from('email_addresses')
+      .insert({
+        email: firstNameEmail,
+        first_name: firstName,
+        last_name: lastName,
+        is_active: true
+      });
+
+    if (insertError) {
+      throw new Error(`Error saving email: ${insertError.message}`);
+    }
+
+    return firstNameEmail;
+  }
+
+  // First name email exists, check if there are multiple people with same first name
+  const { data: sameFirstNameCount, error: countError } = await supabase
+    .from('email_addresses')
+    .select('email', { count: 'exact' })
+    .ilike('first_name', firstName);
+
+  if (countError) {
+    throw new Error(`Error checking first name count: ${countError.message}`);
+  }
+
+  // If there are multiple people with the same first name, use firstName.lastName format
   const baseEmail = `${normalizedFirst}.${normalizedLast}@triguardroofing.com`;
   
-  // Check if email already exists
+  // Check if firstName.lastName email already exists
   const { data: existingEmail, error: checkError } = await supabase
     .from('email_addresses')
     .select('email')
@@ -40,7 +83,7 @@ const generateEmailAddress = async (firstName: string, lastName: string): Promis
   }
 
   if (!existingEmail) {
-    // Email doesn't exist, save it and return
+    // firstName.lastName email doesn't exist, save it and return
     const { error: insertError } = await supabase
       .from('email_addresses')
       .insert({
@@ -57,7 +100,7 @@ const generateEmailAddress = async (firstName: string, lastName: string): Promis
     return baseEmail;
   }
 
-  // Email exists, try variations
+  // firstName.lastName email exists, try variations with numbers
   for (let i = 1; i <= 99; i++) {
     const variantEmail = `${normalizedFirst}.${normalizedLast}${i}@triguardroofing.com`;
     
