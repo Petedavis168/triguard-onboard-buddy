@@ -111,14 +111,15 @@ const Index = () => {
 
         {/* Primary CTA Section */}
         <section className="flex justify-center mb-16 sm:mb-20 px-4">
-          <button 
-            className="flex items-center justify-center gap-3 text-xl px-12 py-6 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 min-h-[4rem] bg-gradient-to-r from-primary to-accent text-white rounded-lg font-bold"
-            onClick={() => window.location.href = '/onboarding'}
+          <a 
+            href="/onboarding"
+            className="flex items-center justify-center gap-3 text-xl px-12 py-6 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 min-h-[4rem] bg-gradient-to-r from-primary to-accent text-white rounded-lg font-bold no-underline cursor-pointer"
+            style={{ pointerEvents: 'auto', zIndex: 10 }}
           >
             <FileText className="h-6 w-6 flex-shrink-0" />
             <span>START ONBOARDING</span>
             <ArrowRight className="h-6 w-6 flex-shrink-0" />
-          </button>
+          </a>
         </section>
 
         {/* Complete Onboarding Experience Section */}
