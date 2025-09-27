@@ -357,7 +357,9 @@ const ApplicationList: React.FC<ApplicationListProps> = ({ forms, onViewDetails 
                       <User className="h-6 w-6 text-white" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h3 className="font-semibold text-base text-gray-900 leading-tight truncate">
+                      <h3 className={`font-semibold text-gray-900 leading-tight break-all ${
+                        `${form.first_name} ${form.last_name}`.length > 15 ? 'text-sm' : 'text-base'
+                      }`}>
                         {form.first_name} {form.last_name}
                       </h3>
                       <p className="text-sm text-gray-500 mt-0.5 truncate">
@@ -377,7 +379,10 @@ const ApplicationList: React.FC<ApplicationListProps> = ({ forms, onViewDetails 
                       <Mail className="h-4 w-4 text-blue-600" />
                       <span className="text-sm font-medium text-blue-900">Email Generated</span>
                     </div>
-                    <p className="text-sm text-blue-700 mt-1 font-mono break-all truncate">
+                    <p className={`text-blue-700 mt-1 font-mono break-all ${
+                      form.generated_email.length > 25 ? 'text-xs' : 
+                      form.generated_email.length > 20 ? 'text-sm' : 'text-sm'
+                    }`}>
                       {form.generated_email}
                     </p>
                   </div>
@@ -391,9 +396,11 @@ const ApplicationList: React.FC<ApplicationListProps> = ({ forms, onViewDetails 
                         <Users className="h-4 w-4 text-green-600" />
                         <span className="text-sm font-medium text-green-900">Manager</span>
                       </div>
-                      <p className="text-sm text-green-700 mt-1">
-                        {form.managers.first_name} {form.managers.last_name}
-                      </p>
+                       <div className={`text-green-700 mt-1 break-all ${
+                         `${form.managers.first_name} ${form.managers.last_name}`.length > 20 ? 'text-xs' : 'text-sm'
+                       }`}>
+                         {form.managers.first_name} {form.managers.last_name}
+                       </div>
                     </div>
                   )}
                   
@@ -403,9 +410,11 @@ const ApplicationList: React.FC<ApplicationListProps> = ({ forms, onViewDetails 
                         <MapPin className="h-4 w-4 text-purple-600" />
                         <span className="text-sm font-medium text-purple-900">Team</span>
                       </div>
-                      <p className="text-sm text-purple-700 mt-1">
+                      <div className={`text-purple-700 mt-1 break-all ${
+                        form.teams.name && form.teams.name.length > 20 ? 'text-xs' : 'text-sm'
+                      }`}>
                         {form.teams.name}
-                      </p>
+                      </div>
                     </div>
                   )}
                 </div>
