@@ -97,6 +97,7 @@ const EmployeeProfileManagement = () => {
 
   useEffect(() => {
     fetchProfiles();
+    syncWithOnboardingForms();
   }, []);
 
   useEffect(() => {
@@ -123,6 +124,67 @@ const EmployeeProfileManagement = () => {
         });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const syncWithOnboardingForms = async () => {
+    try {
+      // Get all submitted onboarding forms that don't have employee profiles
+      const { data: onboardingForms, error: onboardingError } = await supabase
+        .from('onboarding_forms')
+        .select('*')
+        .eq('status', 'submitted');
+
+      if (onboardingError) throw onboardingError;
+
+      // Get existing profiles to check which forms already have profiles
+      const { data: existingProfiles, error: profileError } = await supabase
+        .from('employee_profiles')
+        .select('onboarding_form_id')
+        .not('onboarding_form_id', 'is', null);
+
+      if (profileError) throw profileError;
+
+      const existingFormIds = new Set(existingProfiles?.map(p => p.onboarding_form_id) || []);
+      
+      // Filter forms that don't have profiles yet
+      const formsNeedingProfiles = (onboardingForms || []).filter(
+        form => !existingFormIds.has(form.id)
+      );
+
+      if (formsNeedingProfiles.length === 0) return;
+
+      // Create employee profiles for these forms
+      const profilesToCreate = formsNeedingProfiles.map(form => ({
+        onboarding_form_id: form.id,
+        first_name: form.first_name,
+        last_name: form.last_name,
+        email: form.generated_email || form.personal_email,
+        phone: form.cell_phone,
+        position: form.employee_role,
+        team: form.team_id,
+        manager_name: form.manager_id,
+        hire_date: new Date().toISOString().split('T')[0],
+        employee_id: '', // Will be auto-generated
+        profile_photo_url: form.badge_photo_url,
+        is_active: true
+      }));
+
+      const { error: insertError } = await supabase
+        .from('employee_profiles')
+        .insert(profilesToCreate);
+
+      if (insertError) throw insertError;
+
+      if (profilesToCreate.length > 0) {
+        toast({
+          title: "Success",
+          description: `Created ${profilesToCreate.length} rep profile(s) from onboarding forms`,
+        });
+        fetchProfiles(); // Refresh the list
+      }
+    } catch (error) {
+      console.error('Error syncing with onboarding forms:', error);
     }
   };
 
@@ -391,249 +453,254 @@ const EmployeeProfileManagement = () => {
               <CardTitle className="text-lg sm:text-xl">Rep Profiles</CardTitle>
               <CardDescription className="text-sm">Manage rep information and photos</CardDescription>
             </div>
-            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-              <DialogTrigger asChild>
-                <Button onClick={openDialog} className="w-full sm:w-auto">
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Rep
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
-                <DialogHeader>
-                  <DialogTitle>{editingProfile ? 'Edit Rep Profile' : 'Create Rep Profile'}</DialogTitle>
-                  <DialogDescription>
-                    {editingProfile ? 'Update rep information and photo' : 'Add a new rep to the system with auto-generated rep ID'}
-                  </DialogDescription>
-                </DialogHeader>
-
-                <Form {...form}>
-                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                    {/* Photo Upload Section */}
-                    <div className="space-y-4">
-                      <Label>Profile Photo</Label>
-                      <div className="flex items-center gap-4">
-                        <div className="relative">
-                          {(selectedFile || editingProfile?.profile_photo_url) ? (
-                            <img
-                              src={selectedFile ? URL.createObjectURL(selectedFile) : editingProfile?.profile_photo_url || ''}
-                              alt="Profile preview"
-                              className="w-20 h-20 rounded-full object-cover border-2 border-border"
-                            />
-                          ) : (
-                            <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center border-2 border-border">
-                              <Camera className="h-8 w-8 text-muted-foreground" />
-                            </div>
-                          )}
-                        </div>
-                        <div className="flex-1">
-                          <Input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleFileSelect}
-                            className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/90"
-                          />
-                          <p className="text-xs text-muted-foreground mt-1">Maximum file size: 5MB</p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <FormField
-                        control={form.control}
-                        name="first_name"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>First Name *</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Enter first name" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name="last_name"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Last Name *</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Enter last name" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name="email"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Email</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Enter email address" type="email" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name="phone"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Phone</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Enter phone number" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name="position"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Position</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Enter position/job title" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name="department"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Department</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Enter department" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name="team"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Team</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Enter team name" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name="manager_name"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Manager</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Enter manager name" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name="hire_date"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Hire Date</FormLabel>
-                            <FormControl>
-                              <Input type="date" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-
-                    <div className="flex flex-col sm:flex-row gap-3 pt-4">
-                      <Button type="submit" className="flex-1">
-                        {editingProfile ? 'Update Profile' : 'Create Profile'}
-                      </Button>
-                      <Button 
-                        type="button" 
-                        variant="outline" 
-                        onClick={() => setIsDialogOpen(false)}
-                        className="flex-1"
-                      >
-                        Cancel
-                      </Button>
-                    </div>
-                  </form>
-                </Form>
-              </DialogContent>
-            </Dialog>
-          </div>
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search reps..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
+            <div className="flex flex-col sm:flex-row gap-2">
+              <Button 
+                onClick={syncWithOnboardingForms}
+                variant="outline" 
+                className="w-full sm:w-auto"
+              >
+                <FileText className="h-4 w-4 mr-2" />
+                Sync From Onboarding
+              </Button>
+              <Button onClick={openDialog} className="w-full sm:w-auto">
+                <Plus className="h-4 w-4 mr-2" />
+                Add Rep
+              </Button>
+            </div>
           </div>
         </CardHeader>
-        
+
         <CardContent className="p-4 sm:p-6">
+          {/* Search */}
+          <div className="mb-6">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+              <Input
+                placeholder="Search reps..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+          </div>
+
+          {/* Tabs */}
           <Tabs defaultValue="all" className="w-full">
-            <TabsList className="grid w-full grid-cols-3 h-auto p-1">
-              <TabsTrigger value="all" className="text-xs sm:text-sm px-2 py-2">
-                All ({stats.total})
-              </TabsTrigger>
-              <TabsTrigger value="active" className="text-xs sm:text-sm px-2 py-2">
-                Active ({stats.active})
-              </TabsTrigger>
-              <TabsTrigger value="inactive" className="text-xs sm:text-sm px-2 py-2">
-                Inactive ({stats.inactive})
-              </TabsTrigger>
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="all">All ({stats.total})</TabsTrigger>
+              <TabsTrigger value="active">Active ({stats.active})</TabsTrigger>
+              <TabsTrigger value="inactive">Inactive ({stats.inactive})</TabsTrigger>
             </TabsList>
             
             <TabsContent value="all" className="mt-6">
-              <ProfileGrid 
-                profiles={filteredProfiles} 
-                onEdit={handleEdit}
-                onToggleStatus={toggleActiveStatus}
-              />
+              <ProfileGrid profiles={filteredProfiles} onEdit={handleEdit} onToggleStatus={toggleActiveStatus} />
             </TabsContent>
             
             <TabsContent value="active" className="mt-6">
               <ProfileGrid 
                 profiles={filteredProfiles.filter(p => p.is_active)} 
-                onEdit={handleEdit}
-                onToggleStatus={toggleActiveStatus}
+                onEdit={handleEdit} 
+                onToggleStatus={toggleActiveStatus} 
               />
             </TabsContent>
             
             <TabsContent value="inactive" className="mt-6">
               <ProfileGrid 
                 profiles={filteredProfiles.filter(p => !p.is_active)} 
-                onEdit={handleEdit}
-                onToggleStatus={toggleActiveStatus}
+                onEdit={handleEdit} 
+                onToggleStatus={toggleActiveStatus} 
               />
             </TabsContent>
           </Tabs>
         </CardContent>
       </Card>
+
+      {/* Dialog for Add/Edit */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{editingProfile ? 'Edit Rep Profile' : 'Create Rep Profile'}</DialogTitle>
+            <DialogDescription>
+              {editingProfile ? 'Update rep information and photo' : 'Add a new rep to the system with auto-generated rep ID'}
+            </DialogDescription>
+          </DialogHeader>
+
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              {/* Photo Upload Section */}
+              <div className="space-y-4">
+                <Label>Profile Photo</Label>
+                <div className="flex items-center gap-4">
+                  <div className="relative">
+                    {(selectedFile || editingProfile?.profile_photo_url) ? (
+                      <img
+                        src={selectedFile ? URL.createObjectURL(selectedFile) : editingProfile?.profile_photo_url || ''}
+                        alt="Profile preview"
+                        className="w-20 h-20 rounded-full object-cover border-2 border-border"
+                      />
+                    ) : (
+                      <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center border-2 border-border">
+                        <Camera className="h-8 w-8 text-muted-foreground" />
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileSelect}
+                      className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/90"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">Maximum file size: 5MB</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="first_name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>First Name *</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter first name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="last_name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Last Name *</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter last name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter email address" type="email" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="phone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Phone</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter phone number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="position"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Position</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter position" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="department"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Department</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter department" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="team"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Team</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter team" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="manager_name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Manager</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter manager name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="hire_date"
+                  render={({ field }) => (
+                    <FormItem className="md:col-span-2">
+                      <FormLabel>Hire Date</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-3 pt-4">
+                <Button type="submit" className="sm:flex-1">
+                  {editingProfile ? 'Update Rep Profile' : 'Create Rep Profile'}
+                </Button>
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={() => setIsDialogOpen(false)}
+                  className="sm:flex-1"
+                >
+                  Cancel
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
@@ -647,22 +714,20 @@ interface ProfileGridProps {
 const ProfileGrid: React.FC<ProfileGridProps> = ({ profiles, onEdit, onToggleStatus }) => {
   if (profiles.length === 0) {
     return (
-      <div className="text-center py-16">
-        <div className="w-16 h-16 mx-auto mb-4 bg-muted/20 rounded-full flex items-center justify-center">
-          <Users className="h-8 w-8 text-muted-foreground" />
-        </div>
-        <h3 className="text-lg font-medium text-foreground mb-2">No reps found</h3>
+      <div className="text-center py-12">
+        <User className="mx-auto h-16 w-16 text-muted-foreground mb-4" />
+        <h3 className="text-lg font-semibold text-muted-foreground mb-2">No reps found</h3>
         <p className="text-sm text-muted-foreground">Try adjusting your search or filters</p>
       </div>
     );
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6">
       {profiles.map((profile) => (
-        <ProfileCard 
-          key={profile.id} 
-          profile={profile} 
+        <ProfileCard
+          key={profile.id}
+          profile={profile}
           onEdit={onEdit}
           onToggleStatus={onToggleStatus}
         />
@@ -720,10 +785,15 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ profile, onEdit, onToggleStat
               </h3>
               <div className="flex items-center gap-1 mt-1">
                 <IdCard className="h-3 w-3 text-primary" />
-                  <span className="text-sm font-mono text-primary/80 font-medium">
-                    Rep ID: {profile.employee_id}
-                  </span>
+                <span className="text-sm font-mono text-primary/80 font-medium">
+                  Rep ID: {profile.employee_id}
+                </span>
               </div>
+              {profile.onboarding_form_id && (
+                <Badge variant="outline" className="text-xs mt-1">
+                  From Onboarding
+                </Badge>
+              )}
             </div>
           </div>
           <Badge variant={profile.is_active ? "default" : "secondary"} className="text-xs">
