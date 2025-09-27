@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { LogOut } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 import { UserManagement } from '@/components/admin/UserManagement';
 import { TeamManagement } from '@/components/admin/TeamManagement';
 import TaskManagement from '@/components/admin/TaskManagement';
@@ -18,10 +21,10 @@ import {
   ListTodo, 
   Users 
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 
 export const Admin: React.FC = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('onboarding');
 
   useEffect(() => {
@@ -31,6 +34,18 @@ export const Admin: React.FC = () => {
       navigate('/admin-login');
     }
   }, [navigate]);
+
+  const handleLogout = () => {
+    localStorage.removeItem('adminAuthenticated');
+    localStorage.removeItem('adminName');
+    localStorage.removeItem('adminEmail');
+    
+    toast({
+      title: "Logged Out",
+      description: "You have been successfully logged out",
+    });
+    navigate('/admin-login');
+  };
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -234,19 +249,29 @@ export const Admin: React.FC = () => {
 
         {/* Main Content */}
         <div className="flex-1 flex flex-col min-h-screen">
-          {/* Header */}
+          {/* Mobile-optimized Header */}
           <header className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border/50 p-3 sm:p-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <SidebarTrigger className="lg:hidden" />
                 <div>
-                  <h1 className="text-xl sm:text-2xl md:text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                  <h1 className="text-lg sm:text-xl md:text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                     Admin Dashboard
                   </h1>
-                  <p className="text-muted-foreground text-xs sm:text-sm">TriGuard Roofing - Complete Management System</p>
+                  <p className="text-muted-foreground text-xs sm:text-sm">TriGuard Roofing - Management System</p>
                 </div>
               </div>
-              <SidebarTrigger className="hidden lg:block" />
+              <div className="flex items-center gap-2">
+                <SidebarTrigger className="hidden lg:block" />
+                <Button 
+                  variant="outline" 
+                  onClick={handleLogout} 
+                  className="flex items-center gap-2 min-h-[40px] px-3 sm:px-4"
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span className="hidden sm:inline">Logout</span>
+                </Button>
+              </div>
             </div>
           </header>
 

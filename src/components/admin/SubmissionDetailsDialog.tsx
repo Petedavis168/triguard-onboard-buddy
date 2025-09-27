@@ -9,6 +9,7 @@ import { Separator } from '@/components/ui/separator';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { Save, Play, Pause, User, Mail, MapPin, Shirt, FileText, Mic, CheckCircle, Edit, CreditCard, Download, ExternalLink } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
@@ -133,119 +134,126 @@ const SubmissionDetailsDialog: React.FC<SubmissionDetailsDialogProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <div className="flex justify-between items-start">
-            <div>
-              <DialogTitle className="text-xl">
-                {submission.first_name} {submission.last_name} - Submission Details
-              </DialogTitle>
-              <DialogDescription className="flex items-center gap-2 mt-2">
-                {getStatusBadge(submission.status)}
-                <span>•</span>
-                <span>Step {submission.current_step} of 9</span>
-                {submission.generated_email && (
-                  <>
+      <DialogContent className="max-w-4xl max-h-[95vh] w-[95vw] p-0">
+        <ScrollArea className="max-h-[95vh]">
+          <div className="p-4 sm:p-6">
+            <DialogHeader className="mb-6">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
+                <div className="flex-1 min-w-0">
+                  <DialogTitle className="text-lg sm:text-xl truncate">
+                    {submission.first_name} {submission.last_name}
+                  </DialogTitle>
+                  <DialogDescription className="flex flex-wrap items-center gap-2 mt-2">
+                    {getStatusBadge(submission.status)}
                     <span>•</span>
-                    <span>{submission.generated_email}</span>
-                  </>
-                )}
-              </DialogDescription>
-            </div>
-            <div className="flex gap-2">
-              {!isEditing ? (
-                <Button onClick={() => setIsEditing(true)} variant="outline" size="sm">
-                  <Edit className="h-4 w-4 mr-2" />
-                  Edit
-                </Button>
-              ) : (
-                <>
-                  <Button onClick={() => setIsEditing(false)} variant="outline" size="sm">
-                    Cancel
-                  </Button>
-                  <Button onClick={handleSave} disabled={isSaving} size="sm">
-                    <Save className="h-4 w-4 mr-2" />
-                    {isSaving ? 'Saving...' : 'Save Changes'}
-                  </Button>
-                </>
-              )}
-            </div>
-          </div>
-        </DialogHeader>
+                    <span className="text-sm">Step {submission.current_step}/9</span>
+                    {submission.generated_email && (
+                      <>
+                        <span className="hidden sm:inline">•</span>
+                        <span className="text-sm truncate w-full sm:w-auto">{submission.generated_email}</span>
+                      </>
+                    )}
+                  </DialogDescription>
+                </div>
+                <div className="flex gap-2 flex-shrink-0">
+                  {!isEditing ? (
+                    <Button onClick={() => setIsEditing(true)} variant="outline" size="sm">
+                      <Edit className="h-4 w-4 mr-2" />
+                      <span className="hidden sm:inline">Edit</span>
+                    </Button>
+                  ) : (
+                    <>
+                      <Button onClick={() => setIsEditing(false)} variant="outline" size="sm">
+                        Cancel
+                      </Button>
+                      <Button onClick={handleSave} disabled={isSaving} size="sm">
+                        <Save className="h-4 w-4 mr-2" />
+                        {isSaving ? 'Saving...' : 'Save'}
+                      </Button>
+                    </>
+                  )}
+                </div>
+              </div>
+            </DialogHeader>
 
-        <Tabs defaultValue="personal" className="w-full">
-          <TabsList className="grid w-full grid-cols-7">
-            <TabsTrigger value="personal">Personal</TabsTrigger>
-            <TabsTrigger value="address">Address</TabsTrigger>
-            <TabsTrigger value="sizing">Sizing</TabsTrigger>
-            <TabsTrigger value="documents">Documents</TabsTrigger>
-            <TabsTrigger value="banking">Banking</TabsTrigger>
-            <TabsTrigger value="voice">Voice Pitch</TabsTrigger>
-            <TabsTrigger value="tasks">Tasks</TabsTrigger>
-          </TabsList>
+            <Tabs defaultValue="personal" className="w-full">
+              {/* Mobile-optimized tabs with horizontal scroll */}
+              <div className="overflow-x-auto mb-6">
+                <TabsList className="grid grid-cols-4 sm:grid-cols-7 w-full min-w-[300px]">
+                  <TabsTrigger value="personal" className="text-xs sm:text-sm">Personal</TabsTrigger>
+                  <TabsTrigger value="address" className="text-xs sm:text-sm">Address</TabsTrigger>
+                  <TabsTrigger value="sizing" className="text-xs sm:text-sm">Sizing</TabsTrigger>
+                  <TabsTrigger value="documents" className="text-xs sm:text-sm">Docs</TabsTrigger>
+                  <TabsTrigger value="banking" className="text-xs sm:text-sm">Banking</TabsTrigger>
+                  <TabsTrigger value="voice" className="text-xs sm:text-sm">Voice</TabsTrigger>
+                  <TabsTrigger value="tasks" className="text-xs sm:text-sm">Tasks</TabsTrigger>
+                </TabsList>
+              </div>
 
-          <TabsContent value="personal" className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <User className="h-5 w-5" />
-                  Personal Information
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="first_name">First Name</Label>
-                  {isEditing ? (
-                    <Input
-                      id="first_name"
-                      value={editedData.first_name || ''}
-                      onChange={(e) => setEditedData({...editedData, first_name: e.target.value})}
-                    />
-                  ) : (
-                    <div className="p-2 bg-gray-50 rounded">{submission.first_name}</div>
-                  )}
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="last_name">Last Name</Label>
-                  {isEditing ? (
-                    <Input
-                      id="last_name"
-                      value={editedData.last_name || ''}
-                      onChange={(e) => setEditedData({...editedData, last_name: e.target.value})}
-                    />
-                  ) : (
-                    <div className="p-2 bg-gray-50 rounded">{submission.last_name}</div>
-                  )}
-                </div>
-                <div className="space-y-2">
-                  <Label>Generated Email</Label>
-                  <div className="p-2 bg-gray-50 rounded flex items-center gap-2">
-                    <Mail className="h-4 w-4 text-gray-400" />
-                    {submission.generated_email || 'Not generated'}
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label>Gender</Label>
-                  {isEditing ? (
-                    <Select
-                      value={editedData.gender || ''}
-                      onValueChange={(value) => setEditedData({...editedData, gender: value})}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select gender" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="male">Male</SelectItem>
-                        <SelectItem value="female">Female</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  ) : (
-                    <div className="p-2 bg-gray-50 rounded capitalize">{submission.gender}</div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
+              <TabsContent value="personal" className="space-y-4">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                      <User className="h-4 w-4 sm:h-5 sm:w-5" />
+                      Personal Information
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="first_name" className="text-sm font-medium">First Name</Label>
+                      {isEditing ? (
+                        <Input
+                          id="first_name"
+                          value={editedData.first_name || ''}
+                          onChange={(e) => setEditedData({...editedData, first_name: e.target.value})}
+                          className="min-h-[44px]"
+                        />
+                      ) : (
+                        <div className="p-3 bg-gray-50 rounded text-sm">{submission.first_name}</div>
+                      )}
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="last_name" className="text-sm font-medium">Last Name</Label>
+                      {isEditing ? (
+                        <Input
+                          id="last_name"
+                          value={editedData.last_name || ''}
+                          onChange={(e) => setEditedData({...editedData, last_name: e.target.value})}
+                          className="min-h-[44px]"
+                        />
+                      ) : (
+                        <div className="p-3 bg-gray-50 rounded text-sm">{submission.last_name}</div>
+                      )}
+                    </div>
+                    <div className="space-y-2 sm:col-span-2">
+                      <Label className="text-sm font-medium">Generated Email</Label>
+                      <div className="p-3 bg-gray-50 rounded flex items-center gap-2">
+                        <Mail className="h-4 w-4 text-gray-400" />
+                        <span className="text-sm break-all">{submission.generated_email || 'Not generated'}</span>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium">Gender</Label>
+                      {isEditing ? (
+                        <Select
+                          value={editedData.gender || ''}
+                          onValueChange={(value) => setEditedData({...editedData, gender: value})}
+                        >
+                          <SelectTrigger className="min-h-[44px]">
+                            <SelectValue placeholder="Select gender" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="male">Male</SelectItem>
+                            <SelectItem value="female">Female</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        <div className="p-3 bg-gray-50 rounded capitalize text-sm">{submission.gender}</div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
 
           <TabsContent value="address" className="space-y-4">
             <Card>
@@ -717,7 +725,9 @@ const SubmissionDetailsDialog: React.FC<SubmissionDetailsDialogProps> = ({
               </CardContent>
             </Card>
           </TabsContent>
-        </Tabs>
+            </Tabs>
+          </div>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

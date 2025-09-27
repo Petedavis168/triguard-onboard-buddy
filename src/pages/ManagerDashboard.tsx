@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { LogOut, Users, CheckCircle, Clock, Plus, FileText } from 'lucide-react';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import ManagerTaskCreation from '@/components/manager/ManagerTaskCreation';
 import TeamMemberList from '@/components/manager/TeamMemberList';
@@ -154,102 +154,101 @@ const ManagerDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 p-3 sm:p-4">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
+        {/* Mobile-optimized Header */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 sm:mb-8 gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">
-              Welcome, {manager?.first_name} {manager?.last_name}
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+              Welcome, {manager?.first_name}
             </h1>
-            <p className="text-gray-600 mt-1">
+            <p className="text-gray-600 mt-1 text-sm sm:text-base">
               {manager?.teams?.name || 'No Team Assigned'} - Manager Dashboard
             </p>
           </div>
-          <Button variant="outline" onClick={handleLogout} className="flex items-center gap-2">
+          <Button 
+            variant="outline" 
+            onClick={handleLogout} 
+            className="flex items-center gap-2 min-h-[44px] px-4"
+          >
             <LogOut className="h-4 w-4" />
-            Logout
+            <span className="hidden sm:inline">Logout</span>
           </Button>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card>
+        {/* Mobile-optimized Stats Cards */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
+          <Card className="shadow-md">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Team Members</CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-xs sm:text-sm font-medium">Team</CardTitle>
+              <Users className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{teamMembers.length}</div>
-              <p className="text-xs text-muted-foreground">
-                Active onboarding
-              </p>
+              <div className="text-lg sm:text-2xl font-bold">{teamMembers.length}</div>
+              <p className="text-xs text-muted-foreground">Members</p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="shadow-md">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Completed</CardTitle>
-              <CheckCircle className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-xs sm:text-sm font-medium">Done</CardTitle>
+              <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">
+              <div className="text-lg sm:text-2xl font-bold">
                 {teamMembers.filter(m => m.status === 'completed').length}
               </div>
-              <p className="text-xs text-muted-foreground">
-                Finished onboarding
-              </p>
+              <p className="text-xs text-muted-foreground">Finished</p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="shadow-md">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">In Progress</CardTitle>
-              <Clock className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-xs sm:text-sm font-medium">Active</CardTitle>
+              <Clock className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">
+              <div className="text-lg sm:text-2xl font-bold">
                 {teamMembers.filter(m => m.status === 'in_progress').length}
               </div>
-              <p className="text-xs text-muted-foreground">
-                Currently onboarding
-              </p>
+              <p className="text-xs text-muted-foreground">Working</p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="shadow-md">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Active Tasks</CardTitle>
-              <FileText className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-xs sm:text-sm font-medium">Tasks</CardTitle>
+              <FileText className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{tasks.length}</div>
-              <p className="text-xs text-muted-foreground">
-                Created by you
-              </p>
+              <div className="text-lg sm:text-2xl font-bold">{tasks.length}</div>
+              <p className="text-xs text-muted-foreground">Created</p>
             </CardContent>
           </Card>
         </div>
 
-        {/* Main Content */}
+        {/* Mobile-optimized Main Content */}
         <div className="bg-white shadow-xl rounded-lg">
           <Tabs defaultValue="team" className="w-full" onValueChange={() => updateActivity()}>
-            <TabsList className="grid w-full grid-cols-3 rounded-none border-b">
-              <TabsTrigger value="team" className="flex items-center gap-2">
-                <Users className="h-4 w-4" />
-                Team Members
-              </TabsTrigger>
-              <TabsTrigger value="tasks" className="flex items-center gap-2">
-                <FileText className="h-4 w-4" />
-                Task Management
-              </TabsTrigger>
-              <TabsTrigger value="create" className="flex items-center gap-2">
-                <Plus className="h-4 w-4" />
-                Create Task
-              </TabsTrigger>
-            </TabsList>
+            {/* Mobile-friendly tabs */}
+            <div className="px-4 sm:px-6 pt-4">
+              <TabsList className="grid w-full grid-cols-3 rounded-lg">
+                <TabsTrigger value="team" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+                  <Users className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="hidden xs:inline">Team</span>
+                </TabsTrigger>
+                <TabsTrigger value="tasks" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+                  <FileText className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="hidden xs:inline">Tasks</span>
+                </TabsTrigger>
+                <TabsTrigger value="create" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+                  <Plus className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="hidden xs:inline">Create</span>
+                </TabsTrigger>
+              </TabsList>
+            </div>
             
-            <div className="p-6">
+            <div className="p-4 sm:p-6">
               <TabsContent value="team" className="mt-0">
                 <TeamMemberList 
                   teamMembers={teamMembers} 
@@ -258,53 +257,53 @@ const ManagerDashboard = () => {
               </TabsContent>
               
               <TabsContent value="tasks" className="mt-0">
-                <div className="space-y-6">
+                <div className="space-y-4 sm:space-y-6">
                   <div>
-                    <h3 className="text-lg font-semibold mb-4">Your Tasks</h3>
+                    <h3 className="text-base sm:text-lg font-semibold mb-4">Your Tasks</h3>
                     {tasks.length === 0 ? (
-                      <div className="text-center py-12">
+                      <div className="text-center py-8 sm:py-12">
                         <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                         <p className="text-gray-500">No tasks created yet</p>
-                        <p className="text-sm text-gray-400">Switch to "Create Task" tab to add your first task</p>
+                        <p className="text-sm text-gray-400">Switch to "Create" tab to add your first task</p>
                       </div>
                     ) : (
                       <div className="grid gap-4">
                         {tasks.map((task) => (
-                          <Card key={task.id} className="border-l-4 border-l-blue-500">
-                            <CardHeader>
-                              <div className="flex justify-between items-start">
-                                <div>
-                                  <CardTitle className="text-lg">{task.title}</CardTitle>
+                          <Card key={task.id} className="border-l-4 border-l-blue-500 shadow-md">
+                            <CardHeader className="pb-3">
+                              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
+                                <div className="flex-1 min-w-0">
+                                  <CardTitle className="text-base sm:text-lg truncate">{task.title}</CardTitle>
                                   {task.description && (
-                                    <CardDescription className="mt-2">
+                                    <CardDescription className="mt-2 text-sm">
                                       {task.description}
                                     </CardDescription>
                                   )}
                                 </div>
-                                <Badge variant="secondary">
+                                <Badge variant="secondary" className="text-xs w-fit">
                                   {task.task_assignments?.length || 0} assignments
                                 </Badge>
                               </div>
                             </CardHeader>
-                            <CardContent>
-                              <div className="text-sm text-muted-foreground">
-                                <p>Created: {new Date(task.created_at).toLocaleDateString()}</p>
-                                {task.task_assignments?.length > 0 && (
-                                  <div className="mt-2">
-                                    <p className="font-medium">Acknowledged by:</p>
-                                    <ul className="list-disc list-inside ml-2">
+                            {task.task_assignments?.length > 0 && (
+                              <CardContent className="pt-0">
+                                <div className="text-sm text-muted-foreground">
+                                  <p className="mb-2">Created: {new Date(task.created_at).toLocaleDateString()}</p>
+                                  <div>
+                                    <p className="font-medium mb-1">Acknowledged by:</p>
+                                    <ul className="list-disc list-inside ml-2 space-y-1">
                                       {task.task_assignments
                                         .filter(a => a.acknowledged_at)
                                         .map((assignment, index) => (
-                                          <li key={index}>
+                                          <li key={index} className="text-xs sm:text-sm">
                                             {assignment.onboarding_forms?.first_name} {assignment.onboarding_forms?.last_name}
                                           </li>
                                         ))}
                                     </ul>
                                   </div>
-                                )}
-                              </div>
-                            </CardContent>
+                                </div>
+                              </CardContent>
+                            )}
                           </Card>
                         ))}
                       </div>

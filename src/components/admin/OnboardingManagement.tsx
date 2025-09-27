@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Search, Eye, FileText, Users, CheckCircle, Clock, AlertCircle } from 'lucide-react';
+import { Search, Eye, FileText, Users, CheckCircle, Clock, AlertCircle, Mail, MapPin, User } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 import SubmissionDetailsDialog from './SubmissionDetailsDialog';
@@ -179,112 +179,115 @@ const OnboardingManagement = () => {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card>
+    <div className="space-y-4 sm:space-y-6">
+      {/* Mobile-optimized Stats Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
+        <Card className="shadow-md">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Applications</CardTitle>
-            <FileText className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-xs sm:text-sm font-medium">Total</CardTitle>
+            <FileText className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.total}</div>
-            <p className="text-xs text-muted-foreground">
-              All onboarding applications
-            </p>
+            <div className="text-lg sm:text-2xl font-bold">{stats.total}</div>
+            <p className="text-xs text-muted-foreground">Applications</p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="shadow-md">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Completed</CardTitle>
-            <CheckCircle className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-xs sm:text-sm font-medium">Done</CardTitle>
+            <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">{stats.completed}</div>
-            <p className="text-xs text-muted-foreground">
-              Finished onboarding
-            </p>
+            <div className="text-lg sm:text-2xl font-bold text-green-600">{stats.completed}</div>
+            <p className="text-xs text-muted-foreground">Finished</p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="shadow-md">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">In Progress</CardTitle>
-            <Clock className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-xs sm:text-sm font-medium">Active</CardTitle>
+            <Clock className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-600">{stats.inProgress}</div>
-            <p className="text-xs text-muted-foreground">
-              Currently onboarding
-            </p>
+            <div className="text-lg sm:text-2xl font-bold text-blue-600">{stats.inProgress}</div>
+            <p className="text-xs text-muted-foreground">In Progress</p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="shadow-md">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Drafts</CardTitle>
-            <AlertCircle className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-xs sm:text-sm font-medium">Draft</CardTitle>
+            <AlertCircle className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-gray-600">{stats.draft}</div>
-            <p className="text-xs text-muted-foreground">
-              Not yet started
-            </p>
+            <div className="text-lg sm:text-2xl font-bold text-gray-600">{stats.draft}</div>
+            <p className="text-xs text-muted-foreground">Not Started</p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Main Content */}
-      <Card>
-        <CardHeader>
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      {/* Mobile-optimized Main Content */}
+      <Card className="shadow-xl">
+        <CardHeader className="pb-4">
+          <div className="flex flex-col gap-4">
             <div>
-              <CardTitle>Onboarding Submissions</CardTitle>
-              <CardDescription>
-                Review and manage employee onboarding applications with detailed submission views
+              <CardTitle className="text-lg sm:text-xl">Onboarding Submissions</CardTitle>
+              <CardDescription className="text-sm">
+                Review and manage employee applications
               </CardDescription>
             </div>
-            <div className="relative w-full sm:w-auto">
+            <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input
-                placeholder="Search by name, email, manager, or team..."
+                placeholder="Search by name, email, manager..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 w-full sm:w-80"
+                className="pl-10 min-h-[44px]"
               />
             </div>
           </div>
         </CardHeader>
         <CardContent className="p-0">
           <Tabs defaultValue="all" className="w-full">
-            <TabsList className="grid w-full grid-cols-4 rounded-none border-b">
-              <TabsTrigger value="all">All ({stats.total})</TabsTrigger>
-              <TabsTrigger value="completed">Completed ({stats.completed})</TabsTrigger>
-              <TabsTrigger value="in_progress">In Progress ({stats.inProgress})</TabsTrigger>
-              <TabsTrigger value="draft">Drafts ({stats.draft})</TabsTrigger>
-            </TabsList>
+            {/* Mobile-optimized tabs */}
+            <div className="px-4 sm:px-6">
+              <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 rounded-lg mb-4">
+                <TabsTrigger value="all" className="text-xs sm:text-sm">
+                  All <span className="hidden xs:inline">({stats.total})</span>
+                </TabsTrigger>
+                <TabsTrigger value="completed" className="text-xs sm:text-sm">
+                  Done <span className="hidden xs:inline">({stats.completed})</span>
+                </TabsTrigger>
+                <TabsTrigger value="in_progress" className="text-xs sm:text-sm">
+                  Active <span className="hidden xs:inline">({stats.inProgress})</span>
+                </TabsTrigger>
+                <TabsTrigger value="draft" className="text-xs sm:text-sm">
+                  Draft <span className="hidden xs:inline">({stats.draft})</span>
+                </TabsTrigger>
+              </TabsList>
+            </div>
             
             <TabsContent value="all" className="mt-0">
-              <ApplicationTable forms={filteredForms} onViewDetails={viewDetails} />
+              <ApplicationList forms={filteredForms} onViewDetails={viewDetails} />
             </TabsContent>
             
             <TabsContent value="completed" className="mt-0">
-              <ApplicationTable 
+              <ApplicationList 
                 forms={filteredForms.filter(f => f.status === 'completed' || f.status === 'submitted')} 
                 onViewDetails={viewDetails}
               />
             </TabsContent>
             
             <TabsContent value="in_progress" className="mt-0">
-              <ApplicationTable 
+              <ApplicationList 
                 forms={filteredForms.filter(f => f.status === 'in_progress')} 
                 onViewDetails={viewDetails}
               />
             </TabsContent>
             
             <TabsContent value="draft" className="mt-0">
-              <ApplicationTable 
+              <ApplicationList 
                 forms={filteredForms.filter(f => f.status === 'draft')} 
                 onViewDetails={viewDetails}
               />
@@ -303,30 +306,30 @@ const OnboardingManagement = () => {
   );
 };
 
-interface ApplicationTableProps {
+interface ApplicationListProps {
   forms: OnboardingForm[];
   onViewDetails: (form: OnboardingForm) => void;
 }
 
-const ApplicationTable: React.FC<ApplicationTableProps> = ({ forms, onViewDetails }) => {
+// Mobile-optimized card-based view instead of table
+const ApplicationList: React.FC<ApplicationListProps> = ({ forms, onViewDetails }) => {
   const getStatusBadge = (status: string, currentStep: number) => {
     switch (status) {
       case 'completed':
       case 'submitted':
-        return <Badge className="bg-green-600">Completed</Badge>;
+        return <Badge className="bg-green-600 text-xs">Completed</Badge>;
       case 'in_progress':
-        return <Badge variant="secondary">Step {currentStep} of 9</Badge>;
+        return <Badge variant="secondary" className="text-xs">Step {currentStep}/9</Badge>;
       case 'draft':
-        return <Badge variant="outline">Draft</Badge>;
+        return <Badge variant="outline" className="text-xs">Draft</Badge>;
       default:
-        return <Badge variant="outline">{status}</Badge>;
+        return <Badge variant="outline" className="text-xs">{status}</Badge>;
     }
   };
 
   const formatDate = (dateString: string | null) => {
     if (!dateString) return '-';
     return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
       month: 'short',
       day: 'numeric',
     });
@@ -342,64 +345,134 @@ const ApplicationTable: React.FC<ApplicationTableProps> = ({ forms, onViewDetail
   }
 
   return (
-    <div className="overflow-x-auto">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Email</TableHead>
-            <TableHead>Manager</TableHead>
-            <TableHead>Team</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Started</TableHead>
-            <TableHead>Completed</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
+    <div className="space-y-0">
+      {/* Desktop Table View */}
+      <div className="hidden lg:block">
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Manager</TableHead>
+                <TableHead>Team</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Started</TableHead>
+                <TableHead>Completed</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {forms.map((form) => (
+                <TableRow key={form.id} className="hover:bg-gray-50">
+                  <TableCell className="font-medium">
+                    {form.first_name} {form.last_name}
+                  </TableCell>
+                  <TableCell>
+                    <div className="text-sm">
+                      {form.generated_email || 'Not generated'}
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="text-sm">
+                      {form.managers ? 
+                        `${form.managers.first_name} ${form.managers.last_name}` : 
+                        'Not assigned'
+                      }
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="text-sm">
+                      {form.teams?.name || 'Not assigned'}
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    {getStatusBadge(form.status, form.current_step)}
+                  </TableCell>
+                  <TableCell>{formatDate(form.created_at)}</TableCell>
+                  <TableCell>{formatDate(form.submitted_at)}</TableCell>
+                  <TableCell className="text-right">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => onViewDetails(form)}
+                      className="flex items-center gap-1"
+                    >
+                      <Eye className="h-4 w-4" />
+                      View Details
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </div>
+
+      {/* Mobile Card View */}
+      <div className="lg:hidden">
+        <div className="divide-y divide-gray-100">
           {forms.map((form) => (
-            <TableRow key={form.id} className="hover:bg-gray-50">
-              <TableCell className="font-medium">
-                {form.first_name} {form.last_name}
-              </TableCell>
-              <TableCell>
-                <div className="text-sm">
-                  {form.generated_email || 'Not generated'}
+            <div key={form.id} className="p-4 sm:p-6 hover:bg-gray-50/50">
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-2">
+                    <User className="h-4 w-4 text-gray-400 flex-shrink-0" />
+                    <h3 className="font-semibold text-gray-900 truncate">
+                      {form.first_name} {form.last_name}
+                    </h3>
+                  </div>
+                  {form.generated_email && (
+                    <div className="flex items-center gap-2 mb-2">
+                      <Mail className="h-3 w-3 text-gray-400 flex-shrink-0" />
+                      <span className="text-sm text-gray-600 truncate">{form.generated_email}</span>
+                    </div>
+                  )}
                 </div>
-              </TableCell>
-              <TableCell>
-                <div className="text-sm">
-                  {form.managers ? 
-                    `${form.managers.first_name} ${form.managers.last_name}` : 
-                    'Not assigned'
-                  }
+                <div className="flex flex-col items-end gap-2">
+                  {getStatusBadge(form.status, form.current_step)}
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => onViewDetails(form)}
+                    className="min-h-[32px] px-3 text-xs"
+                  >
+                    <Eye className="h-3 w-3 mr-1" />
+                    View
+                  </Button>
                 </div>
-              </TableCell>
-              <TableCell>
-                <div className="text-sm">
-                  {form.teams?.name || 'Not assigned'}
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                {form.managers && (
+                  <div>
+                    <span className="text-gray-500">Manager:</span>
+                    <p className="text-gray-900 font-medium">
+                      {form.managers.first_name} {form.managers.last_name}
+                    </p>
+                  </div>
+                )}
+                {form.teams && (
+                  <div>
+                    <span className="text-gray-500">Team:</span>
+                    <p className="text-gray-900 font-medium">{form.teams.name}</p>
+                  </div>
+                )}
+                <div>
+                  <span className="text-gray-500">Started:</span>
+                  <p className="text-gray-900 font-medium">{formatDate(form.created_at)}</p>
                 </div>
-              </TableCell>
-              <TableCell>
-                {getStatusBadge(form.status, form.current_step)}
-              </TableCell>
-              <TableCell>{formatDate(form.created_at)}</TableCell>
-              <TableCell>{formatDate(form.submitted_at)}</TableCell>
-              <TableCell className="text-right">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => onViewDetails(form)}
-                  className="flex items-center gap-1"
-                >
-                  <Eye className="h-4 w-4" />
-                  View Details
-                </Button>
-              </TableCell>
-            </TableRow>
+                {form.submitted_at && (
+                  <div>
+                    <span className="text-gray-500">Completed:</span>
+                    <p className="text-gray-900 font-medium">{formatDate(form.submitted_at)}</p>
+                  </div>
+                )}
+              </div>
+            </div>
           ))}
-        </TableBody>
-      </Table>
+        </div>
+      </div>
     </div>
   );
 };
