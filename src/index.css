@@ -187,3 +187,31 @@ All colors MUST be HSL.
     background: var(--gradient-warning);
   }
 }
+
+/* Mobile-optimized utilities */
+@layer utilities {
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  .mobile-card {
+    @apply rounded-xl shadow-lg border-0 bg-white/95 backdrop-blur-sm;
+  }
+  
+  .mobile-input {
+    @apply min-h-[44px] text-base px-4 py-2 rounded-lg;
+  }
+  
+  .mobile-button {
+    @apply min-h-[44px] px-6 py-2 text-base font-medium rounded-lg;
+  }
+  
+  .mobile-grid {
+    @apply grid grid-cols-1 gap-4;
+  }
+  
+  .mobile-stack {
+    @apply flex flex-col space-y-4;
+  }
+}

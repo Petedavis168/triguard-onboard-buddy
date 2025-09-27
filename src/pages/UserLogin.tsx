@@ -67,29 +67,33 @@ const UserLogin = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold">Employee Login</CardTitle>
+      <Card className="w-full max-w-md shadow-xl">
+        <CardHeader className="text-center pb-4">
+          <div className="w-16 h-16 bg-gradient-primary rounded-xl flex items-center justify-center mx-auto mb-4">
+            <span className="text-2xl font-bold text-white">TR</span>
+          </div>
+          <CardTitle className="text-xl sm:text-2xl font-bold">Employee Login</CardTitle>
           <CardDescription>
             Access your employee profile and information
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <form onSubmit={handleLogin} className="space-y-4">
+        <CardContent className="pt-2">
+          <form onSubmit={handleLogin} className="space-y-5">
             {error && (
-              <Alert variant="destructive">
+              <Alert variant="destructive" className="text-sm">
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
             
             <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="username" className="text-sm font-medium">Username</Label>
               <Input
                 id="username"
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Enter your name (e.g., johnsmith)"
+                className="min-h-[44px] text-base"
                 required
               />
               <p className="text-xs text-muted-foreground">
@@ -98,13 +102,15 @@ const UserLogin = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" className="text-sm font-medium">Password</Label>
               <Input
                 id="password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your phone number"
+                className="min-h-[44px] text-base"
+                inputMode="tel"
                 required
               />
               <p className="text-xs text-muted-foreground">
@@ -114,13 +120,13 @@ const UserLogin = () => {
             
             <Button 
               type="submit" 
-              className="w-full" 
+              className="w-full min-h-[44px] text-base font-medium" 
               disabled={isLoading}
             >
               {isLoading ? "Signing in..." : "Sign In"}
             </Button>
 
-            <div className="text-center text-sm text-muted-foreground">
+            <div className="text-center text-sm text-muted-foreground pt-2">
               <p>Need help with login? Contact your manager</p>
             </div>
           </form>

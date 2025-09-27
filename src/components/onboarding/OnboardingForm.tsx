@@ -82,44 +82,40 @@ export const OnboardingForm: React.FC<OnboardingFormProps> = ({ formId }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/50 to-indigo-100/70 p-2 sm:p-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/50 to-indigo-100/70 p-3 sm:p-4">
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-6 sm:mb-8 px-2">
-          <div className="inline-flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-primary rounded-xl flex items-center justify-center shadow-glow">
-              <span className="text-lg sm:text-xl font-bold text-white">TR</span>
+        {/* Mobile-optimized Header */}
+        <div className="text-center mb-4 sm:mb-8 px-2">
+          <div className="inline-flex items-center gap-3 mb-4">
+            <div className="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center shadow-glow">
+              <span className="text-xl font-bold text-white">TR</span>
             </div>
             <div>
-              <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-r from-primary to-primary-dark bg-clip-text text-transparent">
+              <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-primary to-primary-dark bg-clip-text text-transparent">
                 TriGuard Roofing
               </h1>
-              <p className="text-sm sm:text-lg text-muted-foreground">Employee Onboarding System</p>
+              <p className="text-sm text-muted-foreground">Employee Onboarding</p>
             </div>
           </div>
         </div>
 
-        <Card className="shadow-2xl border-0 bg-gradient-card mx-2 sm:mx-0">
+        <Card className="shadow-2xl border-0 bg-gradient-card">
           <CardHeader className="bg-gradient-primary text-primary-foreground rounded-t-xl relative overflow-hidden p-4 sm:p-6">
-            {/* Subtle pattern overlay */}
             <div className="absolute inset-0 bg-white/5 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1)_0%,transparent_50%)]"></div>
             
             <div className="relative z-10">
-              <CardTitle className="text-xl sm:text-2xl md:text-3xl font-bold text-center mb-2">
-                Welcome to Your Onboarding Journey
+              <CardTitle className="text-lg sm:text-2xl font-bold text-center mb-2">
+                Welcome to Your Onboarding
               </CardTitle>
-              <p className="text-primary-foreground/80 text-center mb-3 sm:mb-4 text-sm sm:text-base">
+              <p className="text-primary-foreground/90 text-center mb-3 text-sm">
                 Step {currentStep} of {FORM_STEPS.length}: {currentStepInfo?.title}
               </p>
-              <p className="text-xs sm:text-sm text-primary-foreground/70 text-center mb-4 sm:mb-6 px-2">
-                {currentStepInfo?.description}
-              </p>
               
-              <div className="space-y-2 sm:space-y-3">
-                <Progress value={progress} className="h-2 sm:h-3 bg-white/20 rounded-full">
-                  <div className="h-full bg-gradient-to-r from-white to-primary-glow rounded-full transition-all duration-300"></div>
+              <div className="space-y-3">
+                <Progress value={progress} className="h-3 bg-white/20 rounded-full">
+                  <div className="h-full bg-gradient-to-r from-white to-primary-glow rounded-full"></div>
                 </Progress>
-                <p className="text-xs text-primary-foreground/80 text-center">
+                <p className="text-xs text-primary-foreground/80 text-center font-medium">
                   {Math.round(progress)}% Complete
                 </p>
               </div>
@@ -128,69 +124,71 @@ export const OnboardingForm: React.FC<OnboardingFormProps> = ({ formId }) => {
 
           <CardContent className="p-4 sm:p-8 bg-white/80 backdrop-blur-sm">
             <Form {...form}>
-              <div className="space-y-8">
-                <div className="">
+              <div className="space-y-6">
+                <div className="min-h-[400px]">
                   {renderCurrentStep()}
                 </div>
 
-                {/* Navigation */}
-                <div className="flex justify-between items-center pt-8 border-t border-border/50">
-                  <div className="flex gap-3">
-                    {currentStep > 1 && (
+                {/* Mobile-optimized Navigation */}
+                <div className="border-t border-border/50 pt-6">
+                  {/* Mobile: Stack buttons vertically with better spacing */}
+                  <div className="flex flex-col sm:flex-row sm:justify-between gap-3 sm:gap-0">
+                    <div className="flex justify-center sm:justify-start">
+                      {currentStep > 1 && (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={prevStep}
+                          disabled={isLoading}
+                          className="flex items-center gap-2 min-h-[44px] px-6"
+                          size="lg"
+                        >
+                          <ChevronLeft className="h-4 w-4" />
+                          Previous
+                        </Button>
+                      )}
+                    </div>
+
+                    <div className="flex gap-3 order-first sm:order-last">
                       <Button
                         type="button"
-                        variant="outline"
-                        onClick={prevStep}
+                        variant="secondary"
+                        onClick={handleSave}
                         disabled={isLoading}
-                        className="flex items-center gap-2"
-                        size="lg"
+                        className="flex items-center gap-2 min-h-[44px] px-4 flex-1 sm:flex-none"
                       >
-                        <ChevronLeft className="h-4 w-4" />
-                        Previous
+                        <Save className="h-4 w-4" />
+                        <span className="hidden sm:inline">{isLoading ? 'Saving...' : 'Save Progress'}</span>
+                        <span className="sm:hidden">{isLoading ? 'Saving...' : 'Save'}</span>
                       </Button>
-                    )}
-                  </div>
 
-                  <div className="flex gap-3">
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      onClick={handleSave}
-                      disabled={isLoading}
-                      className="flex items-center gap-2"
-                      size="lg"
-                    >
-                      <Save className="h-4 w-4" />
-                      {isLoading ? 'Saving...' : 'Save Progress'}
-                    </Button>
-
-                    {currentStep < FORM_STEPS.length && (
-                      <Button
-                        type="button"
-                        onClick={nextStep}
-                        disabled={isLoading}
-                        variant="premium"
-                        className="flex items-center gap-2"
-                        size="lg"
-                      >
-                        Continue
-                        <ChevronRight className="h-4 w-4" />
-                      </Button>
-                    )}
+                      {currentStep < FORM_STEPS.length && (
+                        <Button
+                          type="button"
+                          onClick={nextStep}
+                          disabled={isLoading}
+                          className="flex items-center gap-2 min-h-[44px] px-6 bg-primary hover:bg-primary-dark flex-1 sm:flex-none"
+                          size="lg"
+                        >
+                          Continue
+                          <ChevronRight className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
                   </div>
                 </div>
 
-                {/* Step Indicators */}
-                <div className="flex justify-center pt-6">
-                  <div className="flex space-x-3">
+                {/* Mobile-optimized Step Indicators */}
+                <div className="flex justify-center pt-4">
+                  <div className="flex space-x-2">
                     {FORM_STEPS.map((step) => (
                       <div
                         key={step.id}
-                        className={`step-indicator w-3 h-3 rounded-full transition-all duration-300 ${
+                        className={`w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full transition-all ${
                           step.id === currentStep
-                            ? 'bg-primary shadow-glow active'
+                            ? 'bg-primary scale-125'
                             : step.id < currentStep
-                            ? 'bg-success completed'
+                            ? 'bg-success'
                             : 'bg-muted'
                         }`}
                       />
