@@ -11,6 +11,7 @@ import { Link } from 'react-router-dom';
 
 // Import step components
 import { BasicInformationStep } from './steps/BasicInformationStep';
+import { EmailPreviewStep } from './steps/EmailPreviewStep';
 import { AddressInformationStep } from './steps/AddressInformationStep';
 import { GearSizingStep } from './steps/GearSizingStep';
 import { BadgePhotoStep } from './steps/BadgePhotoStep';
@@ -57,24 +58,26 @@ export const OnboardingForm: React.FC<OnboardingFormProps> = ({ formId }) => {
       case 1:
         return <BasicInformationStep form={form} generatedEmail={generatedEmail} />;
       case 2:
-        return <AddressInformationStep form={form} />;
+        return <EmailPreviewStep form={form} generatedEmail={generatedEmail} />;
       case 3:
-        return <GearSizingStep form={form} />;
+        return <AddressInformationStep form={form} />;
       case 4:
-        return <BadgePhotoStep form={form} />;
+        return <GearSizingStep form={form} />;
       case 5:
-        return <TeamAssignmentStep form={form} />;
+        return <BadgePhotoStep form={form} />;
       case 6:
-        return <W9FormStep form={form} />;
+        return <TeamAssignmentStep form={form} />;
       case 7:
-        return <DocumentUploadStep form={form} />;
+        return <W9FormStep form={form} />;
       case 8:
-        return <DirectDepositStep form={form} />;
+        return <DocumentUploadStep form={form} />;
       case 9:
-        return <VoicePitchStep form={form} />;
+        return <DirectDepositStep form={form} />;
       case 10:
-        return <TaskAcknowledgmentStep form={form} />;
+        return <VoicePitchStep form={form} />;
       case 11:
+        return <TaskAcknowledgmentStep form={form} />;
+      case 12:
         return <ReviewSubmitStep form={form} generatedEmail={generatedEmail} onSubmit={submitForm} />;
       default:
         return null;

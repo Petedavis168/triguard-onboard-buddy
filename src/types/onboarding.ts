@@ -91,16 +91,17 @@ export interface OnboardingFormData {
 
 export const FORM_STEPS = [
   { id: 1, title: 'Basic Information', description: 'Name and contact details' },
-  { id: 2, title: 'Address Information', description: 'Mailing and shipping addresses' },
-  { id: 3, title: 'Gear Sizing', description: 'Uniform and equipment sizes' },
-  { id: 4, title: 'Badge Photo', description: 'Upload and edit your badge photo' },
-  { id: 5, title: 'Team Assignment', description: 'Select team, manager, and recruiter' },
-  { id: 6, title: 'W9 Form', description: 'Complete tax documentation' },
-  { id: 7, title: 'Document Upload', description: 'Upload required identification documents' },
-  { id: 8, title: 'Direct Deposit', description: 'Set up your direct deposit information' },
-  { id: 9, title: 'Voice Pitch', description: 'Record your pitch to join our team' },
-  { id: 10, title: 'Task Acknowledgment', description: 'Review and acknowledge your tasks' },
-  { id: 11, title: 'Review & Submit', description: 'Review and submit your application' },
+  { id: 2, title: 'Email Preview', description: 'Review your generated credentials' },
+  { id: 3, title: 'Address Information', description: 'Mailing and shipping addresses' },
+  { id: 4, title: 'Gear Sizing', description: 'Uniform and equipment sizes' },
+  { id: 5, title: 'Badge Photo', description: 'Upload and edit your badge photo' },
+  { id: 6, title: 'Team Assignment', description: 'Select team, manager, and recruiter' },
+  { id: 7, title: 'W9 Form', description: 'Complete tax documentation' },
+  { id: 8, title: 'Document Upload', description: 'Upload required identification documents' },
+  { id: 9, title: 'Direct Deposit', description: 'Set up your direct deposit information' },
+  { id: 10, title: 'Voice Pitch', description: 'Record your pitch to join our team' },
+  { id: 11, title: 'Task Acknowledgment', description: 'Review and acknowledge your tasks' },
+  { id: 12, title: 'Review & Submit', description: 'Review and submit your application' },
 ];
 
 export const SIZE_OPTIONS: { value: SizeType; label: string }[] = [

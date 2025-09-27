@@ -194,7 +194,7 @@ export const useOnboardingForm = (formId?: string) => {
       // Only save specific fields based on current step to avoid validation issues
       const updateData: any = {
         current_step: step,
-        status: (step >= 11 ? 'submitted' : step > 1 ? 'in_progress' : 'draft') as 'draft' | 'in_progress' | 'completed' | 'submitted',
+        status: (step >= 12 ? 'submitted' : step > 1 ? 'in_progress' : 'draft') as 'draft' | 'in_progress' | 'completed' | 'submitted',
         updated_at: new Date().toISOString(),
       };
 
@@ -202,7 +202,7 @@ export const useOnboardingForm = (formId?: string) => {
         updateData.generated_email = emailToSave;
       }
 
-      if (step >= 11) {
+      if (step >= 12) {
         updateData.submitted_at = new Date().toISOString();
       }
 
@@ -215,7 +215,7 @@ export const useOnboardingForm = (formId?: string) => {
         if (data.personal_email) updateData.personal_email = data.personal_email;
       }
 
-      if (step >= 2) {
+      if (step >= 3) {
         if (data.street_address) updateData.street_address = data.street_address;
         if (data.city) updateData.city = data.city;
         if (data.state) updateData.state = data.state;
@@ -227,7 +227,7 @@ export const useOnboardingForm = (formId?: string) => {
         if (data.shipping_zip_code) updateData.shipping_zip_code = data.shipping_zip_code;
       }
 
-      if (step >= 3) {
+      if (step >= 4) {
         if (data.gender) updateData.gender = data.gender;
         if (data.shirt_size) updateData.shirt_size = data.shirt_size;
         if (data.coat_size) updateData.coat_size = data.coat_size;
@@ -236,22 +236,22 @@ export const useOnboardingForm = (formId?: string) => {
         if (data.hat_size) updateData.hat_size = data.hat_size;
       }
 
-      if (step >= 4 && data.badge_photo_url) {
+      if (step >= 5 && data.badge_photo_url) {
         updateData.badge_photo_url = data.badge_photo_url;
       }
 
-      if (step >= 5) {
+      if (step >= 6) {
         if (data.team_id) updateData.team_id = data.team_id;
         if (data.manager_id) updateData.manager_id = data.manager_id;
         if (data.recruiter_id) updateData.recruiter_id = data.recruiter_id;
       }
 
-      if (step >= 6) {
+      if (step >= 7) {
         if (data.w9_completed !== undefined) updateData.w9_completed = data.w9_completed;
         if (data.w9_submitted_at) updateData.w9_submitted_at = data.w9_submitted_at;
       }
 
-      if (step >= 7) {
+      if (step >= 8) {
         if (data.social_security_card_url) updateData.social_security_card_url = data.social_security_card_url;
         if (data.drivers_license_url) updateData.drivers_license_url = data.drivers_license_url;
         if (data.social_security_card_url && data.drivers_license_url) {
@@ -259,7 +259,7 @@ export const useOnboardingForm = (formId?: string) => {
         }
       }
 
-      if (step >= 8) {
+      if (step >= 9) {
         if (data.bank_routing_number) updateData.bank_routing_number = data.bank_routing_number;
         if (data.bank_account_number) updateData.bank_account_number = data.bank_account_number;
         if (data.account_type) updateData.account_type = data.account_type;
@@ -270,7 +270,7 @@ export const useOnboardingForm = (formId?: string) => {
         }
       }
 
-      if (step >= 9) {
+      if (step >= 10) {
         if (data.voice_recording_url) updateData.voice_recording_url = data.voice_recording_url;
         if (data.voice_recording_completed_at) updateData.voice_recording_completed_at = data.voice_recording_completed_at;
       }
@@ -507,7 +507,7 @@ export const useOnboardingForm = (formId?: string) => {
         
         const saveResult = await saveFormData(formData, currentStep + 1);
         if (saveResult.success) {
-          setCurrentStep(prev => Math.min(prev + 1, 11));
+          setCurrentStep(prev => Math.min(prev + 1, 12));
           toast({
             title: "Information Saved Successfully!",
             description: `Step ${currentStep} completed. Moving to step ${currentStep + 1}.`,
@@ -542,24 +542,26 @@ export const useOnboardingForm = (formId?: string) => {
       case 1:
         return ['first_name', 'last_name', 'cell_phone', 'personal_email'];
       case 2:
-        return ['street_address', 'city', 'state', 'zip_code'];
+        return []; // Email preview step - no validation needed
       case 3:
-        return ['gender', 'shirt_size', 'coat_size', 'pant_size', 'shoe_size', 'hat_size'];
+        return ['street_address', 'city', 'state', 'zip_code'];
       case 4:
-        return []; // Badge photo is optional
+        return ['gender', 'shirt_size', 'coat_size', 'pant_size', 'shoe_size', 'hat_size'];
       case 5:
-        return ['team_id', 'manager_id', 'recruiter_id'];
+        return []; // Badge photo is optional
       case 6:
-        return ['w9_completed'];
+        return ['team_id', 'manager_id', 'recruiter_id'];
       case 7:
-        return []; // Document uploads are optional for validation purposes
+        return ['w9_completed'];
       case 8:
-        return []; // Direct deposit fields are optional for validation purposes
+        return []; // Document uploads are optional for validation purposes
       case 9:
-        return []; // Voice recording is optional but encouraged
+        return []; // Direct deposit fields are optional for validation purposes
       case 10:
-        return []; // Task acknowledgment is optional
+        return []; // Voice recording is optional but encouraged
       case 11:
+        return []; // Task acknowledgment is optional
+      case 12:
         return []; // Review step
       default:
         return [];
@@ -572,12 +574,14 @@ export const useOnboardingForm = (formId?: string) => {
       case 1:
         return `Name: ${formData.first_name} ${formData.last_name}, Phone: ${formData.cell_phone}, Email: ${formData.personal_email}`;
       case 2:
-        return `Address: ${formData.street_address}, ${formData.city}, ${formData.state} ${formData.zip_code}`;
+        return "Email credentials reviewed";
       case 3:
+        return `Address: ${formData.street_address}, ${formData.city}, ${formData.state} ${formData.zip_code}`;
+      case 4:
         return `Sizes - Shirt: ${formData.shirt_size}, Coat: ${formData.coat_size}, Pants: ${formData.pant_size}`;
-      case 5:
-        return `Team assignment and manager information saved`;
       case 6:
+        return `Team assignment and manager information saved`;
+      case 7:
         return `W-9 completion status updated`;
       default:
         return "Information saved successfully";
