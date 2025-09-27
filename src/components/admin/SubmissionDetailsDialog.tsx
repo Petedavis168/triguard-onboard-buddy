@@ -258,6 +258,20 @@ const SubmissionDetailsDialog: React.FC<SubmissionDetailsDialogProps> = ({
                         <div className="p-3 bg-gray-50 rounded capitalize text-sm">{submission.gender}</div>
                       )}
                     </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="cell_phone" className="text-sm font-medium">Phone Number</Label>
+                      {isEditing ? (
+                        <Input
+                          id="cell_phone"
+                          value={editedData.cell_phone || ''}
+                          onChange={(e) => setEditedData({...editedData, cell_phone: e.target.value})}
+                          className="min-h-[44px]"
+                          placeholder="(555) 123-4567"
+                        />
+                      ) : (
+                        <div className="p-3 bg-gray-50 rounded text-sm">{submission.cell_phone || 'Not provided'}</div>
+                      )}
+                    </div>
                   </CardContent>
                 </Card>
               </TabsContent>
