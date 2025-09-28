@@ -178,60 +178,65 @@ const OnboardingManagement = () => {
   }
 
   return (
-    <div className="space-y-4 sm:space-y-6">
+    <div className="space-y-6 bg-gradient-to-br from-gray-50/80 to-blue-50/40 min-h-screen p-6">
+      <div className="max-w-7xl mx-auto space-y-8">
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
-        <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20 hover:shadow-md transition-shadow">
-          <CardContent className="p-4 sm:p-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 lg:gap-6">
+        <Card className="overflow-hidden border-2 border-emerald-200/60 bg-gradient-to-br from-emerald-50/80 to-emerald-100/60 hover:from-emerald-100/90 hover:to-emerald-150/70 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-1">
+          <CardContent className="p-6 relative">
+            <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-emerald-400 to-emerald-600"></div>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-2xl sm:text-3xl font-bold text-primary">{stats.total}</p>
-                <p className="text-sm sm:text-base text-muted-foreground">Total Applications</p>
+                <p className="text-3xl sm:text-4xl font-bold text-emerald-700 mb-1">{stats.total}</p>
+                <p className="text-sm font-semibold text-emerald-600">Total Applications</p>
               </div>
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/20 rounded-lg flex items-center justify-center">
-                <FileText className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
+              <div className="w-14 h-14 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-2xl flex items-center justify-center shadow-xl">
+                <FileText className="h-7 w-7 text-white" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-success/10 to-success/5 border-success/20 hover:shadow-md transition-shadow">
-          <CardContent className="p-4 sm:p-6">
+        <Card className="overflow-hidden border-2 border-green-200/60 bg-gradient-to-br from-green-50/80 to-green-100/60 hover:from-green-100/90 hover:to-green-150/70 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-1">
+          <CardContent className="p-6 relative">
+            <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-green-400 to-green-600"></div>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-2xl sm:text-3xl font-bold text-success">{stats.completed}</p>
-                <p className="text-sm sm:text-base text-muted-foreground">Completed</p>
+                <p className="text-3xl sm:text-4xl font-bold text-green-700 mb-1">{stats.completed}</p>
+                <p className="text-sm font-semibold text-green-600">Completed</p>
               </div>
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-success/20 rounded-lg flex items-center justify-center">
-                <CheckCircle className="h-5 w-5 sm:h-6 sm:w-6 text-success" />
+              <div className="w-14 h-14 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center shadow-xl">
+                <CheckCircle className="h-7 w-7 text-white" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-blue-500/10 to-blue-500/5 border-blue-500/20 hover:shadow-md transition-shadow">
-          <CardContent className="p-4 sm:p-6">
+        <Card className="overflow-hidden border-2 border-blue-200/60 bg-gradient-to-br from-blue-50/80 to-blue-100/60 hover:from-blue-100/90 hover:to-blue-150/70 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-1">
+          <CardContent className="p-6 relative">
+            <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-400 to-blue-600"></div>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-2xl sm:text-3xl font-bold text-blue-600">{stats.inProgress}</p>
-                <p className="text-sm sm:text-base text-muted-foreground">In Progress</p>
+                <p className="text-3xl sm:text-4xl font-bold text-blue-700 mb-1">{stats.inProgress}</p>
+                <p className="text-sm font-semibold text-blue-600">In Progress</p>
               </div>
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
-                <Clock className="h-5 w-5 sm:h-6 sm:w-6 text-blue-500" />
+              <div className="w-14 h-14 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl flex items-center justify-center shadow-xl">
+                <Clock className="h-7 w-7 text-white" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-muted/50 to-muted/25 border-muted/40 hover:shadow-md transition-shadow">
-          <CardContent className="p-4 sm:p-6">
+        <Card className="overflow-hidden border-2 border-amber-200/60 bg-gradient-to-br from-amber-50/80 to-orange-100/60 hover:from-amber-100/90 hover:to-orange-150/70 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-1">
+          <CardContent className="p-6 relative">
+            <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-amber-400 to-orange-600"></div>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-2xl sm:text-3xl font-bold text-muted-foreground">{stats.draft}</p>
-                <p className="text-sm sm:text-base text-muted-foreground">Draft</p>
+                <p className="text-3xl sm:text-4xl font-bold text-orange-700 mb-1">{stats.draft}</p>
+                <p className="text-sm font-semibold text-orange-600">Draft</p>
               </div>
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-muted/40 rounded-lg flex items-center justify-center">
-                <AlertCircle className="h-5 w-5 sm:h-6 sm:w-6 text-muted-foreground" />
+              <div className="w-14 h-14 bg-gradient-to-br from-amber-400 to-orange-600 rounded-2xl flex items-center justify-center shadow-xl">
+                <AlertCircle className="h-7 w-7 text-white" />
               </div>
             </div>
           </CardContent>
@@ -239,38 +244,50 @@ const OnboardingManagement = () => {
       </div>
 
       {/* Main Content */}
-      <Card>
-        <CardHeader className="pb-4">
+      <Card className="overflow-hidden border-2 border-gray-200/60 bg-gradient-to-br from-white to-gray-50/80 shadow-2xl">
+        <CardHeader className="pb-6 bg-gradient-to-r from-gray-50/80 to-white/60 border-b border-gray-200/50">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <CardTitle className="text-lg sm:text-xl">Onboarding Submissions</CardTitle>
-              <CardDescription className="text-sm">Review and manage applications</CardDescription>
+              <CardTitle className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Review and manage applications</CardTitle>
+              <CardDescription className="text-gray-600 font-medium">Track onboarding progress across all departments</CardDescription>
             </div>
           </div>
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <div className="relative mt-4">
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
             <Input
-              placeholder="Search applications..."
+              placeholder="Search by name, email, manager, or team..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
+              className="pl-12 pr-4 py-3 border-2 border-gray-200 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 rounded-xl shadow-sm text-gray-900 placeholder-gray-500 font-medium"
             />
           </div>
         </CardHeader>
         
-        <CardContent className="p-4 sm:p-6">
+        <CardContent className="p-6">
           <Tabs defaultValue="all" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 h-auto p-1">
-              <TabsTrigger value="all" className="text-xs sm:text-sm px-2 py-2">
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 h-auto p-2 bg-gray-100/80 rounded-2xl border-2 border-gray-200/50 shadow-inner">
+              <TabsTrigger 
+                value="all" 
+                className="text-sm px-4 py-3 font-semibold rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:text-gray-900 data-[state=active]:border-2 data-[state=active]:border-gray-200/60 transition-all duration-300"
+              >
                 All ({stats.total})
               </TabsTrigger>
-              <TabsTrigger value="completed" className="text-xs sm:text-sm px-2 py-2">
+              <TabsTrigger 
+                value="completed" 
+                className="text-sm px-4 py-3 font-semibold rounded-xl data-[state=active]:bg-emerald-500 data-[state=active]:shadow-lg data-[state=active]:text-white transition-all duration-300"
+              >
                 Done ({stats.completed})
               </TabsTrigger>
-              <TabsTrigger value="in_progress" className="text-xs sm:text-sm px-2 py-2">
+              <TabsTrigger 
+                value="in_progress" 
+                className="text-sm px-4 py-3 font-semibold rounded-xl data-[state=active]:bg-blue-500 data-[state=active]:shadow-lg data-[state=active]:text-white transition-all duration-300"
+              >
                 Active ({stats.inProgress})
               </TabsTrigger>
-              <TabsTrigger value="draft" className="text-xs sm:text-sm px-2 py-2">
+              <TabsTrigger 
+                value="draft" 
+                className="text-sm px-4 py-3 font-semibold rounded-xl data-[state=active]:bg-amber-500 data-[state=active]:shadow-lg data-[state=active]:text-white transition-all duration-300"
+              >
                 Draft ({stats.draft})
               </TabsTrigger>
             </TabsList>
@@ -309,6 +326,7 @@ const OnboardingManagement = () => {
         onClose={handleDetailsClose}
         onUpdate={handleSubmissionUpdate}
       />
+      </div>
     </div>
   );
 };
@@ -354,13 +372,25 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({ form, onViewDetails }
     switch (status) {
       case 'completed':
       case 'submitted':
-        return <Badge className="bg-success text-success-foreground font-medium">Completed</Badge>;
+        return (
+          <Badge className="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white border-0 shadow-lg px-3 py-1.5 font-semibold text-xs">
+            ✓ Complete
+          </Badge>
+        );
       case 'in_progress':
-        return <Badge variant="secondary" className="bg-blue-500/10 text-blue-600 border-blue-200 font-medium">Step {currentStep}/9</Badge>;
+        return (
+          <Badge className="bg-gradient-to-r from-blue-500 to-blue-600 text-white border-0 shadow-lg px-3 py-1.5 font-semibold text-xs">
+            Step {currentStep}/9
+          </Badge>
+        );
       case 'draft':
-        return <Badge variant="outline" className="border-amber-200 text-amber-700 bg-amber-50 font-medium">Draft</Badge>;
+        return (
+          <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0 shadow-lg px-3 py-1.5 font-semibold text-xs">
+            ◯ Draft
+          </Badge>
+        );
       default:
-        return <Badge variant="outline">{status}</Badge>;
+        return <Badge variant="outline" className="font-semibold">{status}</Badge>;
     }
   };
 
@@ -377,48 +407,67 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({ form, onViewDetails }
     switch (status) {
       case 'completed':
       case 'submitted':
-        return 'border-success/30 bg-gradient-to-br from-success/8 to-success/3 hover:from-success/12 hover:to-success/5';
+        return 'border-emerald-200/80 bg-gradient-to-br from-emerald-50/80 to-emerald-100/40 hover:from-emerald-100/90 hover:to-emerald-150/60 shadow-emerald-100/50';
       case 'in_progress':
-        return 'border-blue-500/30 bg-gradient-to-br from-blue-500/8 to-blue-500/3 hover:from-blue-500/12 hover:to-blue-500/5';
+        return 'border-blue-200/80 bg-gradient-to-br from-blue-50/80 to-blue-100/40 hover:from-blue-100/90 hover:to-blue-150/60 shadow-blue-100/50';
       case 'draft':
-        return 'border-amber-200 bg-gradient-to-br from-amber-50 to-amber-25 hover:from-amber-100 hover:to-amber-50';
+        return 'border-amber-200/80 bg-gradient-to-br from-amber-50/80 to-orange-100/40 hover:from-amber-100/90 hover:to-orange-150/60 shadow-amber-100/50';
       default:
-        return 'border-border bg-card hover:bg-accent/50';
+        return 'border-gray-200 bg-gradient-to-br from-white to-gray-50/80 hover:from-gray-50 hover:to-gray-100/80';
     }
   };
 
   const getProgressPercentage = (status: string, currentStep: number) => {
     if (status === 'completed' || status === 'submitted') return 100;
-    if (status === 'draft') return 0;
+    if (status === 'draft') return Math.max(22, currentStep * 10); // Show some progress even for drafts
     return Math.round((currentStep / 9) * 100);
   };
 
   const progress = getProgressPercentage(form.status, form.current_step);
 
   return (
-    <Card className={`group hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-1 ${getStatusColor(form.status)} border-2`}>
-      <CardContent className="p-0">
+    <Card className={`group overflow-hidden border-2 hover:shadow-2xl transition-all duration-500 cursor-pointer transform hover:-translate-y-2 hover:scale-[1.02] ${getStatusColor(form.status)}`}>
+      <CardContent className="p-0 relative">
+        {/* Top accent line */}
+        <div className={`h-1.5 w-full ${
+          form.status === 'completed' || form.status === 'submitted' ? 'bg-gradient-to-r from-emerald-400 to-emerald-600' :
+          form.status === 'in_progress' ? 'bg-gradient-to-r from-blue-400 to-blue-600' :
+          'bg-gradient-to-r from-amber-400 to-orange-600'
+        }`}></div>
+
         {/* Header Section */}
-        <div className="p-5 pb-4">
-          <div className="flex items-start justify-between mb-4">
+        <div className="p-6">
+          <div className="flex items-start justify-between mb-5">
             <div className="flex items-center gap-4">
               <div className="relative">
-                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-lg ring-4 ring-primary/10">
-                  <User className="h-7 w-7 text-primary-foreground" />
+                <div className={`w-16 h-16 rounded-2xl flex items-center justify-center shadow-xl ring-4 ring-white/50 ${
+                  form.status === 'completed' || form.status === 'submitted' ? 'bg-gradient-to-br from-emerald-400 to-emerald-600' :
+                  form.status === 'in_progress' ? 'bg-gradient-to-br from-blue-400 to-blue-600' :
+                  'bg-gradient-to-br from-amber-400 to-orange-600'
+                }`}>
+                  <User className="h-8 w-8 text-white drop-shadow-sm" />
                 </div>
-                <div className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-3 border-white shadow-sm ${
-                  form.status === 'completed' || form.status === 'submitted' ? 'bg-success' :
+                <div className={`absolute -bottom-1 -right-1 w-6 h-6 rounded-full border-4 border-white shadow-lg flex items-center justify-center ${
+                  form.status === 'completed' || form.status === 'submitted' ? 'bg-emerald-500' :
                   form.status === 'in_progress' ? 'bg-blue-500' : 'bg-amber-500'
-                }`}></div>
+                }`}>
+                  {form.status === 'completed' || form.status === 'submitted' ? (
+                    <CheckCircle className="h-3 w-3 text-white" />
+                  ) : form.status === 'in_progress' ? (
+                    <Clock className="h-3 w-3 text-white" />
+                  ) : (
+                    <AlertCircle className="h-3 w-3 text-white" />
+                  )}
+                </div>
               </div>
               <div className="min-w-0 flex-1">
-                <h3 className="font-bold text-lg text-foreground mb-1 truncate">
+                <h3 className="font-bold text-xl text-gray-900 mb-2 truncate group-hover:text-gray-800 transition-colors">
                   {form.first_name} {form.last_name}
                 </h3>
-                <div className="flex items-center gap-2">
-                  <IdCard className="h-3.5 w-3.5 text-primary" />
-                  <span className="text-sm font-mono text-primary/80 font-medium">
-                    Rep ID: {form.id.slice(0, 8)}...
+                <div className="flex items-center gap-2 mb-1">
+                  <IdCard className="h-4 w-4 text-indigo-500" />
+                  <span className="text-sm font-mono text-indigo-600 font-semibold bg-indigo-50 px-2 py-0.5 rounded-md">
+                    {form.id.slice(0, 8).toUpperCase()}...
                   </span>
                 </div>
               </div>
@@ -426,113 +475,115 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({ form, onViewDetails }
             {getStatusBadge(form.status, form.current_step)}
           </div>
 
-          {/* Progress Bar */}
-          <div className="mb-4">
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-xs font-medium text-muted-foreground">Progress</span>
-              <span className="text-xs font-bold text-foreground">{progress}%</span>
+          {/* Progress Section */}
+          <div className="mb-5 bg-white/70 rounded-xl p-4 border border-white/50">
+            <div className="flex justify-between items-center mb-3">
+              <span className="text-sm font-semibold text-gray-700">Progress</span>
+              <span className="text-sm font-bold text-gray-900 bg-gray-100 px-3 py-1 rounded-full">
+                {progress}%
+              </span>
             </div>
-            <div className="w-full bg-muted/40 rounded-full h-2.5 overflow-hidden">
+            <div className="relative w-full bg-gray-200/60 rounded-full h-3 overflow-hidden shadow-inner">
               <div 
-                className={`h-full rounded-full transition-all duration-500 ${
-                  form.status === 'completed' || form.status === 'submitted' ? 'bg-gradient-to-r from-success to-success/80' :
-                  form.status === 'in_progress' ? 'bg-gradient-to-r from-blue-500 to-blue-400' :
-                  'bg-gradient-to-r from-amber-400 to-amber-300'
+                className={`h-full rounded-full transition-all duration-700 shadow-sm ${
+                  form.status === 'completed' || form.status === 'submitted' ? 'bg-gradient-to-r from-emerald-400 via-emerald-500 to-emerald-600' :
+                  form.status === 'in_progress' ? 'bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600' :
+                  'bg-gradient-to-r from-amber-400 via-orange-500 to-orange-600'
                 }`}
                 style={{ width: `${progress}%` }}
-              ></div>
+              >
+                {progress > 10 && (
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+                )}
+              </div>
             </div>
           </div>
         </div>
 
         {/* Details Section */}
-        <div className="px-5 pb-4 space-y-3">
+        <div className="px-6 pb-5 space-y-3">
           {/* Email */}
-          <div className="flex items-center gap-3 p-2.5 bg-white/60 dark:bg-black/20 rounded-lg">
-            <div className="w-8 h-8 bg-blue-500/10 rounded-lg flex items-center justify-center">
-              <Mail className="h-4 w-4 text-blue-600" />
+          <div className="flex items-center gap-4 p-3 bg-white/80 backdrop-blur-sm rounded-xl border border-white/50 shadow-sm">
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+              <Mail className="h-5 w-5 text-white" />
             </div>
             {form.generated_email ? (
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium text-blue-600 truncate">{form.generated_email}</p>
-                <p className="text-xs text-muted-foreground">Company Email</p>
+                <p className="text-sm font-semibold text-blue-700 truncate">{form.generated_email}</p>
+                <p className="text-xs text-gray-600 font-medium">Company Email</p>
               </div>
             ) : (
               <div className="min-w-0 flex-1">
-                <p className="text-sm text-muted-foreground">No email assigned</p>
-                <p className="text-xs text-muted-foreground">Pending setup</p>
+                <p className="text-sm font-medium text-red-600">No email assigned</p>
+                <p className="text-xs text-gray-500">Pending setup</p>
               </div>
             )}
           </div>
 
           {/* Manager */}
-          <div className="flex items-center gap-3 p-2.5 bg-white/60 dark:bg-black/20 rounded-lg">
-            <div className="w-8 h-8 bg-purple-500/10 rounded-lg flex items-center justify-center">
-              <UserCheck className="h-4 w-4 text-purple-600" />
+          <div className="flex items-center gap-4 p-3 bg-white/80 backdrop-blur-sm rounded-xl border border-white/50 shadow-sm">
+            <div className="w-10 h-10 bg-gradient-to-br from-purple-400 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+              <UserCheck className="h-5 w-5 text-white" />
             </div>
             {form.managers ? (
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium text-foreground truncate">
+                <p className="text-sm font-semibold text-purple-700 truncate">
                   {form.managers.first_name} {form.managers.last_name}
                 </p>
-                <p className="text-xs text-muted-foreground">Manager</p>
+                <p className="text-xs text-gray-600 font-medium">Manager</p>
               </div>
             ) : (
               <div className="min-w-0 flex-1">
-                <p className="text-sm text-muted-foreground">No manager assigned</p>
-                <p className="text-xs text-muted-foreground">Pending assignment</p>
+                <p className="text-sm font-medium text-red-600">No manager assigned</p>
+                <p className="text-xs text-gray-500">Pending assignment</p>
               </div>
             )}
           </div>
 
           {/* Team */}
-          <div className="flex items-center gap-3 p-2.5 bg-white/60 dark:bg-black/20 rounded-lg">
-            <div className="w-8 h-8 bg-orange-500/10 rounded-lg flex items-center justify-center">
-              <Building className="h-4 w-4 text-orange-600" />
+          <div className="flex items-center gap-4 p-3 bg-white/80 backdrop-blur-sm rounded-xl border border-white/50 shadow-sm">
+            <div className="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl flex items-center justify-center shadow-lg">
+              <Building className="h-5 w-5 text-white" />
             </div>
             {form.teams ? (
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium text-foreground truncate">{form.teams.name}</p>
-                <p className="text-xs text-muted-foreground">Team Assignment</p>
+                <p className="text-sm font-semibold text-orange-700 truncate">{form.teams.name}</p>
+                <p className="text-xs text-gray-600 font-medium">Team Assignment</p>
               </div>
             ) : (
               <div className="min-w-0 flex-1">
-                <p className="text-sm text-muted-foreground">No team assigned</p>
-                <p className="text-xs text-muted-foreground">Pending assignment</p>
+                <p className="text-sm font-medium text-red-600">No team assigned</p>
+                <p className="text-xs text-gray-500">Pending assignment</p>
               </div>
             )}
           </div>
         </div>
 
         {/* Footer Section */}
-        <div className="px-5 py-4 bg-gradient-to-r from-muted/30 to-muted/10 border-t border-border/30">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-4">
-              <div className="text-center">
-                <div className="flex items-center gap-1 mb-1">
-                  <Calendar className="h-3 w-3 text-muted-foreground" />
-                  <span className="text-xs text-muted-foreground font-medium">Started</span>
-                </div>
-                <p className="text-sm font-semibold text-foreground">{formatDate(form.created_at)}</p>
+        <div className="px-6 py-4 bg-gradient-to-r from-gray-50/80 to-white/60 border-t border-gray-200/50 backdrop-blur-sm">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <Calendar className="h-4 w-4 text-gray-500" />
+              <div>
+                <p className="text-xs font-semibold text-gray-700 uppercase tracking-wide">Started</p>
+                <p className="text-sm font-bold text-gray-900">{formatDate(form.created_at)}</p>
               </div>
-              
-              <div className="text-center">
-                <div className="flex items-center gap-1 mb-1">
-                  <CheckCircle className="h-3 w-3 text-muted-foreground" />
-                  <span className="text-xs text-muted-foreground font-medium">Completed</span>
-                </div>
-                <p className="text-sm font-semibold text-foreground">
-                  {form.submitted_at ? formatDate(form.submitted_at) : 'Pending'}
+            </div>
+            <div className="flex items-center gap-3">
+              <CheckCircle className="h-4 w-4 text-gray-500" />
+              <div className="text-right">
+                <p className="text-xs font-semibold text-gray-700 uppercase tracking-wide">Status</p>
+                <p className="text-sm font-bold text-gray-900 capitalize">
+                  {form.status === 'completed' || form.status === 'submitted' ? 'Complete' : 
+                   form.status === 'in_progress' ? 'In Progress' : 'Draft'}
                 </p>
               </div>
             </div>
           </div>
-
-          {/* Action Button */}
-          <Button
+          
+          <Button 
             onClick={() => onViewDetails(form)}
-            className="w-full bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary/80 text-primary-foreground font-medium shadow-lg hover:shadow-xl transition-all duration-200 group-hover:scale-[1.02]"
-            size="lg"
+            className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-semibold py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] border-0"
           >
             <Eye className="h-4 w-4 mr-2" />
             View Details
