@@ -16,6 +16,7 @@ import UserLogin from "./pages/UserLogin";
 import UserDashboard from "./pages/UserDashboard";
 import RecruitingDashboard from "./pages/RecruitingDashboard";
 import Courses from "./pages/Courses";
+import CourseContent from "./pages/CourseContent";
 import Quizzes from "./pages/Quizzes";
 import Certificates from "./pages/Certificates";
 import NotFound from "./pages/NotFound";
@@ -37,6 +38,7 @@ const App = () => {
           <Route path="/admin" element={<Admin />} />
           <Route path="/user-dashboard" element={<UserDashboard />} />
           <Route path="/courses" element={<Courses />} />
+          <Route path="/courses/:courseId" element={<CourseContent />} />
           <Route path="/quizzes" element={<Quizzes />} />
           <Route path="/certificates" element={<Certificates />} />
           <Route path="/manager-login" element={<ManagerLogin />} />

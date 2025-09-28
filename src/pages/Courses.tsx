@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 interface Course {
   id: string;
@@ -39,6 +39,7 @@ const Courses = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchCourses();
@@ -171,14 +172,11 @@ const Courses = () => {
       title: "Starting Course",
       description: `Loading ${course.title}...`,
     });
-    // Here you would typically navigate to the course content
-    // For now, we'll just show a success message
+    
+    // Navigate to course content page
     setTimeout(() => {
-      toast({
-        title: "Course Started",
-        description: `Welcome to "${course.title}"`,
-      });
-    }, 1000);
+      navigate(`/courses/${course.id}`);
+    }, 500);
   };
 
   const categories = [
