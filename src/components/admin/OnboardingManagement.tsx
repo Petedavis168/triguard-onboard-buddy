@@ -178,119 +178,95 @@ const OnboardingManagement = () => {
   }
 
   return (
-    <div className="space-y-6 bg-gradient-to-br from-gray-50/80 to-blue-50/40 min-h-screen p-6">
-      <div className="max-w-7xl mx-auto space-y-8">
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 lg:gap-6">
-        <Card className="overflow-hidden border-2 border-emerald-200/60 bg-gradient-to-br from-emerald-50/80 to-emerald-100/60 hover:from-emerald-100/90 hover:to-emerald-150/70 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-1">
-          <CardContent className="p-6 relative">
-            <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-emerald-400 to-emerald-600"></div>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-3xl sm:text-4xl font-bold text-emerald-700 mb-1">{stats.total}</p>
-                <p className="text-sm font-semibold text-emerald-600">Total Applications</p>
+    <div className="space-y-8 bg-background min-h-screen p-6">
+      <div className="max-w-7xl mx-auto">
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+          <Card className="border border-border bg-card hover:shadow-md transition-shadow">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-3xl font-bold text-foreground">{stats.total}</p>
+                  <p className="text-sm text-muted-foreground mt-1">Total Applications</p>
+                </div>
+                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                  <FileText className="h-6 w-6 text-primary" />
+                </div>
               </div>
-              <div className="w-14 h-14 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-2xl flex items-center justify-center shadow-xl">
-                <FileText className="h-7 w-7 text-white" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
 
-        <Card className="overflow-hidden border-2 border-green-200/60 bg-gradient-to-br from-green-50/80 to-green-100/60 hover:from-green-100/90 hover:to-green-150/70 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-1">
-          <CardContent className="p-6 relative">
-            <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-green-400 to-green-600"></div>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-3xl sm:text-4xl font-bold text-green-700 mb-1">{stats.completed}</p>
-                <p className="text-sm font-semibold text-green-600">Completed</p>
+          <Card className="border border-border bg-card hover:shadow-md transition-shadow">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-3xl font-bold text-foreground">{stats.completed}</p>
+                  <p className="text-sm text-muted-foreground mt-1">Completed</p>
+                </div>
+                <div className="w-12 h-12 bg-success/10 rounded-lg flex items-center justify-center">
+                  <CheckCircle className="h-6 w-6 text-success" />
+                </div>
               </div>
-              <div className="w-14 h-14 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center shadow-xl">
-                <CheckCircle className="h-7 w-7 text-white" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
 
-        <Card className="overflow-hidden border-2 border-blue-200/60 bg-gradient-to-br from-blue-50/80 to-blue-100/60 hover:from-blue-100/90 hover:to-blue-150/70 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-1">
-          <CardContent className="p-6 relative">
-            <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-400 to-blue-600"></div>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-3xl sm:text-4xl font-bold text-blue-700 mb-1">{stats.inProgress}</p>
-                <p className="text-sm font-semibold text-blue-600">In Progress</p>
+          <Card className="border border-border bg-card hover:shadow-md transition-shadow">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-3xl font-bold text-foreground">{stats.inProgress}</p>
+                  <p className="text-sm text-muted-foreground mt-1">In Progress</p>
+                </div>
+                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                  <Clock className="h-6 w-6 text-primary" />
+                </div>
               </div>
-              <div className="w-14 h-14 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl flex items-center justify-center shadow-xl">
-                <Clock className="h-7 w-7 text-white" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
 
-        <Card className="overflow-hidden border-2 border-amber-200/60 bg-gradient-to-br from-amber-50/80 to-orange-100/60 hover:from-amber-100/90 hover:to-orange-150/70 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-1">
-          <CardContent className="p-6 relative">
-            <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-amber-400 to-orange-600"></div>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-3xl sm:text-4xl font-bold text-orange-700 mb-1">{stats.draft}</p>
-                <p className="text-sm font-semibold text-orange-600">Draft</p>
+          <Card className="border border-border bg-card hover:shadow-md transition-shadow">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-3xl font-bold text-foreground">{stats.draft}</p>
+                  <p className="text-sm text-muted-foreground mt-1">Draft</p>
+                </div>
+                <div className="w-12 h-12 bg-warning/10 rounded-lg flex items-center justify-center">
+                  <AlertCircle className="h-6 w-6 text-warning" />
+                </div>
               </div>
-              <div className="w-14 h-14 bg-gradient-to-br from-amber-400 to-orange-600 rounded-2xl flex items-center justify-center shadow-xl">
-                <AlertCircle className="h-7 w-7 text-white" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+            </CardContent>
+          </Card>
+        </div>
 
-      {/* Main Content */}
-      <Card className="overflow-hidden border-2 border-gray-200/60 bg-gradient-to-br from-white to-gray-50/80 shadow-2xl">
-        <CardHeader className="pb-6 bg-gradient-to-r from-gray-50/80 to-white/60 border-b border-gray-200/50">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <CardTitle className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Review and manage applications</CardTitle>
-              <CardDescription className="text-gray-600 font-medium">Track onboarding progress across all departments</CardDescription>
+        {/* Main Content */}
+        <Card className="border border-border bg-card">
+          <CardHeader className="pb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <CardTitle className="text-2xl font-bold text-foreground">Onboarding Applications</CardTitle>
+                <CardDescription className="text-muted-foreground">Review and manage all onboarding submissions</CardDescription>
+              </div>
             </div>
-          </div>
-          <div className="relative mt-4">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-            <Input
-              placeholder="Search by name, email, manager, or team..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-12 pr-4 py-3 border-2 border-gray-200 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 rounded-xl shadow-sm text-gray-900 placeholder-gray-500 font-medium"
-            />
-          </div>
-        </CardHeader>
-        
-        <CardContent className="p-6">
-          <Tabs defaultValue="all" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 h-auto p-2 bg-gray-100/80 rounded-2xl border-2 border-gray-200/50 shadow-inner">
-              <TabsTrigger 
-                value="all" 
-                className="text-sm px-4 py-3 font-semibold rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:text-gray-900 data-[state=active]:border-2 data-[state=active]:border-gray-200/60 transition-all duration-300"
-              >
-                All ({stats.total})
-              </TabsTrigger>
-              <TabsTrigger 
-                value="completed" 
-                className="text-sm px-4 py-3 font-semibold rounded-xl data-[state=active]:bg-emerald-500 data-[state=active]:shadow-lg data-[state=active]:text-white transition-all duration-300"
-              >
-                Done ({stats.completed})
-              </TabsTrigger>
-              <TabsTrigger 
-                value="in_progress" 
-                className="text-sm px-4 py-3 font-semibold rounded-xl data-[state=active]:bg-blue-500 data-[state=active]:shadow-lg data-[state=active]:text-white transition-all duration-300"
-              >
-                Active ({stats.inProgress})
-              </TabsTrigger>
-              <TabsTrigger 
-                value="draft" 
-                className="text-sm px-4 py-3 font-semibold rounded-xl data-[state=active]:bg-amber-500 data-[state=active]:shadow-lg data-[state=active]:text-white transition-all duration-300"
-              >
-                Draft ({stats.draft})
-              </TabsTrigger>
-            </TabsList>
+            <div className="relative mt-4">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search by name, email, manager, or team..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+          </CardHeader>
+          
+          <CardContent className="p-6">
+            <Tabs defaultValue="all" className="w-full">
+              <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4">
+                <TabsTrigger value="all">All ({stats.total})</TabsTrigger>
+                <TabsTrigger value="completed">Completed ({stats.completed})</TabsTrigger>
+                <TabsTrigger value="in_progress">In Progress ({stats.inProgress})</TabsTrigger>
+                <TabsTrigger value="draft">Draft ({stats.draft})</TabsTrigger>
+              </TabsList>
             
             <TabsContent value="all" className="mt-6">
               <ApplicationGrid forms={filteredForms} onViewDetails={viewDetails} />
@@ -372,25 +348,13 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({ form, onViewDetails }
     switch (status) {
       case 'completed':
       case 'submitted':
-        return (
-          <Badge className="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white border-0 shadow-lg px-3 py-1.5 font-semibold text-xs">
-            ✓ Complete
-          </Badge>
-        );
+        return <Badge className="bg-success text-success-foreground">Completed</Badge>;
       case 'in_progress':
-        return (
-          <Badge className="bg-gradient-to-r from-blue-500 to-blue-600 text-white border-0 shadow-lg px-3 py-1.5 font-semibold text-xs">
-            Step {currentStep}/9
-          </Badge>
-        );
+        return <Badge variant="secondary">Step {currentStep} of 9</Badge>;
       case 'draft':
-        return (
-          <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0 shadow-lg px-3 py-1.5 font-semibold text-xs">
-            ◯ Draft
-          </Badge>
-        );
+        return <Badge variant="outline">Draft</Badge>;
       default:
-        return <Badge variant="outline" className="font-semibold">{status}</Badge>;
+        return <Badge variant="outline">{status}</Badge>;
     }
   };
 
@@ -403,192 +367,105 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({ form, onViewDetails }
     });
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'completed':
-      case 'submitted':
-        return 'border-emerald-200/80 bg-gradient-to-br from-emerald-50/80 to-emerald-100/40 hover:from-emerald-100/90 hover:to-emerald-150/60 shadow-emerald-100/50';
-      case 'in_progress':
-        return 'border-blue-200/80 bg-gradient-to-br from-blue-50/80 to-blue-100/40 hover:from-blue-100/90 hover:to-blue-150/60 shadow-blue-100/50';
-      case 'draft':
-        return 'border-amber-200/80 bg-gradient-to-br from-amber-50/80 to-orange-100/40 hover:from-amber-100/90 hover:to-orange-150/60 shadow-amber-100/50';
-      default:
-        return 'border-gray-200 bg-gradient-to-br from-white to-gray-50/80 hover:from-gray-50 hover:to-gray-100/80';
-    }
-  };
-
   const getProgressPercentage = (status: string, currentStep: number) => {
     if (status === 'completed' || status === 'submitted') return 100;
-    if (status === 'draft') return Math.max(22, currentStep * 10); // Show some progress even for drafts
+    if (status === 'draft') return Math.max(11, currentStep * 11);
     return Math.round((currentStep / 9) * 100);
   };
 
   const progress = getProgressPercentage(form.status, form.current_step);
 
   return (
-    <Card className={`group overflow-hidden border-2 hover:shadow-2xl transition-all duration-500 cursor-pointer transform hover:-translate-y-2 hover:scale-[1.02] ${getStatusColor(form.status)}`}>
-      <CardContent className="p-0 relative">
-        {/* Top accent line */}
-        <div className={`h-1.5 w-full ${
-          form.status === 'completed' || form.status === 'submitted' ? 'bg-gradient-to-r from-emerald-400 to-emerald-600' :
-          form.status === 'in_progress' ? 'bg-gradient-to-r from-blue-400 to-blue-600' :
-          'bg-gradient-to-r from-amber-400 to-orange-600'
-        }`}></div>
-
-        {/* Header Section */}
-        <div className="p-6">
-          <div className="flex items-start justify-between mb-5">
-            <div className="flex items-center gap-4">
-              <div className="relative">
-                <div className={`w-16 h-16 rounded-2xl flex items-center justify-center shadow-xl ring-4 ring-white/50 ${
-                  form.status === 'completed' || form.status === 'submitted' ? 'bg-gradient-to-br from-emerald-400 to-emerald-600' :
-                  form.status === 'in_progress' ? 'bg-gradient-to-br from-blue-400 to-blue-600' :
-                  'bg-gradient-to-br from-amber-400 to-orange-600'
-                }`}>
-                  <User className="h-8 w-8 text-white drop-shadow-sm" />
-                </div>
-                <div className={`absolute -bottom-1 -right-1 w-6 h-6 rounded-full border-4 border-white shadow-lg flex items-center justify-center ${
-                  form.status === 'completed' || form.status === 'submitted' ? 'bg-emerald-500' :
-                  form.status === 'in_progress' ? 'bg-blue-500' : 'bg-amber-500'
-                }`}>
-                  {form.status === 'completed' || form.status === 'submitted' ? (
-                    <CheckCircle className="h-3 w-3 text-white" />
-                  ) : form.status === 'in_progress' ? (
-                    <Clock className="h-3 w-3 text-white" />
-                  ) : (
-                    <AlertCircle className="h-3 w-3 text-white" />
-                  )}
-                </div>
-              </div>
-              <div className="min-w-0 flex-1">
-                <h3 className="font-bold text-xl text-gray-900 mb-2 truncate group-hover:text-gray-800 transition-colors">
-                  {form.first_name} {form.last_name}
-                </h3>
-                <div className="flex items-center gap-2 mb-1">
-                  <IdCard className="h-4 w-4 text-indigo-500" />
-                  <span className="text-sm font-mono text-indigo-600 font-semibold bg-indigo-50 px-2 py-0.5 rounded-md">
-                    {form.id.slice(0, 8).toUpperCase()}...
-                  </span>
-                </div>
-              </div>
+    <Card className="border border-border bg-card hover:shadow-md transition-all duration-200 cursor-pointer">
+      <CardContent className="p-6 space-y-4">
+        {/* Header with name and status */}
+        <div className="flex items-start justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center text-primary font-semibold">
+              {form.first_name[0]}{form.last_name[0]}
             </div>
-            {getStatusBadge(form.status, form.current_step)}
+            <div>
+              <h3 className="font-semibold text-foreground text-lg">
+                {form.first_name} {form.last_name}
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                {form.generated_email || 'Email pending'}
+              </p>
+            </div>
           </div>
+          {getStatusBadge(form.status, form.current_step)}
+        </div>
 
-          {/* Progress Section */}
-          <div className="mb-5 bg-white/70 rounded-xl p-4 border border-white/50">
-            <div className="flex justify-between items-center mb-3">
-              <span className="text-sm font-semibold text-gray-700">Progress</span>
-              <span className="text-sm font-bold text-gray-900 bg-gray-100 px-3 py-1 rounded-full">
-                {progress}%
-              </span>
-            </div>
-            <div className="relative w-full bg-gray-200/60 rounded-full h-3 overflow-hidden shadow-inner">
-              <div 
-                className={`h-full rounded-full transition-all duration-700 shadow-sm ${
-                  form.status === 'completed' || form.status === 'submitted' ? 'bg-gradient-to-r from-emerald-400 via-emerald-500 to-emerald-600' :
-                  form.status === 'in_progress' ? 'bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600' :
-                  'bg-gradient-to-r from-amber-400 via-orange-500 to-orange-600'
-                }`}
-                style={{ width: `${progress}%` }}
-              >
-                {progress > 10 && (
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-                )}
-              </div>
-            </div>
+        {/* Progress bar */}
+        <div className="space-y-2">
+          <div className="flex justify-between items-center">
+            <span className="text-sm font-medium text-foreground">Progress</span>
+            <span className="text-sm font-semibold text-foreground">{progress}%</span>
+          </div>
+          <div className="w-full bg-muted rounded-full h-2">
+            <div 
+              className="bg-primary h-2 rounded-full transition-all duration-300"
+              style={{ width: `${progress}%` }}
+            />
           </div>
         </div>
 
-        {/* Details Section */}
-        <div className="px-6 pb-5 space-y-3">
-          {/* Email */}
-          <div className="flex items-center gap-4 p-3 bg-white/80 backdrop-blur-sm rounded-xl border border-white/50 shadow-sm">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
-              <Mail className="h-5 w-5 text-white" />
+        {/* Details grid */}
+        <div className="grid grid-cols-1 gap-3 pt-2 border-t border-border">
+          {/* Manager info */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center text-sm text-muted-foreground">
+              <UserCheck className="h-4 w-4 mr-2" />
+              Manager
             </div>
-            {form.generated_email ? (
-              <div className="min-w-0 flex-1">
-                <p className="text-sm font-semibold text-blue-700 truncate">{form.generated_email}</p>
-                <p className="text-xs text-gray-600 font-medium">Company Email</p>
-              </div>
-            ) : (
-              <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium text-red-600">No email assigned</p>
-                <p className="text-xs text-gray-500">Pending setup</p>
-              </div>
-            )}
+            <span className="text-sm font-medium text-foreground">
+              {form.managers ? `${form.managers.first_name} ${form.managers.last_name}` : 'Not assigned'}
+            </span>
           </div>
 
-          {/* Manager */}
-          <div className="flex items-center gap-4 p-3 bg-white/80 backdrop-blur-sm rounded-xl border border-white/50 shadow-sm">
-            <div className="w-10 h-10 bg-gradient-to-br from-purple-400 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-              <UserCheck className="h-5 w-5 text-white" />
+          {/* Team info */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center text-sm text-muted-foreground">
+              <Building className="h-4 w-4 mr-2" />
+              Team
             </div>
-            {form.managers ? (
-              <div className="min-w-0 flex-1">
-                <p className="text-sm font-semibold text-purple-700 truncate">
-                  {form.managers.first_name} {form.managers.last_name}
-                </p>
-                <p className="text-xs text-gray-600 font-medium">Manager</p>
-              </div>
-            ) : (
-              <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium text-red-600">No manager assigned</p>
-                <p className="text-xs text-gray-500">Pending assignment</p>
-              </div>
-            )}
+            <span className="text-sm font-medium text-foreground">
+              {form.teams?.name || 'Not assigned'}
+            </span>
           </div>
 
-          {/* Team */}
-          <div className="flex items-center gap-4 p-3 bg-white/80 backdrop-blur-sm rounded-xl border border-white/50 shadow-sm">
-            <div className="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl flex items-center justify-center shadow-lg">
-              <Building className="h-5 w-5 text-white" />
+          {/* Location */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center text-sm text-muted-foreground">
+              <MapPin className="h-4 w-4 mr-2" />
+              Location
             </div>
-            {form.teams ? (
-              <div className="min-w-0 flex-1">
-                <p className="text-sm font-semibold text-orange-700 truncate">{form.teams.name}</p>
-                <p className="text-xs text-gray-600 font-medium">Team Assignment</p>
-              </div>
-            ) : (
-              <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium text-red-600">No team assigned</p>
-                <p className="text-xs text-gray-500">Pending assignment</p>
-              </div>
-            )}
+            <span className="text-sm font-medium text-foreground">
+              {form.city && form.state ? `${form.city}, ${form.state}` : 'Not provided'}
+            </span>
+          </div>
+
+          {/* Started date */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center text-sm text-muted-foreground">
+              <Calendar className="h-4 w-4 mr-2" />
+              Started
+            </div>
+            <span className="text-sm font-medium text-foreground">
+              {formatDate(form.created_at)}
+            </span>
           </div>
         </div>
 
-        {/* Footer Section */}
-        <div className="px-6 py-4 bg-gradient-to-r from-gray-50/80 to-white/60 border-t border-gray-200/50 backdrop-blur-sm">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <Calendar className="h-4 w-4 text-gray-500" />
-              <div>
-                <p className="text-xs font-semibold text-gray-700 uppercase tracking-wide">Started</p>
-                <p className="text-sm font-bold text-gray-900">{formatDate(form.created_at)}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <CheckCircle className="h-4 w-4 text-gray-500" />
-              <div className="text-right">
-                <p className="text-xs font-semibold text-gray-700 uppercase tracking-wide">Status</p>
-                <p className="text-sm font-bold text-gray-900 capitalize">
-                  {form.status === 'completed' || form.status === 'submitted' ? 'Complete' : 
-                   form.status === 'in_progress' ? 'In Progress' : 'Draft'}
-                </p>
-              </div>
-            </div>
-          </div>
-          
-          <Button 
-            onClick={() => onViewDetails(form)}
-            className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-semibold py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] border-0"
-          >
-            <Eye className="h-4 w-4 mr-2" />
-            View Details
-          </Button>
-        </div>
+        {/* Action button */}
+        <Button 
+          onClick={() => onViewDetails(form)}
+          className="w-full mt-4"
+          variant="outline"
+        >
+          <Eye className="h-4 w-4 mr-2" />
+          View Details
+        </Button>
       </CardContent>
     </Card>
   );
