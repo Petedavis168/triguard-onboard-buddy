@@ -38,9 +38,9 @@ export const ReviewSubmitStep: React.FC<ReviewSubmitStepProps> = ({
   };
 
   if (isSubmitted) {
-    // Redirect to triguardhr.thspros.com after 3 seconds
+    // Redirect to employee login page after 3 seconds
     setTimeout(() => {
-      window.location.href = 'https://triguardhr.thspros.com';
+      window.location.href = '/user-login';
     }, 3000);
 
     return (
@@ -57,7 +57,7 @@ export const ReviewSubmitStep: React.FC<ReviewSubmitStepProps> = ({
             You and your manager will receive confirmation emails shortly.
           </p>
           <p className="text-sm text-muted-foreground mt-2">
-            Redirecting you back to the HR portal in 3 seconds...
+            Redirecting you to the employee login page in 3 seconds...
           </p>
         </div>
         <Alert>
@@ -112,10 +112,10 @@ export const ReviewSubmitStep: React.FC<ReviewSubmitStepProps> = ({
         </Alert>
         <div className="pt-4">
           <Button 
-            onClick={() => window.location.href = 'https://triguardhr.thspros.com'}
+            onClick={() => window.location.href = '/user-login'}
             className="gap-2"
           >
-            Return to HR Portal Now
+            Go to Employee Login Now
           </Button>
         </div>
       </div>
