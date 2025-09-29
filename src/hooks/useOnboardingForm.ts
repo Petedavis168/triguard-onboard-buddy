@@ -217,7 +217,6 @@ export const useOnboardingForm = (formId?: string) => {
 
       if (step >= 2) {
         if (data.employee_role) updateData.employee_role = data.employee_role;
-        if (data.position_id) updateData.position_id = data.position_id;
       }
 
       if (step >= 4) {

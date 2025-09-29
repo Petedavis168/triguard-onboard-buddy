@@ -91,7 +91,7 @@ export interface OnboardingFormData {
 
 export const FORM_STEPS = [
   { id: 1, title: 'Basic Information', description: 'Name and contact details' },
-  { id: 2, title: 'Role & Position Selection', description: 'Select your role and position' },
+  { id: 2, title: 'Role Selection', description: 'Select your role' },
   { id: 3, title: 'Email Preview', description: 'Review your generated credentials' },
   { id: 4, title: 'Address Information', description: 'Mailing and shipping addresses' },
   { id: 5, title: 'Gear Sizing', description: 'Uniform and equipment sizes' },
