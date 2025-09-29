@@ -202,7 +202,7 @@ export const useOnboardingForm = (formId?: string) => {
         updateData.generated_email = emailToSave;
       }
 
-      if (step >= 12) {
+      if (step >= 13) {
         updateData.submitted_at = new Date().toISOString();
       }
 
@@ -215,7 +215,12 @@ export const useOnboardingForm = (formId?: string) => {
         if (data.personal_email) updateData.personal_email = data.personal_email;
       }
 
-      if (step >= 3) {
+      if (step >= 2) {
+        if (data.employee_role) updateData.employee_role = data.employee_role;
+        if (data.position_id) updateData.position_id = data.position_id;
+      }
+
+      if (step >= 4) {
         if (data.street_address) updateData.street_address = data.street_address;
         if (data.city) updateData.city = data.city;
         if (data.state) updateData.state = data.state;
@@ -227,7 +232,7 @@ export const useOnboardingForm = (formId?: string) => {
         if (data.shipping_zip_code) updateData.shipping_zip_code = data.shipping_zip_code;
       }
 
-      if (step >= 4) {
+      if (step >= 5) {
         if (data.gender) updateData.gender = data.gender;
         if (data.shirt_size) updateData.shirt_size = data.shirt_size;
         if (data.coat_size) updateData.coat_size = data.coat_size;
@@ -236,22 +241,22 @@ export const useOnboardingForm = (formId?: string) => {
         if (data.hat_size) updateData.hat_size = data.hat_size;
       }
 
-      if (step >= 5 && data.badge_photo_url) {
+      if (step >= 6 && data.badge_photo_url) {
         updateData.badge_photo_url = data.badge_photo_url;
       }
 
-      if (step >= 6) {
+      if (step >= 7) {
         if (data.team_id) updateData.team_id = data.team_id;
         if (data.manager_id) updateData.manager_id = data.manager_id;
         if (data.recruiter_id) updateData.recruiter_id = data.recruiter_id;
       }
 
-      if (step >= 7) {
+      if (step >= 9) {
         if (data.w9_completed !== undefined) updateData.w9_completed = data.w9_completed;
         if (data.w9_submitted_at) updateData.w9_submitted_at = data.w9_submitted_at;
       }
 
-      if (step >= 8) {
+      if (step >= 10) {
         if (data.social_security_card_url) updateData.social_security_card_url = data.social_security_card_url;
         if (data.drivers_license_url) updateData.drivers_license_url = data.drivers_license_url;
         if (data.social_security_card_url && data.drivers_license_url) {
@@ -259,7 +264,7 @@ export const useOnboardingForm = (formId?: string) => {
         }
       }
 
-      if (step >= 9) {
+      if (step >= 11) {
         if (data.bank_routing_number) updateData.bank_routing_number = data.bank_routing_number;
         if (data.bank_account_number) updateData.bank_account_number = data.bank_account_number;
         if (data.account_type) updateData.account_type = data.account_type;
@@ -270,7 +275,7 @@ export const useOnboardingForm = (formId?: string) => {
         }
       }
 
-      if (step >= 10) {
+      if (step >= 12) {
         if (data.voice_recording_url) updateData.voice_recording_url = data.voice_recording_url;
         if (data.voice_recording_completed_at) updateData.voice_recording_completed_at = data.voice_recording_completed_at;
       }
