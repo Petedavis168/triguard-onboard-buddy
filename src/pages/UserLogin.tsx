@@ -4,9 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { ArrowLeft } from 'lucide-react';
 
 const UserLogin = () => {
   const [username, setUsername] = useState('');
@@ -67,7 +68,14 @@ const UserLogin = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 p-4">
-      <Card className="w-full max-w-md shadow-xl">
+      <div className="w-full max-w-md">
+        <Link to="/">
+          <Button variant="ghost" className="mb-4 gap-2">
+            <ArrowLeft className="h-4 w-4" />
+            Back to Home
+          </Button>
+        </Link>
+        <Card className="w-full shadow-xl">
         <CardHeader className="text-center pb-4">
           <div className="w-16 h-16 bg-gradient-primary rounded-xl flex items-center justify-center mx-auto mb-4">
             <span className="text-2xl font-bold text-white">TR</span>
@@ -132,6 +140,7 @@ const UserLogin = () => {
           </form>
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 };
