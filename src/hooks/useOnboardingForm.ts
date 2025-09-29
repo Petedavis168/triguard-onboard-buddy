@@ -43,6 +43,8 @@ const onboardingSchema = z.object({
     .transform((val) => val.replace(/\D/g, '')) // Remove all non-digits for validation
     .refine((val) => val.length === 10, "Please enter a valid 10-digit phone number"),
   personal_email: z.string().email('Valid personal email is required'),
+  employee_role: z.string().min(1, 'Please select your role'),
+  position_id: z.string().optional(),
   street_address: z.string().min(1, 'Street address is required'),
   city: z.string().min(1, 'City is required'),
   state: z.string().min(1, 'State is required'),
@@ -95,6 +97,8 @@ export const useOnboardingForm = (formId?: string) => {
       nickname: '',
       cell_phone: '',
       personal_email: '',
+      employee_role: '',
+      position_id: '',
       street_address: '',
       city: '',
       state: '',
@@ -590,7 +594,7 @@ export const useOnboardingForm = (formId?: string) => {
         
         const saveResult = await saveFormData(formData, currentStep + 1);
         if (saveResult.success) {
-          setCurrentStep(prev => Math.min(prev + 1, 12));
+          setCurrentStep(prev => Math.min(prev + 1, 13));
           toast({
             title: "Information Saved Successfully!",
             description: `Step ${currentStep} completed. Moving to step ${currentStep + 1}.`,
@@ -625,26 +629,28 @@ export const useOnboardingForm = (formId?: string) => {
       case 1:
         return ['first_name', 'last_name', 'cell_phone', 'personal_email'];
       case 2:
-        return []; // Email preview step - no validation needed
+        return ['employee_role']; // Role Selection step
       case 3:
-        return ['street_address', 'city', 'state', 'zip_code'];
+        return []; // Email preview step - no validation needed
       case 4:
-        return ['gender', 'shirt_size', 'coat_size', 'pant_size', 'shoe_size', 'hat_size'];
+        return ['street_address', 'city', 'state', 'zip_code'];
       case 5:
-        return []; // Badge photo is optional
+        return ['gender', 'shirt_size', 'coat_size', 'pant_size', 'shoe_size', 'hat_size'];
       case 6:
-        return ['team_id', 'manager_id', 'recruiter_id'];
+        return []; // Badge photo is optional
       case 7:
-        return ['w9_completed'];
+        return ['team_id', 'manager_id', 'recruiter_id'];
       case 8:
-        return []; // Document uploads are optional for validation purposes
-      case 9:
-        return []; // Direct deposit fields are optional for validation purposes
-      case 10:
-        return []; // Voice recording is optional but encouraged
-      case 11:
         return []; // Task acknowledgment is optional
+      case 9:
+        return ['w9_completed'];
+      case 10:
+        return []; // Document uploads are optional for validation purposes
+      case 11:
+        return []; // Direct deposit fields are optional for validation purposes
       case 12:
+        return []; // Voice recording is optional but encouraged
+      case 13:
         return []; // Review step
       default:
         return [];
