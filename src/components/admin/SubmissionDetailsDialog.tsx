@@ -239,6 +239,13 @@ const SubmissionDetailsDialog: React.FC<SubmissionDetailsDialogProps> = ({
                         <span className="text-sm break-all">{submission.generated_email || 'Not generated'}</span>
                       </div>
                     </div>
+                    <div className="space-y-2 sm:col-span-2">
+                      <Label className="text-sm font-medium">Personal Email</Label>
+                      <div className="p-3 bg-gray-50 rounded flex items-center gap-2">
+                        <Mail className="h-4 w-4 text-gray-400" />
+                        <span className="text-sm break-all">{submission.personal_email || 'Not provided'}</span>
+                      </div>
+                    </div>
                     <div className="space-y-2">
                       <Label className="text-sm font-medium">Gender</Label>
                       {isEditing ? (
