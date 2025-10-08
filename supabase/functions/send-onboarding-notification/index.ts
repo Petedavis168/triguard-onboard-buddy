@@ -1,5 +1,4 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { SmtpClient } from "https://deno.land/x/smtp@v0.7.0/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -14,27 +13,33 @@ interface NotificationRequest {
   formData: any;
 }
 
-const sendSmtpEmail = async (to: string[], subject: string, html: string, from = "TriGuard Onboarding <noreply@sandbox44b86d1bb6614502a6ba1df155cf1fa9.mailgun.org>") => {
-  const client = new SmtpClient();
-  
-  await client.connect({
-    hostname: "smtp.mailgun.org",
-    port: 587,
-    username: Deno.env.get("MAILGUN_SMTP_USER"),
-    password: Deno.env.get("MAILGUN_SMTP_PASSWORD"),
-  });
+const sendEmail = async (to: string, subject: string, html: string) => {
+  const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 
-  for (const recipient of to) {
-    await client.send({
-      from,
-      to: recipient,
-      subject,
-      content: html,
-      html,
-    });
+  if (!RESEND_API_KEY) {
+    throw new Error("RESEND_API_KEY environment variable is not set");
   }
 
-  await client.close();
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${RESEND_API_KEY}`,
+    },
+    body: JSON.stringify({
+      from: "TriGuard Onboarding <onboarding@thspros.com>",
+      to: [to],
+      subject,
+      html,
+    }),
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`Failed to send email: ${error}`);
+  }
+
+  return response.json();
 };
 
 const handler = async (req: Request): Promise<Response> => {
@@ -45,11 +50,11 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const { employeeName, employeeEmail, managerEmail, formData }: NotificationRequest = await req.json();
 
-    console.log('Sending onboarding notification via SMTP for:', employeeName);
+    console.log('Sending onboarding notification via Resend for:', employeeName);
 
     // Send notification to manager
-    await sendSmtpEmail(
-      [managerEmail],
+    await sendEmail(
+      managerEmail,
       `New Employee Onboarding Completed - ${employeeName}`,
       `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -84,8 +89,8 @@ const handler = async (req: Request): Promise<Response> => {
     );
 
     // Send notification to onboarding team
-    await sendSmtpEmail(
-      ["onboarding@triguardroofing.com"],
+    await sendEmail(
+      "onboarding@triguardroofing.com",
       `Onboarding Form Submitted - ${employeeName}`,
       `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -115,11 +120,11 @@ const handler = async (req: Request): Promise<Response> => {
       `
     );
 
-    console.log("Notification emails sent successfully via SMTP");
+    console.log("Notification emails sent successfully via Resend");
 
     return new Response(JSON.stringify({
       success: true,
-      message: "Emails sent via SMTP"
+      message: "Emails sent via Resend"
     }), {
       status: 200,
       headers: {
