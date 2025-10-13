@@ -116,6 +116,33 @@ const SubmissionDetailsDialog: React.FC<SubmissionDetailsDialogProps> = ({
     }
   };
 
+  const handleDownloadFile = async (url: string, bucketName: string, fileName: string) => {
+    try {
+      // Extract the file path from the URL
+      const urlParts = url.split(`${bucketName}/`);
+      const filePath = urlParts[1] || url;
+      
+      // Generate a signed URL for private bucket access
+      const { data, error } = await supabase.storage
+        .from(bucketName)
+        .createSignedUrl(filePath, 3600); // Valid for 1 hour
+
+      if (error) throw error;
+
+      if (data?.signedUrl) {
+        // Open the signed URL in a new tab
+        window.open(data.signedUrl, '_blank');
+      }
+    } catch (error) {
+      console.error('Error downloading file:', error);
+      toast({
+        title: "Download Failed",
+        description: "Unable to download the file. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'completed':
@@ -545,9 +572,13 @@ const SubmissionDetailsDialog: React.FC<SubmissionDetailsDialogProps> = ({
                           <Button 
                             variant="outline" 
                             size="sm"
-                            onClick={() => window.open(submission.drivers_license_url, '_blank')}
+                            onClick={() => handleDownloadFile(
+                              submission.drivers_license_url, 
+                              'employee-documents',
+                              'drivers-license'
+                            )}
                           >
-                            <ExternalLink className="h-4 w-4" />
+                            <Download className="h-4 w-4" />
                           </Button>
                         </>
                       ) : (
@@ -577,9 +608,13 @@ const SubmissionDetailsDialog: React.FC<SubmissionDetailsDialogProps> = ({
                           <Button 
                             variant="outline" 
                             size="sm"
-                            onClick={() => window.open(submission.social_security_card_url, '_blank')}
+                            onClick={() => handleDownloadFile(
+                              submission.social_security_card_url, 
+                              'employee-documents',
+                              'social-security-card'
+                            )}
                           >
-                            <ExternalLink className="h-4 w-4" />
+                            <Download className="h-4 w-4" />
                           </Button>
                         </>
                       ) : (
@@ -609,9 +644,13 @@ const SubmissionDetailsDialog: React.FC<SubmissionDetailsDialogProps> = ({
                           <Button 
                             variant="outline" 
                             size="sm"
-                            onClick={() => window.open(submission.badge_photo_url, '_blank')}
+                            onClick={() => handleDownloadFile(
+                              submission.badge_photo_url, 
+                              'badge-photos',
+                              'badge-photo'
+                            )}
                           >
-                            <ExternalLink className="h-4 w-4" />
+                            <Download className="h-4 w-4" />
                           </Button>
                         </>
                       ) : (
