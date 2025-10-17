@@ -26,7 +26,8 @@ import {
   CheckCircle,
   AlertCircle,
   UserCheck,
-  IdCard
+  IdCard,
+  Trash2
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -364,6 +365,35 @@ const EmployeeProfileManagement = () => {
     }
   };
 
+  const handleDelete = async (profile: EmployeeProfile) => {
+    if (!confirm(`Are you sure you want to permanently delete ${profile.first_name} ${profile.last_name}? This action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('employee_profiles')
+        .delete()
+        .eq('id', profile.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Rep profile deleted successfully",
+      });
+
+      fetchProfiles();
+    } catch (error) {
+      console.error('Error deleting profile:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete rep profile",
+        variant: "destructive",
+      });
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="text-center py-12">
@@ -487,6 +517,7 @@ const EmployeeProfileManagement = () => {
                 profiles={filteredProfiles} 
                 onEdit={handleEdit} 
                 onToggleStatus={toggleActiveStatus}
+                onDelete={handleDelete}
                 onViewDetails={(profile) => {
                   setSelectedProfileForDetails(profile);
                   setDetailDialogOpen(true);
@@ -499,6 +530,7 @@ const EmployeeProfileManagement = () => {
                 profiles={filteredProfiles.filter(p => p.is_active)} 
                 onEdit={handleEdit} 
                 onToggleStatus={toggleActiveStatus}
+                onDelete={handleDelete}
                 onViewDetails={(profile) => {
                   setSelectedProfileForDetails(profile);
                   setDetailDialogOpen(true);
@@ -511,6 +543,7 @@ const EmployeeProfileManagement = () => {
                 profiles={filteredProfiles.filter(p => !p.is_active)} 
                 onEdit={handleEdit} 
                 onToggleStatus={toggleActiveStatus}
+                onDelete={handleDelete}
                 onViewDetails={(profile) => {
                   setSelectedProfileForDetails(profile);
                   setDetailDialogOpen(true);
@@ -723,10 +756,11 @@ interface ProfileGridProps {
   profiles: EmployeeProfile[];
   onEdit: (profile: EmployeeProfile) => void;
   onToggleStatus: (profile: EmployeeProfile) => void;
+  onDelete: (profile: EmployeeProfile) => void;
   onViewDetails: (profile: EmployeeProfile) => void;
 }
 
-const ProfileGrid: React.FC<ProfileGridProps> = ({ profiles, onEdit, onToggleStatus, onViewDetails }) => {
+const ProfileGrid: React.FC<ProfileGridProps> = ({ profiles, onEdit, onToggleStatus, onDelete, onViewDetails }) => {
   if (profiles.length === 0) {
     return (
       <div className="text-center py-16">
@@ -761,6 +795,7 @@ const ProfileGrid: React.FC<ProfileGridProps> = ({ profiles, onEdit, onToggleSta
           profile={profile}
           onEdit={onEdit}
           onToggleStatus={onToggleStatus}
+          onDelete={onDelete}
           onViewDetails={onViewDetails}
         />
       ))}
@@ -772,10 +807,11 @@ interface ProfileCardProps {
   profile: EmployeeProfile;
   onEdit: (profile: EmployeeProfile) => void;
   onToggleStatus: (profile: EmployeeProfile) => void;
+  onDelete: (profile: EmployeeProfile) => void;
   onViewDetails: (profile: EmployeeProfile) => void;
 }
 
-const ProfileCard: React.FC<ProfileCardProps> = ({ profile, onEdit, onToggleStatus, onViewDetails }) => {
+const ProfileCard: React.FC<ProfileCardProps> = ({ profile, onEdit, onToggleStatus, onDelete, onViewDetails }) => {
   const formatDate = (dateString: string | null) => {
     if (!dateString) return 'Not set';
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -902,27 +938,38 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ profile, onEdit, onToggleStat
               View Full Details
             </Button>
           )}
-          <div className="flex gap-3">
+          <div className="flex flex-col gap-2">
+            <div className="flex gap-2">
+              <Button
+                onClick={() => onEdit(profile)}
+                variant="outline"
+                size="sm"
+                className="flex-1 hover:bg-primary hover:text-primary-foreground transition-colors"
+              >
+                <Edit className="h-4 w-4 mr-2" />
+                Edit
+              </Button>
+              <Button
+                onClick={() => onToggleStatus(profile)}
+                variant={profile.is_active ? "outline" : "default"}
+                size="sm"
+                className={`flex-1 transition-colors ${
+                  profile.is_active 
+                    ? "hover:bg-orange-500 hover:text-white border-orange-500 text-orange-600" 
+                    : "hover:bg-green-600 bg-green-500"
+                }`}
+              >
+                {profile.is_active ? 'Deactivate' : 'Activate'}
+              </Button>
+            </div>
             <Button
-              onClick={() => onEdit(profile)}
-              variant="outline"
+              onClick={() => onDelete(profile)}
+              variant="destructive"
               size="sm"
-              className="flex-1 hover:bg-primary hover:text-primary-foreground transition-colors"
+              className="w-full"
             >
-              <Edit className="h-4 w-4 mr-2" />
-              Edit
-            </Button>
-            <Button
-              onClick={() => onToggleStatus(profile)}
-              variant={profile.is_active ? "outline" : "default"}
-              size="sm"
-              className={`flex-1 transition-colors ${
-                profile.is_active 
-                  ? "hover:bg-orange-500 hover:text-white border-orange-500 text-orange-600" 
-                  : "hover:bg-green-600 bg-green-500"
-              }`}
-            >
-              {profile.is_active ? 'Deactivate' : 'Activate'}
+              <Trash2 className="h-4 w-4 mr-2" />
+              Delete
             </Button>
           </div>
         </div>
