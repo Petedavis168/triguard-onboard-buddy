@@ -17,6 +17,7 @@ import LMSManagement from "@/components/admin/LMSManagement";
 import { DepartmentManagement } from "@/components/admin/DepartmentManagement";
 import { PositionManagement } from "@/components/admin/PositionManagement";
 import EmployeeProfileManagement from "@/components/admin/EmployeeProfileManagement";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { 
   FileText, 
   Settings, 
@@ -484,6 +485,7 @@ export const Admin: React.FC = () => {
                 </div>
                 
                 <div className="flex items-center gap-3">
+                  <NotificationBell />
                   <div className="hidden sm:flex items-center gap-2 px-3 py-2 bg-muted/30 rounded-lg">
                     <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
                     <span className="text-sm text-muted-foreground">System Online</span>

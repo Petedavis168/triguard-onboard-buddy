@@ -10,6 +10,7 @@ import { supabase } from '@/integrations/supabase/client';
 import ManagerTaskCreation from '@/components/manager/ManagerTaskCreation';
 import TeamMemberList from '@/components/manager/TeamMemberList';
 import { useManagerActivity } from '@/hooks/useManagerActivity';
+import { NotificationBell } from '@/components/notifications/NotificationBell';
 
 const ManagerDashboard = () => {
   const navigate = useNavigate();
@@ -166,14 +167,17 @@ const ManagerDashboard = () => {
               {manager?.teams?.name || 'No Team Assigned'} - Manager Dashboard
             </p>
           </div>
-          <Button 
-            variant="outline" 
-            onClick={handleLogout} 
-            className="flex items-center gap-2 min-h-[44px] px-4"
-          >
-            <LogOut className="h-4 w-4" />
-            <span className="hidden sm:inline">Logout</span>
-          </Button>
+          <div className="flex items-center gap-2">
+            <NotificationBell />
+            <Button 
+              variant="outline" 
+              onClick={handleLogout} 
+              className="flex items-center gap-2 min-h-[44px] px-4"
+            >
+              <LogOut className="h-4 w-4" />
+              <span className="hidden sm:inline">Logout</span>
+            </Button>
+          </div>
         </div>
 
         {/* Mobile-optimized Stats Cards */}
