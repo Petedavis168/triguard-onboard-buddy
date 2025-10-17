@@ -71,27 +71,49 @@ const OnboardingManagement = () => {
 
   const fetchForms = async () => {
     try {
+      // Fetch with simpler query to avoid timeout
       const { data, error } = await supabase
         .from('onboarding_forms')
-        .select(`
-          *,
-          managers (
-            first_name,
-            last_name,
-            email
-          ),
-          teams (
-            name
-          )
-        `)
-        .order('created_at', { ascending: false });
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(100); // Limit to prevent timeout
 
       if (error) {
         throw error;
       }
 
-      setForms(data || []);
-      calculateStats(data || []);
+      // Fetch related data separately for better performance
+      const managerIds = [...new Set(data?.map(f => f.manager_id).filter(Boolean))] as string[];
+      const teamIds = [...new Set(data?.map(f => f.team_id).filter(Boolean))] as string[];
+
+      let managers: any[] = [];
+      let teams: any[] = [];
+
+      if (managerIds.length > 0) {
+        const { data: managersData } = await supabase
+          .from('managers')
+          .select('id, first_name, last_name, email')
+          .in('id', managerIds);
+        managers = managersData || [];
+      }
+
+      if (teamIds.length > 0) {
+        const { data: teamsData } = await supabase
+          .from('teams')
+          .select('id, name')
+          .in('id', teamIds);
+        teams = teamsData || [];
+      }
+
+      // Combine the data
+      const formsWithRelations = data?.map(form => ({
+        ...form,
+        managers: managers.find(m => m.id === form.manager_id) || null,
+        teams: teams.find(t => t.id === form.team_id) || null,
+      })) || [];
+
+      setForms(formsWithRelations);
+      calculateStats(formsWithRelations);
     } catch (error) {
       console.error('Error fetching forms:', error);
       toast({
