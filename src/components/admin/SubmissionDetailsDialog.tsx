@@ -31,13 +31,13 @@ const SubmissionDetailsDialog: React.FC<SubmissionDetailsDialogProps> = ({
   const [isSaving, setIsSaving] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [editedData, setEditedData] = useState(submission || {});
-  const [showSensitiveInfo, setShowSensitiveInfo] = useState(false);
+  const [showSensitiveInfo, setShowSensitiveInfo] = useState(true); // Default to true for admins
   const { toast } = useToast();
 
   React.useEffect(() => {
     if (submission) {
       setEditedData(submission);
-      setShowSensitiveInfo(false); // Reset sensitive info visibility on new submission
+      setShowSensitiveInfo(true); // Admins see full info by default
     }
   }, [submission]);
 
@@ -762,13 +762,13 @@ const SubmissionDetailsDialog: React.FC<SubmissionDetailsDialogProps> = ({
                   <div className="space-y-2 col-span-full">
                     <Label className="flex items-center gap-2">
                       Bank Account Number
-                      {!showSensitiveInfo && submission.bank_account_number && (
-                        <Lock className="h-3 w-3 text-muted-foreground" />
+                      {showSensitiveInfo && submission.bank_account_number && (
+                        <Unlock className="h-3 w-3 text-green-600" />
                       )}
                     </Label>
                     <div className="p-3 bg-gray-50 rounded-lg">
                       {submission.bank_account_number ? (
-                        <span className="font-mono">
+                        <span className="font-mono font-semibold">
                           {showSensitiveInfo 
                             ? submission.bank_account_number 
                             : `****${submission.bank_account_number.slice(-4)}`
@@ -778,12 +778,6 @@ const SubmissionDetailsDialog: React.FC<SubmissionDetailsDialogProps> = ({
                         <span className="text-muted-foreground">Not provided</span>
                       )}
                     </div>
-                    {!showSensitiveInfo && submission.bank_account_number && (
-                      <p className="text-xs text-muted-foreground flex items-center gap-1">
-                        <Lock className="h-3 w-3" />
-                        Click "View Full Details" to see complete account number
-                      </p>
-                    )}
                   </div>
                 </div>
 
