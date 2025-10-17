@@ -16,6 +16,7 @@ export const TeamAssignmentStep: React.FC<TeamAssignmentStepProps> = ({ form }) 
   const [teams, setTeams] = useState<Team[]>([]);
   const [managers, setManagers] = useState<Manager[]>([]);
   const [recruiters, setRecruiters] = useState<Recruiter[]>([]);
+  const [managerTeams, setManagerTeams] = useState<Array<{ manager_id: string; team_id: string }>>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const selectedTeamId = form.watch('team_id');
@@ -23,15 +24,17 @@ export const TeamAssignmentStep: React.FC<TeamAssignmentStepProps> = ({ form }) 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [teamsResult, managersResult, recruitersResult] = await Promise.all([
+        const [teamsResult, managersResult, recruitersResult, managerTeamsResult] = await Promise.all([
           supabase.from('teams').select('*'),
           supabase.from('managers').select('*'),
-          supabase.from('recruiters').select('*')
+          supabase.from('recruiters').select('*'),
+          supabase.from('manager_teams').select('manager_id, team_id')
         ]);
 
         if (teamsResult.data) setTeams(teamsResult.data);
         if (managersResult.data) setManagers(managersResult.data);
         if (recruitersResult.data) setRecruiters(recruitersResult.data);
+        if (managerTeamsResult.data) setManagerTeams(managerTeamsResult.data);
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
@@ -42,9 +45,14 @@ export const TeamAssignmentStep: React.FC<TeamAssignmentStepProps> = ({ form }) 
     fetchData();
   }, []);
 
-  // Filter managers by selected team
+  // Filter managers by selected team using manager_teams junction table
   const filteredManagers = selectedTeamId 
-    ? managers.filter(manager => manager.team_id === selectedTeamId)
+    ? managers.filter(manager => 
+        // Check if manager is assigned to the selected team through manager_teams
+        managerTeams.some(mt => mt.manager_id === manager.id && mt.team_id === selectedTeamId) ||
+        // Also check direct team_id assignment for backwards compatibility
+        manager.team_id === selectedTeamId
+      )
     : managers;
 
   if (isLoading) {
