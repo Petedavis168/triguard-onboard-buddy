@@ -1969,6 +1969,13 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: boolean
       }
+      sync_onboarding_to_profiles: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          profiles_created: number
+          profiles_updated: number
+        }[]
+      }
       update_admin_password: {
         Args: {
           admin_id: string
