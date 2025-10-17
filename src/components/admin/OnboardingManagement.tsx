@@ -195,12 +195,17 @@ const OnboardingManagement = () => {
       return;
     }
 
-    // Optimistically remove from UI
-    const previousForms = forms;
-    setForms(prev => prev.filter(f => f.id !== form.id));
-    calculateStats(forms.filter(f => f.id !== form.id));
+    // Store previous state for rollback
+    const previousForms = [...forms];
 
     try {
+      // Optimistically remove from UI
+      setForms(prev => {
+        const updated = prev.filter(f => f.id !== form.id);
+        calculateStats(updated);
+        return updated;
+      });
+
       const { error } = await supabase
         .from('onboarding_forms')
         .delete()
