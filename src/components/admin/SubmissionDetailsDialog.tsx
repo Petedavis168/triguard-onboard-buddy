@@ -14,6 +14,58 @@ import { Save, Play, Pause, User, Mail, MapPin, Shirt, FileText, Mic, CheckCircl
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 
+const downloadDocument = async (url: string, fileName: string, toast: any) => {
+  if (!url) {
+    toast({
+      title: "Error",
+      description: "Document not available",
+      variant: "destructive",
+    });
+    return;
+  }
+
+  try {
+    // Extract bucket and path from URL
+    const urlParts = url.split('/storage/v1/object/public/');
+    if (urlParts.length < 2) {
+      throw new Error('Invalid storage URL');
+    }
+    
+    const [bucket, ...pathParts] = urlParts[1].split('/');
+    const path = pathParts.join('/');
+
+    // Generate signed URL for download
+    const { data, error } = await supabase.storage
+      .from(bucket)
+      .download(path);
+
+    if (error) throw error;
+
+    // Create download link
+    const blob = new Blob([data]);
+    const downloadUrl = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(downloadUrl);
+
+    toast({
+      title: "Success",
+      description: "Document downloaded successfully",
+    });
+  } catch (error) {
+    console.error('Error downloading document:', error);
+    toast({
+      title: "Error",
+      description: "Failed to download document",
+      variant: "destructive",
+    });
+  }
+};
+
 interface SubmissionDetailsDialogProps {
   submission: any;
   isOpen: boolean;
@@ -475,6 +527,18 @@ const SubmissionDetailsDialog: React.FC<SubmissionDetailsDialogProps> = ({
                           </>
                         )}
                       </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleDownloadFile(
+                          submission.voice_recording_url,
+                          'voice-recordings',
+                          `${submission.first_name}_${submission.last_name}_voice_recording`
+                        )}
+                      >
+                        <Download className="h-4 w-4 mr-2" />
+                        Download
+                      </Button>
                       <div className="text-sm text-muted-foreground">
                         Recorded: {submission.voice_recording_completed_at ? 
                           new Date(submission.voice_recording_completed_at).toLocaleString() : 
@@ -794,10 +858,14 @@ const SubmissionDetailsDialog: React.FC<SubmissionDetailsDialogProps> = ({
                       <Button 
                         variant="outline" 
                         size="sm"
-                        onClick={() => window.open(submission.direct_deposit_form_url, '_blank')}
+                        onClick={() => handleDownloadFile(
+                          submission.direct_deposit_form_url,
+                          'direct-deposit-forms',
+                          `${submission.first_name}_${submission.last_name}_direct_deposit`
+                        )}
                       >
                         <Download className="h-4 w-4 mr-2" />
-                        View Form
+                        Download Form
                       </Button>
                     </div>
                   </div>
