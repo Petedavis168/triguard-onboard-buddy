@@ -303,22 +303,13 @@ export const RepProfileDetailDialog: React.FC<RepProfileDetailDialogProps> = ({
                         <p className="text-sm text-muted-foreground">Profile photo for badge</p>
                       </div>
                     </div>
-                    <div className="flex gap-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => window.open(formData.badge_photo_url!, '_blank')}
-                      >
-                        View
-                      </Button>
-                      <Button
-                        size="sm"
-                        onClick={() => downloadFile(formData.badge_photo_url!, `${formData.first_name}_${formData.last_name}_badge_photo.jpg`)}
-                      >
-                        <Download className="h-4 w-4 mr-1" />
-                        Download
-                      </Button>
-                    </div>
+                    <Button
+                      size="sm"
+                      onClick={() => downloadFile(formData.badge_photo_url!, `${formData.first_name}_${formData.last_name}_badge_photo.jpg`)}
+                    >
+                      <Download className="h-4 w-4 mr-1" />
+                      Download
+                    </Button>
                   </div>
                 )}
 
