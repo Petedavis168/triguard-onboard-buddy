@@ -173,6 +173,11 @@ const OnboardingManagement = () => {
       return;
     }
 
+    // Optimistically remove from UI
+    const previousForms = forms;
+    setForms(prev => prev.filter(f => f.id !== form.id));
+    calculateStats(forms.filter(f => f.id !== form.id));
+
     try {
       const { error } = await supabase
         .from('onboarding_forms')
@@ -185,9 +190,11 @@ const OnboardingManagement = () => {
         title: "Success",
         description: "Onboarding application deleted successfully",
       });
-
-      fetchForms();
     } catch (error) {
+      // Revert on error
+      setForms(previousForms);
+      calculateStats(previousForms);
+      
       console.error('Error deleting onboarding form:', error);
       toast({
         title: "Error",
