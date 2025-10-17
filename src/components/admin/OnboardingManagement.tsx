@@ -4,9 +4,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Search, Eye, FileText, Users, CheckCircle, Clock, AlertCircle, Mail, MapPin, User, Calendar, UserCheck, Building, IdCard } from 'lucide-react';
+import { Search, Eye, FileText, Users, CheckCircle, Clock, AlertCircle, Mail, MapPin, User, Calendar, UserCheck, Building, IdCard, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import SubmissionDetailsDialog from './SubmissionDetailsDialog';
 
 interface OnboardingForm {
@@ -168,6 +168,35 @@ const OnboardingManagement = () => {
     fetchForms(); // Refresh the data
   };
 
+  const handleDelete = async (form: OnboardingForm) => {
+    if (!confirm(`Are you sure you want to permanently delete the onboarding application for ${form.first_name} ${form.last_name}? This action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('onboarding_forms')
+        .delete()
+        .eq('id', form.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Onboarding application deleted successfully",
+      });
+
+      fetchForms();
+    } catch (error) {
+      console.error('Error deleting onboarding form:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete onboarding application",
+        variant: "destructive",
+      });
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="text-center py-12">
@@ -269,13 +298,14 @@ const OnboardingManagement = () => {
               </TabsList>
             
             <TabsContent value="all" className="mt-6">
-              <ApplicationGrid forms={filteredForms} onViewDetails={viewDetails} />
+              <ApplicationGrid forms={filteredForms} onViewDetails={viewDetails} onDelete={handleDelete} />
             </TabsContent>
             
             <TabsContent value="completed" className="mt-6">
               <ApplicationGrid 
                 forms={filteredForms.filter(f => f.status === 'completed' || f.status === 'submitted')} 
                 onViewDetails={viewDetails}
+                onDelete={handleDelete}
               />
             </TabsContent>
             
@@ -283,6 +313,7 @@ const OnboardingManagement = () => {
               <ApplicationGrid 
                 forms={filteredForms.filter(f => f.status === 'in_progress')} 
                 onViewDetails={viewDetails}
+                onDelete={handleDelete}
               />
             </TabsContent>
             
@@ -290,6 +321,7 @@ const OnboardingManagement = () => {
               <ApplicationGrid 
                 forms={filteredForms.filter(f => f.status === 'draft')} 
                 onViewDetails={viewDetails}
+                onDelete={handleDelete}
               />
             </TabsContent>
           </Tabs>
@@ -310,9 +342,10 @@ const OnboardingManagement = () => {
 interface ApplicationGridProps {
   forms: OnboardingForm[];
   onViewDetails: (form: OnboardingForm) => void;
+  onDelete: (form: OnboardingForm) => void;
 }
 
-const ApplicationGrid: React.FC<ApplicationGridProps> = ({ forms, onViewDetails }) => {
+const ApplicationGrid: React.FC<ApplicationGridProps> = ({ forms, onViewDetails, onDelete }) => {
   if (forms.length === 0) {
     return (
       <div className="text-center py-16">
@@ -332,6 +365,7 @@ const ApplicationGrid: React.FC<ApplicationGridProps> = ({ forms, onViewDetails 
           key={form.id} 
           form={form} 
           onViewDetails={onViewDetails}
+          onDelete={onDelete}
         />
       ))}
     </div>
@@ -341,9 +375,10 @@ const ApplicationGrid: React.FC<ApplicationGridProps> = ({ forms, onViewDetails 
 interface ApplicationCardProps {
   form: OnboardingForm;
   onViewDetails: (form: OnboardingForm) => void;
+  onDelete: (form: OnboardingForm) => void;
 }
 
-const ApplicationCard: React.FC<ApplicationCardProps> = ({ form, onViewDetails }) => {
+const ApplicationCard: React.FC<ApplicationCardProps> = ({ form, onViewDetails, onDelete }) => {
   const getStatusBadge = (status: string, currentStep: number) => {
     switch (status) {
       case 'completed':
@@ -457,15 +492,27 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({ form, onViewDetails }
           </div>
         </div>
 
-        {/* Action button */}
-        <Button 
-          onClick={() => onViewDetails(form)}
-          className="w-full mt-4"
-          variant="outline"
-        >
-          <Eye className="h-4 w-4 mr-2" />
-          View Details
-        </Button>
+        {/* Action buttons */}
+        <div className="flex gap-2 mt-4">
+          <Button 
+            onClick={() => onViewDetails(form)}
+            className="flex-1"
+            variant="outline"
+          >
+            <Eye className="h-4 w-4 mr-2" />
+            View Details
+          </Button>
+          <Button 
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete(form);
+            }}
+            variant="destructive"
+            size="icon"
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );
