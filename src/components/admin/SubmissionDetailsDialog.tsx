@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Save, Play, Pause, User, Mail, MapPin, Shirt, FileText, Mic, CheckCircle, Edit, CreditCard, Download, ExternalLink } from 'lucide-react';
+import { Save, Play, Pause, User, Mail, MapPin, Shirt, FileText, Mic, CheckCircle, Edit, CreditCard, Download, ExternalLink, Eye, EyeOff, Lock, Unlock } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 
@@ -31,11 +31,13 @@ const SubmissionDetailsDialog: React.FC<SubmissionDetailsDialogProps> = ({
   const [isSaving, setIsSaving] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [editedData, setEditedData] = useState(submission || {});
+  const [showSensitiveInfo, setShowSensitiveInfo] = useState(false);
   const { toast } = useToast();
 
   React.useEffect(() => {
     if (submission) {
       setEditedData(submission);
+      setShowSensitiveInfo(false); // Reset sensitive info visibility on new submission
     }
   }, [submission]);
 
@@ -675,13 +677,35 @@ const SubmissionDetailsDialog: React.FC<SubmissionDetailsDialogProps> = ({
           <TabsContent value="banking" className="space-y-4">
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <CreditCard className="h-5 w-5" />
-                  Direct Deposit Information
-                </CardTitle>
-                <CardDescription>
-                  Banking details for payroll direct deposit
-                </CardDescription>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle className="flex items-center gap-2">
+                      <CreditCard className="h-5 w-5" />
+                      Direct Deposit Information
+                    </CardTitle>
+                    <CardDescription>
+                      Banking details for payroll direct deposit
+                    </CardDescription>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowSensitiveInfo(!showSensitiveInfo)}
+                    className="flex items-center gap-2"
+                  >
+                    {showSensitiveInfo ? (
+                      <>
+                        <EyeOff className="h-4 w-4" />
+                        Hide
+                      </>
+                    ) : (
+                      <>
+                        <Eye className="h-4 w-4" />
+                        View Full Details
+                      </>
+                    )}
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent className="space-y-6">
                 {/* Direct Deposit Status */}
@@ -728,16 +752,30 @@ const SubmissionDetailsDialog: React.FC<SubmissionDetailsDialogProps> = ({
                   </div>
 
                   <div className="space-y-2 col-span-full">
-                    <Label>Bank Account Number</Label>
+                    <Label className="flex items-center gap-2">
+                      Bank Account Number
+                      {!showSensitiveInfo && submission.bank_account_number && (
+                        <Lock className="h-3 w-3 text-muted-foreground" />
+                      )}
+                    </Label>
                     <div className="p-3 bg-gray-50 rounded-lg">
                       {submission.bank_account_number ? (
                         <span className="font-mono">
-                          ****{submission.bank_account_number.slice(-4)}
+                          {showSensitiveInfo 
+                            ? submission.bank_account_number 
+                            : `****${submission.bank_account_number.slice(-4)}`
+                          }
                         </span>
                       ) : (
                         <span className="text-muted-foreground">Not provided</span>
                       )}
                     </div>
+                    {!showSensitiveInfo && submission.bank_account_number && (
+                      <p className="text-xs text-muted-foreground flex items-center gap-1">
+                        <Lock className="h-3 w-3" />
+                        Click "View Full Details" to see complete account number
+                      </p>
+                    )}
                   </div>
                 </div>
 
