@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { supabase } from '@/integrations/supabase/client';
-import { Download, User, Mail, Phone, MapPin, Package, CreditCard, FileText, Camera, Calendar } from 'lucide-react';
+import { Download, User, Mail, Phone, MapPin, Package, CreditCard, FileText, Camera, Calendar, Unlock } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface RepProfileDetailDialogProps {
@@ -120,10 +120,6 @@ export const RepProfileDetailDialog: React.FC<RepProfileDetailDialogProps> = ({
     }
   };
 
-  const maskAccountNumber = (accountNumber: string | null) => {
-    if (!accountNumber) return 'Not provided';
-    return '****' + accountNumber.slice(-4);
-  };
 
   if (!formData && !isLoading) {
     return null;
@@ -274,8 +270,13 @@ export const RepProfileDetailDialog: React.FC<RepProfileDetailDialogProps> = ({
                   <p className="text-base font-mono">{formData.bank_routing_number || 'Not provided'}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">Account Number</label>
-                  <p className="text-base font-mono">{maskAccountNumber(formData.bank_account_number)}</p>
+                  <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                    Account Number (Full - Admin View)
+                    <Unlock className="h-3 w-3 text-green-600" />
+                  </label>
+                  <p className="text-base font-mono font-semibold bg-green-50 border border-green-200 p-2 rounded">
+                    {formData.bank_account_number || 'Not provided'}
+                  </p>
                 </div>
                 <div>
                   <label className="text-sm font-medium text-muted-foreground">Account Type</label>
