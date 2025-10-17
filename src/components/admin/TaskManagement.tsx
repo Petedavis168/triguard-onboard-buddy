@@ -23,10 +23,10 @@ interface Task {
   managers: {
     first_name: string;
     last_name: string;
-  };
+  } | null;
   teams: {
     name: string;
-  };
+  } | null;
 }
 
 interface Manager {
@@ -397,9 +397,9 @@ const TaskManagement = () => {
                           <span className="text-sm font-medium text-blue-900">Assigned Manager</span>
                         </div>
                         <div className={`text-blue-700 mt-1 break-all ${
-                          `${task.managers.first_name} ${task.managers.last_name}`.length > 20 ? 'text-xs' : 'text-sm'
+                          task.managers ? `${task.managers.first_name} ${task.managers.last_name}`.length > 20 ? 'text-xs' : 'text-sm' : 'text-sm'
                         }`}>
-                          {task.managers.first_name} {task.managers.last_name}
+                          {task.managers ? `${task.managers.first_name} ${task.managers.last_name}` : 'Unknown Manager'}
                         </div>
                       </div>
                       
@@ -409,9 +409,9 @@ const TaskManagement = () => {
                           <span className="text-sm font-medium text-purple-900">Target Team</span>
                         </div>
                         <div className={`text-purple-700 mt-1 break-all ${
-                          task.teams.name.length > 20 ? 'text-xs' : 'text-sm'
+                          task.teams ? task.teams.name.length > 20 ? 'text-xs' : 'text-sm' : 'text-sm'
                         }`}>
-                          {task.teams.name}
+                          {task.teams ? task.teams.name : 'Unknown Team'}
                         </div>
                       </div>
                     </div>
