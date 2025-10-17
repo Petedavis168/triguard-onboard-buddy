@@ -18,6 +18,7 @@ interface Task {
   description: string | null;
   manager_id: string;
   team_id: string;
+  assigned_to: string | null;
   is_active: boolean;
   created_at: string;
   managers: {
@@ -26,6 +27,11 @@ interface Task {
   } | null;
   teams: {
     name: string;
+  } | null;
+  employee_profiles: {
+    first_name: string;
+    last_name: string;
+    employee_id: string;
   } | null;
 }
 
@@ -40,10 +46,19 @@ interface Team {
   name: string;
 }
 
+interface Employee {
+  id: string;
+  first_name: string;
+  last_name: string;
+  employee_id: string;
+  position: string | null;
+}
+
 const TaskManagement = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [managers, setManagers] = useState<Manager[]>([]);
   const [teams, setTeams] = useState<Team[]>([]);
+  const [employees, setEmployees] = useState<Employee[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
@@ -52,6 +67,7 @@ const TaskManagement = () => {
     description: '',
     manager_id: '',
     team_id: '',
+    assigned_to: '',
   });
   const { toast } = useToast();
 
@@ -59,6 +75,7 @@ const TaskManagement = () => {
     fetchTasks();
     fetchManagers();
     fetchTeams();
+    fetchEmployees();
   }, []);
 
   const fetchTasks = async () => {
@@ -73,6 +90,11 @@ const TaskManagement = () => {
           ),
           teams!tasks_team_id_fkey (
             name
+          ),
+          employee_profiles!tasks_assigned_to_fkey (
+            first_name,
+            last_name,
+            employee_id
           )
         `)
         .order('created_at', { ascending: false });
@@ -119,6 +141,21 @@ const TaskManagement = () => {
     }
   };
 
+  const fetchEmployees = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('employee_profiles')
+        .select('id, first_name, last_name, employee_id, position')
+        .eq('is_active', true)
+        .order('first_name');
+
+      if (error) throw error;
+      setEmployees(data || []);
+    } catch (error) {
+      console.error('Error fetching employees:', error);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -150,7 +187,7 @@ const TaskManagement = () => {
 
       setIsDialogOpen(false);
       setEditingTask(null);
-      setFormData({ title: '', description: '', manager_id: '', team_id: '' });
+      setFormData({ title: '', description: '', manager_id: '', team_id: '', assigned_to: '' });
       fetchTasks();
     } catch (error) {
       console.error('Error saving task:', error);
@@ -169,6 +206,7 @@ const TaskManagement = () => {
       description: task.description || '',
       manager_id: task.manager_id,
       team_id: task.team_id,
+      assigned_to: task.assigned_to || '',
     });
     setIsDialogOpen(true);
   };
@@ -309,14 +347,33 @@ const TaskManagement = () => {
                 </Select>
               </div>
               
+              <div className="space-y-2">
+                <Label htmlFor="assigned_to">Assign to Rep (Optional)</Label>
+                <Select
+                  value={formData.assigned_to}
+                  onValueChange={(value) => setFormData({ ...formData, assigned_to: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select an employee" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {employees.map((employee) => (
+                      <SelectItem key={employee.id} value={employee.id}>
+                        {employee.first_name} {employee.last_name} ({employee.employee_id})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
               <div className="flex justify-end gap-2">
                 <Button
                   type="button"
                   variant="outline"
                   onClick={() => {
-                    setIsDialogOpen(false);
+                  setIsDialogOpen(false);
                     setEditingTask(null);
-                    setFormData({ title: '', description: '', manager_id: '', team_id: '' });
+                    setFormData({ title: '', description: '', manager_id: '', team_id: '', assigned_to: '' });
                   }}
                 >
                   Cancel
@@ -414,6 +471,21 @@ const TaskManagement = () => {
                           {task.teams ? task.teams.name : 'Unknown Team'}
                         </div>
                       </div>
+                      
+                      {task.employee_profiles && (
+                        <div className="bg-green-50 rounded-lg p-3">
+                          <div className="flex items-center gap-2">
+                            <CheckCircle className="h-4 w-4 text-green-600" />
+                            <span className="text-sm font-medium text-green-900">Assigned Rep</span>
+                          </div>
+                          <div className="text-green-700 mt-1 text-sm">
+                            {task.employee_profiles.first_name} {task.employee_profiles.last_name}
+                            <span className="text-xs text-green-600 block">
+                              {task.employee_profiles.employee_id}
+                            </span>
+                          </div>
+                        </div>
+                      )}
                     </div>
 
                     {/* Action Buttons */}
