@@ -35,7 +35,10 @@ export const NotificationBell = () => {
         .order("created_at", { ascending: false })
         .limit(20);
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching notifications:", error);
+        return;
+      }
 
       setNotifications(data || []);
       setUnreadCount(data?.filter((n) => !n.is_read).length || 0);
@@ -47,18 +50,20 @@ export const NotificationBell = () => {
   useEffect(() => {
     fetchNotifications();
 
-    // Subscribe to new notifications
+    // Only subscribe to INSERT events to reduce load
     const channel = supabase
       .channel("notifications-changes")
       .on(
         "postgres_changes",
         {
-          event: "*",
+          event: "INSERT",
           schema: "public",
           table: "notifications",
         },
-        () => {
-          fetchNotifications();
+        (payload) => {
+          // Add new notification to existing list
+          setNotifications((prev) => [payload.new as Notification, ...prev].slice(0, 20));
+          setUnreadCount((prev) => prev + 1);
         }
       )
       .subscribe();
@@ -70,15 +75,23 @@ export const NotificationBell = () => {
 
   const markAsRead = async (notificationId: string) => {
     try {
+      // Optimistically update UI
+      setNotifications((prev) =>
+        prev.map((n) =>
+          n.id === notificationId ? { ...n, is_read: true, read_at: new Date().toISOString() } : n
+        )
+      );
+      setUnreadCount((prev) => Math.max(0, prev - 1));
+
       const { error } = await supabase
         .from("notifications")
         .update({ is_read: true, read_at: new Date().toISOString() })
         .eq("id", notificationId);
 
       if (error) throw error;
-
-      await fetchNotifications();
     } catch (error) {
+      // Revert on error
+      await fetchNotifications();
       toast({
         title: "Error",
         description: "Failed to mark notification as read",
@@ -89,19 +102,27 @@ export const NotificationBell = () => {
 
   const markAllAsRead = async () => {
     try {
+      // Optimistically update UI
+      const unreadIds = notifications.filter((n) => !n.is_read).map((n) => n.id);
+      setNotifications((prev) =>
+        prev.map((n) => ({ ...n, is_read: true, read_at: new Date().toISOString() }))
+      );
+      setUnreadCount(0);
+
       const { error } = await supabase
         .from("notifications")
         .update({ is_read: true, read_at: new Date().toISOString() })
-        .eq("is_read", false);
+        .in("id", unreadIds);
 
       if (error) throw error;
 
-      await fetchNotifications();
       toast({
         title: "Success",
         description: "All notifications marked as read",
       });
     } catch (error) {
+      // Revert on error
+      await fetchNotifications();
       toast({
         title: "Error",
         description: "Failed to mark all as read",
