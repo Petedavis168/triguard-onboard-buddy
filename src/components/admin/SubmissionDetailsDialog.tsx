@@ -685,35 +685,13 @@ const SubmissionDetailsDialog: React.FC<SubmissionDetailsDialogProps> = ({
           <TabsContent value="banking" className="space-y-4">
             <Card>
               <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle className="flex items-center gap-2">
-                      <CreditCard className="h-5 w-5" />
-                      Direct Deposit Information
-                    </CardTitle>
-                    <CardDescription>
-                      Banking details for payroll direct deposit
-                    </CardDescription>
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setShowSensitiveInfo(!showSensitiveInfo)}
-                    className="flex items-center gap-2"
-                  >
-                    {showSensitiveInfo ? (
-                      <>
-                        <EyeOff className="h-4 w-4" />
-                        Hide
-                      </>
-                    ) : (
-                      <>
-                        <Eye className="h-4 w-4" />
-                        View Full Details
-                      </>
-                    )}
-                  </Button>
-                </div>
+                <CardTitle className="flex items-center gap-2">
+                  <CreditCard className="h-5 w-5" />
+                  Direct Deposit Information
+                </CardTitle>
+                <CardDescription>
+                  Banking details for payroll direct deposit - Full details visible to admins
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 {/* Direct Deposit Status */}
@@ -761,18 +739,13 @@ const SubmissionDetailsDialog: React.FC<SubmissionDetailsDialogProps> = ({
 
                   <div className="space-y-2 col-span-full">
                     <Label className="flex items-center gap-2">
-                      Bank Account Number
-                      {showSensitiveInfo && submission.bank_account_number && (
-                        <Unlock className="h-3 w-3 text-green-600" />
-                      )}
+                      Bank Account Number (Full Number Visible)
+                      <Unlock className="h-3 w-3 text-green-600" />
                     </Label>
-                    <div className="p-3 bg-gray-50 rounded-lg">
+                    <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
                       {submission.bank_account_number ? (
-                        <span className="font-mono font-semibold">
-                          {showSensitiveInfo 
-                            ? submission.bank_account_number 
-                            : `****${submission.bank_account_number.slice(-4)}`
-                          }
+                        <span className="font-mono font-semibold text-lg">
+                          {submission.bank_account_number}
                         </span>
                       ) : (
                         <span className="text-muted-foreground">Not provided</span>
