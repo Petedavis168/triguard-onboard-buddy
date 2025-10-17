@@ -206,6 +206,23 @@ const OnboardingManagement = () => {
         return updated;
       });
 
+      // First, check and delete related employee profile
+      const { data: relatedProfile } = await supabase
+        .from('employee_profiles')
+        .select('id')
+        .eq('onboarding_form_id', form.id)
+        .maybeSingle();
+
+      if (relatedProfile) {
+        const { error: profileError } = await supabase
+          .from('employee_profiles')
+          .delete()
+          .eq('id', relatedProfile.id);
+        
+        if (profileError) throw profileError;
+      }
+
+      // Then delete the onboarding form
       const { error } = await supabase
         .from('onboarding_forms')
         .delete()
@@ -225,7 +242,7 @@ const OnboardingManagement = () => {
       console.error('Error deleting onboarding form:', error);
       toast({
         title: "Error",
-        description: "Failed to delete onboarding application",
+        description: "Failed to delete onboarding application. This may be due to related records.",
         variant: "destructive",
       });
     }
