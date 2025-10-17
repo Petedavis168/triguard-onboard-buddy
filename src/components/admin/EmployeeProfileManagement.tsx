@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { RepProfileDetailDialog } from './RepProfileDetailDialog';
 import { 
   Search, 
   Plus, 
@@ -72,6 +73,8 @@ const EmployeeProfileManagement = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingProfile, setEditingProfile] = useState<EmployeeProfile | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [detailDialogOpen, setDetailDialogOpen] = useState(false);
+  const [selectedProfileForDetails, setSelectedProfileForDetails] = useState<EmployeeProfile | null>(null);
   const [stats, setStats] = useState({
     total: 0,
     active: 0,
@@ -480,14 +483,26 @@ const EmployeeProfileManagement = () => {
             </TabsList>
             
             <TabsContent value="all" className="mt-6">
-              <ProfileGrid profiles={filteredProfiles} onEdit={handleEdit} onToggleStatus={toggleActiveStatus} />
+              <ProfileGrid 
+                profiles={filteredProfiles} 
+                onEdit={handleEdit} 
+                onToggleStatus={toggleActiveStatus}
+                onViewDetails={(profile) => {
+                  setSelectedProfileForDetails(profile);
+                  setDetailDialogOpen(true);
+                }}
+              />
             </TabsContent>
             
             <TabsContent value="active" className="mt-6">
               <ProfileGrid 
                 profiles={filteredProfiles.filter(p => p.is_active)} 
                 onEdit={handleEdit} 
-                onToggleStatus={toggleActiveStatus} 
+                onToggleStatus={toggleActiveStatus}
+                onViewDetails={(profile) => {
+                  setSelectedProfileForDetails(profile);
+                  setDetailDialogOpen(true);
+                }}
               />
             </TabsContent>
             
@@ -495,7 +510,11 @@ const EmployeeProfileManagement = () => {
               <ProfileGrid 
                 profiles={filteredProfiles.filter(p => !p.is_active)} 
                 onEdit={handleEdit} 
-                onToggleStatus={toggleActiveStatus} 
+                onToggleStatus={toggleActiveStatus}
+                onViewDetails={(profile) => {
+                  setSelectedProfileForDetails(profile);
+                  setDetailDialogOpen(true);
+                }}
               />
             </TabsContent>
           </Tabs>
@@ -688,6 +707,14 @@ const EmployeeProfileManagement = () => {
           </Form>
         </DialogContent>
       </Dialog>
+
+      {/* Detail View Dialog */}
+      <RepProfileDetailDialog
+        profileId={selectedProfileForDetails?.id || null}
+        onboardingFormId={selectedProfileForDetails?.onboarding_form_id || null}
+        open={detailDialogOpen}
+        onOpenChange={setDetailDialogOpen}
+      />
     </div>
   );
 };
@@ -696,9 +723,10 @@ interface ProfileGridProps {
   profiles: EmployeeProfile[];
   onEdit: (profile: EmployeeProfile) => void;
   onToggleStatus: (profile: EmployeeProfile) => void;
+  onViewDetails: (profile: EmployeeProfile) => void;
 }
 
-const ProfileGrid: React.FC<ProfileGridProps> = ({ profiles, onEdit, onToggleStatus }) => {
+const ProfileGrid: React.FC<ProfileGridProps> = ({ profiles, onEdit, onToggleStatus, onViewDetails }) => {
   if (profiles.length === 0) {
     return (
       <div className="text-center py-16">
@@ -733,6 +761,7 @@ const ProfileGrid: React.FC<ProfileGridProps> = ({ profiles, onEdit, onToggleSta
           profile={profile}
           onEdit={onEdit}
           onToggleStatus={onToggleStatus}
+          onViewDetails={onViewDetails}
         />
       ))}
     </div>
@@ -743,9 +772,10 @@ interface ProfileCardProps {
   profile: EmployeeProfile;
   onEdit: (profile: EmployeeProfile) => void;
   onToggleStatus: (profile: EmployeeProfile) => void;
+  onViewDetails: (profile: EmployeeProfile) => void;
 }
 
-const ProfileCard: React.FC<ProfileCardProps> = ({ profile, onEdit, onToggleStatus }) => {
+const ProfileCard: React.FC<ProfileCardProps> = ({ profile, onEdit, onToggleStatus, onViewDetails }) => {
   const formatDate = (dateString: string | null) => {
     if (!dateString) return 'Not set';
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -860,28 +890,41 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ profile, onEdit, onToggleStat
         </div>
 
         {/* Action Buttons */}
-        <div className="flex gap-3 pt-2">
-          <Button
-            onClick={() => onEdit(profile)}
-            variant="outline"
-            size="sm"
-            className="flex-1 hover:bg-primary hover:text-primary-foreground transition-colors"
-          >
-            <Edit className="h-4 w-4 mr-2" />
-            Edit Profile
-          </Button>
-          <Button
-            onClick={() => onToggleStatus(profile)}
-            variant={profile.is_active ? "outline" : "default"}
-            size="sm"
-            className={`flex-1 transition-colors ${
-              profile.is_active 
-                ? "hover:bg-orange-500 hover:text-white border-orange-500 text-orange-600" 
-                : "hover:bg-green-600 bg-green-500"
-            }`}
-          >
-            {profile.is_active ? 'Deactivate' : 'Activate'}
-          </Button>
+        <div className="space-y-2 pt-2">
+          {profile.onboarding_form_id && (
+            <Button
+              onClick={() => onViewDetails(profile)}
+              variant="default"
+              size="sm"
+              className="w-full"
+            >
+              <FileText className="h-4 w-4 mr-2" />
+              View Full Details
+            </Button>
+          )}
+          <div className="flex gap-3">
+            <Button
+              onClick={() => onEdit(profile)}
+              variant="outline"
+              size="sm"
+              className="flex-1 hover:bg-primary hover:text-primary-foreground transition-colors"
+            >
+              <Edit className="h-4 w-4 mr-2" />
+              Edit
+            </Button>
+            <Button
+              onClick={() => onToggleStatus(profile)}
+              variant={profile.is_active ? "outline" : "default"}
+              size="sm"
+              className={`flex-1 transition-colors ${
+                profile.is_active 
+                  ? "hover:bg-orange-500 hover:text-white border-orange-500 text-orange-600" 
+                  : "hover:bg-green-600 bg-green-500"
+              }`}
+            >
+              {profile.is_active ? 'Deactivate' : 'Activate'}
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>
