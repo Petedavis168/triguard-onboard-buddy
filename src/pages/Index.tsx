@@ -48,14 +48,6 @@ const Index = () => {
           <h2 className="text-2xl font-bold text-gray-800 mb-6">Quick Access</h2>
           <div className="flex flex-col sm:flex-row gap-8 justify-center items-center">
             <Link
-              to="/recruiting"
-              className="flex items-center gap-3 text-blue-600 hover:text-blue-700 font-semibold text-lg transition-all duration-200"
-            >
-              <span className="text-2xl">📊</span>
-              <span>Recruiting Dashboard</span>
-            </Link>
-            
-            <Link
               to="/manager-login"
               className="flex items-center gap-3 text-purple-600 hover:text-purple-700 font-semibold text-lg transition-all duration-200"
             >
