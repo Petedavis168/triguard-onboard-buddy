@@ -416,17 +416,47 @@ export const useOnboardingForm = (formId?: string) => {
       }
 
       // Send notification emails
-      const response = await supabase.functions.invoke('send-onboarding-notification', {
-        body: {
-          employeeName: `${data.first_name} ${data.last_name}`,
-          employeeEmail: saveResult.email,
-          managerEmail: manager.email,
-          formData: data
-        }
-      });
+      try {
+        // Send admin notification with all user info
+        await supabase.functions.invoke('send-user-notifications', {
+          body: {
+            type: 'admin_notification',
+            user_data: {
+              id: saveResult.formId,
+              first_name: data.first_name,
+              last_name: data.last_name,
+              generated_email: saveResult.email || generatedEmail,
+              username: data.username,
+              user_password: data.user_password,
+              employee_role: data.employee_role,
+              position_id: data.position_id,
+              team_id: data.team_id,
+              manager_id: data.manager_id,
+              cell_phone: data.cell_phone,
+              personal_email: data.personal_email,
+            }
+          }
+        });
 
-      if (response.error) {
-        console.error('Error sending notifications:', response.error);
+        // Send welcome email to user
+        await supabase.functions.invoke('send-user-notifications', {
+          body: {
+            type: 'welcome_email',
+            user_data: {
+              id: saveResult.formId,
+              first_name: data.first_name,
+              last_name: data.last_name,
+              generated_email: saveResult.email || generatedEmail,
+              username: data.username,
+              user_password: data.user_password,
+              personal_email: data.personal_email,
+              employee_role: data.employee_role,
+            }
+          }
+        });
+      } catch (emailError) {
+        console.error('Error sending notification emails:', emailError);
+        // Don't block submission if email fails
       }
 
       // Send completion webhook

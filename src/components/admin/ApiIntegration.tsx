@@ -43,6 +43,9 @@ const ApiIntegration: React.FC = () => {
     { id: 'onboarding.completed', name: 'Onboarding Completed', description: 'When the full onboarding process is done' },
     { id: 'onboarding.approved', name: 'Onboarding Approved', description: 'When HR approves the onboarding' },
     { id: 'employee.created', name: 'Employee Created', description: 'When employee data is finalized' },
+    { id: 'user.created', name: 'User Created - Admin Notification', description: 'Sends all user information to admins when a user is created' },
+    { id: 'user.welcome', name: 'User Welcome Email', description: 'Sends welcome email with credentials to new users' },
+    { id: 'task.assigned', name: 'Task Assigned', description: 'Notifies user when they are assigned a task' },
   ];
 
   const apiEndpoints = [

@@ -124,6 +124,41 @@ const ManagerTaskCreation: React.FC<ManagerTaskCreationProps> = ({
 
       if (assignmentError) throw assignmentError;
 
+      // Send email notifications to assigned team members
+      try {
+        const { data: managerData } = await supabase
+          .from('managers')
+          .select('first_name, last_name')
+          .eq('id', managerId)
+          .single();
+
+        // Send notification to each assigned member
+        for (const memberId of selectedMembers) {
+          const member = teamMembers.find(m => m.id === memberId);
+          if (member) {
+            await supabase.functions.invoke('send-user-notifications', {
+              body: {
+                type: 'task_assignment',
+                user_data: {
+                  first_name: member.first_name,
+                  last_name: member.last_name,
+                  generated_email: member.generated_email,
+                  personal_email: member.personal_email,
+                },
+                task_data: {
+                  task_title: formData.title,
+                  task_description: formData.description,
+                  assigned_by: managerData ? `${managerData.first_name} ${managerData.last_name}` : 'Your Manager',
+                }
+              }
+            });
+          }
+        }
+      } catch (emailError) {
+        console.error('Error sending task notification emails:', emailError);
+        // Don't block task creation if email fails
+      }
+
       // Update activity after task creation
       updateActivity();
 
