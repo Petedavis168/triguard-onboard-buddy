@@ -1,8 +1,35 @@
+// Using SMTP directly instead of Resend
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { Resend } from "npm:resend@2.0.0";
+import { SmtpClient } from "https://deno.land/x/smtp@v0.7.0/mod.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.4";
 
-const resend = new Resend(Deno.env.get("RESEND_API_KEY") as string);
+const sendSmtpEmail = async (to: string | string[], subject: string, html: string) => {
+  const client = new SmtpClient();
+  
+  try {
+    await client.connectTLS({
+      hostname: "smtp.mailgun.org",
+      port: 587,
+      username: Deno.env.get("MAILGUN_SMTP_USER") || "",
+      password: Deno.env.get("MAILGUN_SMTP_PASSWORD") || "",
+    });
+
+    await client.send({
+      from: "TriGuard Onboarding <onboarding@triguardroofing.com>",
+      to: typeof to === 'string' ? to : to.join(', '),
+      subject,
+      content: html,
+      html,
+    });
+
+    await client.close();
+    return { success: true };
+  } catch (error) {
+    console.error("SMTP Error:", error);
+    await client.close();
+    throw error;
+  }
+};
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -92,12 +119,11 @@ const sendAdminNotification = async (userData: any) => {
     </html>
   `;
 
-  return await resend.emails.send({
-    from: "TriGuard Onboarding <onboarding@resend.dev>",
-    to: ["admin@triguardroofing.com"], // Update with actual admin email
-    subject: `New Employee: ${userData.first_name} ${userData.last_name}`,
-    html: adminEmailHtml,
-  });
+  return await sendSmtpEmail(
+    ["admin@triguardroofing.com"], // Update with actual admin email
+    `New Employee: ${userData.first_name} ${userData.last_name}`,
+    adminEmailHtml
+  );
 };
 
 const sendWelcomeEmail = async (userData: any) => {
@@ -186,12 +212,11 @@ const sendWelcomeEmail = async (userData: any) => {
     </html>
   `;
 
-  return await resend.emails.send({
-    from: "TriGuard Onboarding <onboarding@resend.dev>",
-    to: [userData.personal_email || userData.generated_email],
-    subject: `Welcome to TriGuard Roofing - Your Account Information`,
-    html: welcomeEmailHtml,
-  });
+  return await sendSmtpEmail(
+    userData.personal_email || userData.generated_email,
+    `Welcome to TriGuard Roofing - Your Account Information`,
+    welcomeEmailHtml
+  );
 };
 
 const sendTaskAssignmentEmail = async (userData: any, taskData: any) => {
@@ -245,12 +270,11 @@ const sendTaskAssignmentEmail = async (userData: any, taskData: any) => {
     </html>
   `;
 
-  return await resend.emails.send({
-    from: "TriGuard Tasks <onboarding@resend.dev>",
-    to: [userData.personal_email || userData.generated_email],
-    subject: `New Task Assigned: ${taskData.task_title}`,
-    html: taskEmailHtml,
-  });
+  return await sendSmtpEmail(
+    userData.personal_email || userData.generated_email,
+    `New Task Assigned: ${taskData.task_title}`,
+    taskEmailHtml
+  );
 };
 
 const handler = async (req: Request): Promise<Response> => {

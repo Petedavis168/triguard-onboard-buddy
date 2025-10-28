@@ -195,6 +195,9 @@ export const useOnboardingForm = (formId?: string) => {
         }
       }
 
+      // Check if this is the first save (onboarding.started event)
+      const isFirstSave = !formId && step === 1;
+
       // Only save specific fields based on current step to avoid validation issues
       const updateData: any = {
         current_step: step,
@@ -459,7 +462,7 @@ export const useOnboardingForm = (formId?: string) => {
         // Don't block submission if email fails
       }
 
-      // Send completion webhook
+      // Send completion webhook with full data
       try {
         await supabase.functions.invoke('webhook-integration', {
           body: {
@@ -469,9 +472,9 @@ export const useOnboardingForm = (formId?: string) => {
               form_id: saveResult.formId,
               employee_data: {
                 name: `${data.first_name} ${data.last_name}`,
-                email: saveResult.email,
-                generated_email: generatedEmail,
+                email: saveResult.email || generatedEmail,
                 personal_email: data.personal_email,
+                cell_phone: data.cell_phone,
                 address: {
                   street: data.street_address,
                   city: data.city,
@@ -488,10 +491,12 @@ export const useOnboardingForm = (formId?: string) => {
                 team_id: data.team_id,
                 manager_id: data.manager_id,
                 recruiter_id: data.recruiter_id,
+                employee_role: data.employee_role,
+                position_id: data.position_id,
                 w9_completed: data.w9_completed,
                 documents_uploaded: Boolean(data.social_security_card_url && data.drivers_license_url),
                 direct_deposit_setup: Boolean(data.direct_deposit_confirmed),
-                submitted_at: new Date().toISOString()
+                completed_at: new Date().toISOString()
               }
             }
           }
