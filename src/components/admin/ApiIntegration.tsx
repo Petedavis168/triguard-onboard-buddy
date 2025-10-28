@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,6 +6,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Switch } from '@/components/ui/switch';
 import { 
   Webhook, 
   Key, 
@@ -16,18 +18,43 @@ import {
   ExternalLink,
   Code,
   Database,
-  Download
+  Download,
+  Plus,
+  Edit,
+  Trash2,
+  Mail
 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
 interface WebhookConfig {
-  url: string;
-  events: string[];
-  headers: Record<string, string>;
+  id?: string;
+  name: string;
+  event_type: string;
+  endpoint_url?: string;
+  is_active: boolean;
+  send_email: boolean;
+  email_recipients?: string[];
+  email_subject?: string;
+  email_template?: string;
+  headers?: any;
 }
 
 const ApiIntegration: React.FC = () => {
+  const [webhooks, setWebhooks] = useState<WebhookConfig[]>([]);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editingWebhook, setEditingWebhook] = useState<WebhookConfig | null>(null);
+  const [formData, setFormData] = useState<WebhookConfig>({
+    name: '',
+    event_type: 'onboarding.started',
+    endpoint_url: '',
+    is_active: true,
+    send_email: false,
+    email_recipients: [],
+    email_subject: '',
+    email_template: '',
+    headers: {}
+  });
   const [webhookUrl, setWebhookUrl] = useState('');
   const [webhookEvents, setWebhookEvents] = useState<string[]>(['onboarding.completed']);
   const [customHeaders, setCustomHeaders] = useState<Record<string, string>>({});
@@ -144,6 +171,141 @@ const ApiIntegration: React.FC = () => {
     );
   };
 
+  useEffect(() => {
+    loadWebhooks();
+  }, []);
+
+  const loadWebhooks = async () => {
+    const { data, error } = await supabase
+      .from('webhooks')
+      .select('*')
+      .order('created_at', { ascending: false });
+    
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Failed to load webhooks",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    setWebhooks(data || []);
+  };
+
+  const handleSaveWebhook = async () => {
+    if (!formData.name || !formData.event_type) {
+      toast({
+        title: "Error",
+        description: "Name and event type are required",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const webhookData = {
+      ...formData,
+      headers: formData.headers || {}
+    };
+
+    let error;
+    if (editingWebhook?.id) {
+      ({ error } = await supabase
+        .from('webhooks')
+        .update(webhookData)
+        .eq('id', editingWebhook.id));
+    } else {
+      ({ error } = await supabase
+        .from('webhooks')
+        .insert([webhookData]));
+    }
+
+    if (error) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    toast({
+      title: "Success",
+      description: `Webhook ${editingWebhook ? 'updated' : 'created'} successfully`,
+    });
+
+    setIsDialogOpen(false);
+    setEditingWebhook(null);
+    setFormData({
+      name: '',
+      event_type: 'onboarding.started',
+      endpoint_url: '',
+      is_active: true,
+      send_email: false,
+      email_recipients: [],
+      email_subject: '',
+      email_template: '',
+      headers: {}
+    });
+    loadWebhooks();
+  };
+
+  const handleEditWebhook = (webhook: any) => {
+    setEditingWebhook(webhook);
+    setFormData({
+      name: webhook.name,
+      event_type: webhook.event_type,
+      endpoint_url: webhook.endpoint_url || '',
+      is_active: webhook.is_active,
+      send_email: webhook.send_email,
+      email_recipients: webhook.email_recipients || [],
+      email_subject: webhook.email_subject || '',
+      email_template: webhook.email_template || '',
+      headers: webhook.headers || {}
+    });
+    setIsDialogOpen(true);
+  };
+
+  const handleDeleteWebhook = async (id: string) => {
+    const { error } = await supabase
+      .from('webhooks')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    toast({
+      title: "Success",
+      description: "Webhook deleted successfully",
+    });
+    loadWebhooks();
+  };
+
+  const handleToggleActive = async (id: string, currentState: boolean) => {
+    const { error } = await supabase
+      .from('webhooks')
+      .update({ is_active: !currentState })
+      .eq('id', id);
+
+    if (error) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    loadWebhooks();
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
@@ -174,10 +336,191 @@ const ApiIntegration: React.FC = () => {
 
         <TabsContent value="webhooks" className="space-y-6">
           <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle className="flex items-center gap-2">
+                <Webhook className="h-5 w-5" />
+                Custom Webhooks
+              </CardTitle>
+              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button onClick={() => {
+                    setEditingWebhook(null);
+                    setFormData({
+                      name: '',
+                      event_type: 'onboarding.started',
+                      endpoint_url: '',
+                      is_active: true,
+                      send_email: false,
+                      email_recipients: [],
+                      email_subject: '',
+                      email_template: '',
+                      headers: {}
+                    });
+                  }}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Webhook
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle>{editingWebhook ? 'Edit' : 'Add'} Webhook</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label>Name</Label>
+                      <Input
+                        value={formData.name}
+                        onChange={(e) => setFormData({...formData, name: e.target.value})}
+                        placeholder="My Custom Webhook"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Event Type</Label>
+                      <select
+                        className="w-full p-2 border rounded-md"
+                        value={formData.event_type}
+                        onChange={(e) => setFormData({...formData, event_type: e.target.value})}
+                      >
+                        {availableEvents.map((event) => (
+                          <option key={event.id} value={event.id}>{event.name}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Endpoint URL (optional)</Label>
+                      <Input
+                        value={formData.endpoint_url}
+                        onChange={(e) => setFormData({...formData, endpoint_url: e.target.value})}
+                        placeholder="https://your-app.com/webhook"
+                      />
+                    </div>
+
+                    <div className="flex items-center space-x-2">
+                      <Switch
+                        checked={formData.send_email}
+                        onCheckedChange={(checked) => setFormData({...formData, send_email: checked})}
+                      />
+                      <Label>Send Email</Label>
+                    </div>
+
+                    {formData.send_email && (
+                      <>
+                        <div className="space-y-2">
+                          <Label>Email Recipients (comma-separated)</Label>
+                          <Input
+                            value={formData.email_recipients?.join(', ')}
+                            onChange={(e) => setFormData({
+                              ...formData, 
+                              email_recipients: e.target.value.split(',').map(s => s.trim()).filter(Boolean)
+                            })}
+                            placeholder="admin@company.com, hr@company.com"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label>Email Subject</Label>
+                          <Input
+                            value={formData.email_subject}
+                            onChange={(e) => setFormData({...formData, email_subject: e.target.value})}
+                            placeholder="New Event: {event_type}"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label>Email Template (HTML)</Label>
+                          <Textarea
+                            value={formData.email_template}
+                            onChange={(e) => setFormData({...formData, email_template: e.target.value})}
+                            placeholder="<h1>Event: {event_type}</h1><p>Data: {data}</p>"
+                            rows={6}
+                          />
+                        </div>
+                      </>
+                    )}
+
+                    <div className="flex items-center space-x-2">
+                      <Switch
+                        checked={formData.is_active}
+                        onCheckedChange={(checked) => setFormData({...formData, is_active: checked})}
+                      />
+                      <Label>Active</Label>
+                    </div>
+
+                    <Button onClick={handleSaveWebhook} className="w-full">
+                      {editingWebhook ? 'Update' : 'Create'} Webhook
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {webhooks.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  No custom webhooks configured. Click "Add Webhook" to create one.
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {webhooks.map((webhook) => (
+                    <div key={webhook.id} className="border rounded-lg p-4 space-y-2">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <h4 className="font-semibold">{webhook.name}</h4>
+                            <Badge variant={webhook.is_active ? 'default' : 'secondary'}>
+                              {webhook.is_active ? 'Active' : 'Inactive'}
+                            </Badge>
+                            {webhook.send_email && (
+                              <Badge variant="outline">
+                                <Mail className="h-3 w-3 mr-1" />
+                                Email
+                              </Badge>
+                            )}
+                          </div>
+                          <p className="text-sm text-muted-foreground">
+                            Event: {availableEvents.find(e => e.id === webhook.event_type)?.name || webhook.event_type}
+                          </p>
+                          {webhook.endpoint_url && (
+                            <p className="text-xs text-muted-foreground font-mono">{webhook.endpoint_url}</p>
+                          )}
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleToggleActive(webhook.id!, webhook.is_active)}
+                          >
+                            {webhook.is_active ? 'Deactivate' : 'Activate'}
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleEditWebhook(webhook)}
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => handleDeleteWebhook(webhook.id!)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Webhook className="h-5 w-5" />
-                Webhook Configuration
+                Legacy Webhook Test
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">

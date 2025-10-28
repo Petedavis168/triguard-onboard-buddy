@@ -1963,6 +1963,51 @@ export type Database = {
           },
         ]
       }
+      webhooks: {
+        Row: {
+          created_at: string | null
+          email_recipients: string[] | null
+          email_subject: string | null
+          email_template: string | null
+          endpoint_url: string | null
+          event_type: string
+          headers: Json | null
+          id: string
+          is_active: boolean | null
+          name: string
+          send_email: boolean | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email_recipients?: string[] | null
+          email_subject?: string | null
+          email_template?: string | null
+          endpoint_url?: string | null
+          event_type: string
+          headers?: Json | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          send_email?: boolean | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email_recipients?: string[] | null
+          email_subject?: string | null
+          email_template?: string | null
+          endpoint_url?: string | null
+          event_type?: string
+          headers?: Json | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          send_email?: boolean | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -1994,32 +2039,14 @@ export type Database = {
           team_id: string
         }[]
       }
-      generate_employee_id: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
-      generate_secure_password: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
-      hash_password: {
-        Args: { password: string }
-        Returns: string
-      }
-      is_admin_manager: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
-      is_admin_user: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
-      is_authenticated_admin: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
+      generate_employee_id: { Args: never; Returns: string }
+      generate_secure_password: { Args: never; Returns: string }
+      hash_password: { Args: { password: string }; Returns: string }
+      is_admin_manager: { Args: never; Returns: boolean }
+      is_admin_user: { Args: never; Returns: boolean }
+      is_authenticated_admin: { Args: never; Returns: boolean }
       sync_onboarding_to_profiles: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           profiles_created: number
           profiles_updated: number

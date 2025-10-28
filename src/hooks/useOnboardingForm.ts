@@ -362,15 +362,18 @@ export const useOnboardingForm = (formId?: string) => {
       // Send webhook for onboarding started (first time save)
       if (isFirstSave && result.id) {
         try {
-          await supabase.functions.invoke('webhook-onboarding-started', {
+          await supabase.functions.invoke('process-webhook', {
             body: {
-              form_id: result.id,
-              employee_data: {
-                name: `${data.first_name || ''} ${data.last_name || ''}`,
-                email: emailToSave || data.personal_email,
-                personal_email: data.personal_email,
-                cell_phone: data.cell_phone,
-                started_at: new Date().toISOString()
+              event_type: 'onboarding.started',
+              data: {
+                form_id: result.id,
+                employee_data: {
+                  name: `${data.first_name || ''} ${data.last_name || ''}`,
+                  email: emailToSave || data.personal_email,
+                  personal_email: data.personal_email,
+                  cell_phone: data.cell_phone,
+                  started_at: new Date().toISOString()
+                }
               }
             }
           });
@@ -485,33 +488,36 @@ export const useOnboardingForm = (formId?: string) => {
 
       // Send completion webhook with full data
       try {
-        await supabase.functions.invoke('webhook-onboarding-completed', {
+        await supabase.functions.invoke('process-webhook', {
           body: {
-            form_id: saveResult.formId,
-            employee_data: {
-              name: `${data.first_name} ${data.last_name}`,
-              email: saveResult.email || generatedEmail,
-              personal_email: data.personal_email,
-              cell_phone: data.cell_phone,
-              username: data.username,
-              user_password: data.user_password,
-              employee_role: data.employee_role,
-              team_id: data.team_id,
-              manager_id: data.manager_id,
-              address: {
-                street: data.street_address,
-                city: data.city,
-                state: data.state,
-                zip: data.zip_code
-              },
-              gear_sizes: {
-                shirt: data.shirt_size,
-                coat: data.coat_size,
-                pants: data.pant_size,
-                shoes: data.shoe_size,
-                hat: data.hat_size
-              },
-              completed_at: new Date().toISOString()
+            event_type: 'onboarding.completed',
+            data: {
+              form_id: saveResult.formId,
+              employee_data: {
+                name: `${data.first_name} ${data.last_name}`,
+                email: saveResult.email || generatedEmail,
+                personal_email: data.personal_email,
+                cell_phone: data.cell_phone,
+                username: data.username,
+                user_password: data.user_password,
+                employee_role: data.employee_role,
+                team_id: data.team_id,
+                manager_id: data.manager_id,
+                address: {
+                  street: data.street_address,
+                  city: data.city,
+                  state: data.state,
+                  zip: data.zip_code
+                },
+                gear_sizes: {
+                  shirt: data.shirt_size,
+                  coat: data.coat_size,
+                  pants: data.pant_size,
+                  shoes: data.shoe_size,
+                  hat: data.hat_size
+                },
+                completed_at: new Date().toISOString()
+              }
             }
           }
         });
