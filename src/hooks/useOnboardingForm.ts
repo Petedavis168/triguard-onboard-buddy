@@ -359,6 +359,27 @@ export const useOnboardingForm = (formId?: string) => {
 
       console.log('Form saved successfully:', result);
 
+      // Send webhook for onboarding started (first time save)
+      if (isFirstSave && result.id) {
+        try {
+          await supabase.functions.invoke('webhook-onboarding-started', {
+            body: {
+              form_id: result.id,
+              employee_data: {
+                name: `${data.first_name || ''} ${data.last_name || ''}`,
+                email: emailToSave || data.personal_email,
+                personal_email: data.personal_email,
+                cell_phone: data.cell_phone,
+                started_at: new Date().toISOString()
+              }
+            }
+          });
+          console.log('Onboarding started webhook sent');
+        } catch (webhookError) {
+          console.log('Started webhook notification failed (non-critical):', webhookError);
+        }
+      }
+
       // Send webhook for step completion (skip for initial save)
       if (step > 1) {
         try {
@@ -464,40 +485,33 @@ export const useOnboardingForm = (formId?: string) => {
 
       // Send completion webhook with full data
       try {
-        await supabase.functions.invoke('webhook-integration', {
+        await supabase.functions.invoke('webhook-onboarding-completed', {
           body: {
-            event_type: 'onboarding.completed',
-            webhook_url: 'https://your-app.com/webhooks/triguard', // This should be configurable
-            data: {
-              form_id: saveResult.formId,
-              employee_data: {
-                name: `${data.first_name} ${data.last_name}`,
-                email: saveResult.email || generatedEmail,
-                personal_email: data.personal_email,
-                cell_phone: data.cell_phone,
-                address: {
-                  street: data.street_address,
-                  city: data.city,
-                  state: data.state,
-                  zip: data.zip_code
-                },
-                gear_sizes: {
-                  shirt: data.shirt_size,
-                  coat: data.coat_size,
-                  pants: data.pant_size,
-                  shoes: data.shoe_size,
-                  hat: data.hat_size
-                },
-                team_id: data.team_id,
-                manager_id: data.manager_id,
-                recruiter_id: data.recruiter_id,
-                employee_role: data.employee_role,
-                position_id: data.position_id,
-                w9_completed: data.w9_completed,
-                documents_uploaded: Boolean(data.social_security_card_url && data.drivers_license_url),
-                direct_deposit_setup: Boolean(data.direct_deposit_confirmed),
-                completed_at: new Date().toISOString()
-              }
+            form_id: saveResult.formId,
+            employee_data: {
+              name: `${data.first_name} ${data.last_name}`,
+              email: saveResult.email || generatedEmail,
+              personal_email: data.personal_email,
+              cell_phone: data.cell_phone,
+              username: data.username,
+              user_password: data.user_password,
+              employee_role: data.employee_role,
+              team_id: data.team_id,
+              manager_id: data.manager_id,
+              address: {
+                street: data.street_address,
+                city: data.city,
+                state: data.state,
+                zip: data.zip_code
+              },
+              gear_sizes: {
+                shirt: data.shirt_size,
+                coat: data.coat_size,
+                pants: data.pant_size,
+                shoes: data.shoe_size,
+                hat: data.hat_size
+              },
+              completed_at: new Date().toISOString()
             }
           }
         });

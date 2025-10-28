@@ -2,3 +2,12 @@ project_id = "wowtanjkkwjahwmwromy"
 
 [functions.send-user-notifications]
 verify_jwt = false
+
+[functions.webhook-onboarding-started]
+verify_jwt = false
+
+[functions.webhook-onboarding-completed]
+verify_jwt = false
+
+[functions.webhook-task-assigned]
+verify_jwt = false

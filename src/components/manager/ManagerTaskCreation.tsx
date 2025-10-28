@@ -136,13 +136,12 @@ const ManagerTaskCreation: React.FC<ManagerTaskCreationProps> = ({
         for (const memberId of selectedMembers) {
           const member = teamMembers.find(m => m.id === memberId);
           if (member) {
-            await supabase.functions.invoke('send-user-notifications', {
+            await supabase.functions.invoke('webhook-task-assigned', {
               body: {
-                type: 'task_assignment',
-                user_data: {
+                employee_data: {
                   first_name: member.first_name,
                   last_name: member.last_name,
-                  generated_email: member.generated_email,
+                  email: member.generated_email,
                   personal_email: member.personal_email,
                 },
                 task_data: {
